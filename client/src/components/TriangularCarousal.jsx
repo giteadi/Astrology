@@ -1,18 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-const CarouselContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: auto;
-  padding: 2rem 0;
-  gap: 2rem;
-`;
-
+// Triangle Box styled component
 const TriangleCard = styled.div`
-  width: 200px; /* Increased size */
-  height: 200px; /* Increased size */
+  width: 18rem; /* 72 units */
+  height: 18rem; /* 72 units */
   background: linear-gradient(145deg, #6a0dad, #3a0078);
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   display: flex;
@@ -20,39 +12,44 @@ const TriangleCard = styled.div`
   align-items: flex-end;
   color: white;
   font-weight: bold;
-  position: relative;
-  padding: 1rem;
   text-align: center;
+  padding: 1.5rem;
+  position: relative;
 `;
 
+// Styled button without bubble animation
 const Button = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: #6a0dad; /* Button color to match the theme */
+  padding: 1rem 2rem;
+  background-color: #6a0dad;
   color: white;
+  font-weight: 600;
   border: none;
-  border-radius: 5px;
+  border-radius: 9999px; /* Fully rounded */
   cursor: pointer;
-  font-size: 0.9rem;
-  margin-top: 20px; /* Spacing between description and button */
-  display: block;
-  margin-left: auto;
-  margin-right: auto; /* Centers the button */
+  font-size: 1rem;
+  margin-top: 20px;
+  transition: background-color 0.3s, transform 0.3s;
+
+  &:hover {
+    background-color: #5a0071;
+    transform: scale(1.1);
+  }
 `;
 
 const DescriptionContainer = styled.div`
-  margin-top: 10px;
+  margin-top: 1.5rem;
   text-align: center;
-  color: white; /* White description text */
+  color: white;
   font-size: 1rem;
   font-weight: normal;
-  width: 200px;
+  width: 18rem; /* Ensure it aligns with the card width */
 `;
 
 const TriangularCarousel = () => {
   return (
-    <CarouselContainer>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
       {[1, 2, 3].map((item, index) => (
-        <div key={index}>
+        <div key={index} className="flex flex-col items-center">
           <TriangleCard>
             <div>SERVICE {item}</div>
           </TriangleCard>
@@ -66,7 +63,7 @@ const TriangularCarousel = () => {
           <Button>BOOK NOW</Button>
         </div>
       ))}
-    </CarouselContainer>
+    </div>
   );
 };
 

@@ -1,55 +1,22 @@
 import React from "react";
-import styled from "styled-components";
-
-const CarouselWrapper = styled.div`
-  text-align: center;
-  padding: 2rem 0;
-`;
-
-const CarouselContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: auto;
-  gap: 2rem;
-`;
-
-const SquareCard = styled.div`
-  width: 120px;
-  height: 120px;
-  background: linear-gradient(145deg, #6a0dad, #3a0078);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  color: white;
-  font-weight: bold;
-  border-radius: 5px;
-  position: relative;
-`;
-
-const Button = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: #4b0082;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin-top: 20px; /* Space between carousel and button */
-`;
 
 const SquareCarousel = () => {
   return (
-    <CarouselWrapper>
-      <CarouselContainer>
-        {[1, 2, 3, 4].map((item, index) => (
-          <div key={index}>
-            <SquareCard>SERVICE {item}</SquareCard>
+    <div className="flex justify-center items-center py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-screen-xl">
+        {[1, 2, 3].map((item) => (  // Three cards
+          <div key={item} className="flex flex-col items-center">
+            <div className="w-64 h-64 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold rounded-lg p-6">
+              SERVICE {item}
+            </div>
+            {/* Updated Button */}
+            <button className="mt-6 px-8 py-3 bg-indigo-800 text-white rounded-full transition-transform transform hover:scale-105 hover:bg-indigo-900">
+              BOOK NOW
+            </button>
           </div>
         ))}
-      </CarouselContainer>
-      <Button>BOOK NOW</Button> {/* The button is now outside the Carousel */}
-    </CarouselWrapper>
+      </div>
+    </div>
   );
 };
 
