@@ -181,7 +181,7 @@ const Nav = () => {
         <Image src={mercuryImage} alt="Logo" />
         <span className="md:ml-5">Astrology</span>
       </Logo>
-      <MagicalLight />
+      {/* <MagicalLight /> */}
       <Stars>{stars}</Stars>
       <IconButtons>
       <IconButton>

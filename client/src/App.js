@@ -4,13 +4,23 @@ import FAQ from "./components/FAQ";
 import Nav from "./components/Nav";
 import AboutUs from "./pages/AboutUs";
 import Home from "./pages/Home";
+import Astrology from "./pages/Astrology";
+import Footer from "./components/Footer";
+import Vastu from "./pages/Vastu";
+import Numerology from "./pages/Numrology";
+import RegistrationForm from "./pages/Registration";
 function App() {
   return (
     <div className="font-bold">
      <Nav/>
       <Routes>
         <Route path="/" element={<Home/>}/>
+        <Route path='/astrology' element={<Astrology/>}/>
+        <Route path='/vastu' element={<Vastu/>}/>
+        <Route path='/numerology' element={<Numerology/>}/>
+        <Route path='/form' element={<RegistrationForm/>}/>
       </Routes>
+      <Footer/>
     </div>
   );
 }

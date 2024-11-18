@@ -1,5 +1,6 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 export default function SearchbarWithOptions() {
   return (
@@ -21,17 +22,17 @@ export default function SearchbarWithOptions() {
 
       {/* Options */}
       <div className="backdrop-blur-md bg-[rgba(255,255,255,0.1)] shadow-lg rounded-3xl flex justify-around items-center gap-4 md:gap-6 p-4 md:p-8 w-full max-w-3xl mt-6 border border-white">
-        <span className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300">
+        <Link to="/astrology" className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300">
           Astrology
-        </span>
+        </Link>
         <div className="h-6 md:h-8 w-px bg-white"></div>
-        <span className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300">
+        <Link to="/vastu" className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300">
           Vastu
-        </span>
+        </Link>
         <div className="h-6 md:h-8 w-px bg-white"></div>
-        <span className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300">
+        <Link to="/numerology" className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300">
           Numerology
-        </span>
+        </Link>
       </div>
     </div>
   );

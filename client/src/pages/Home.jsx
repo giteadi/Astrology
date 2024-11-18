@@ -9,7 +9,6 @@ import AboutUs from "./AboutUs";
 import TestimonialsSection from "../components/Testimonials";
 import FAQ from "../components/FAQ";
 import BlogList from "../components/BlogList";
-import Footer from "../components/Footer";
 
 // Create the HomeContainer with a blue background
 const HomeContainer = styled.div`
@@ -121,7 +120,7 @@ export default function Home() {
       <TestimonialsSection/>
       <FAQ/>
       <BlogList/>
-      <Footer/>
+      
     </HomeContainer>
   );
 }
