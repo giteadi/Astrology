@@ -9,7 +9,7 @@ export default function SearchbarWithOptions() {
         <input
           type="text"
           placeholder="Search..."
-          className="w-full pl-12 pr-5 py-4 sm:py-3 md:py-4 bg-transparent border border-gray-300 rounded-full text-white text-sm md:text-lg focus:outline-none focus:border-blue-500 backdrop-blur-sm"
+          className="w-full pl-12 pr-5 py-4 sm:py-3 md:py-4 bg-transparent border border-gray-300 rounded-full text-white text-sm md:text-lg focus:outline-none focus:border-white backdrop-blur-sm"
           style={{
             background: "rgba(255, 255, 255, 0.15)",
           }}
