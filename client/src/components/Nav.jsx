@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
-import { FiMenu, FiUser, FiShoppingCart } from "react-icons/fi"; // Import the cart icon
+import { FiMenu, FiUser, FiShoppingCart } from "react-icons/fi";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import mercuryImage from "../assets/mercury.webp";
 
 // Keyframes for star twinkle
@@ -9,44 +10,20 @@ const twinkle = keyframes`
   50% { opacity: 1; }
 `;
 
-// Keyframes for magical light
-const glow = keyframes`
-  0% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.5); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.7; }
-`;
-
 // Styled Navbar
 const Navbar = styled.nav`
   background: linear-gradient(90deg, #1c1c3d, #4b0082);
-  padding: 4rem 4rem;
+  padding: 2rem 4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
   position: relative;
-  overflow: hidden;
   z-index: 10;
-  height: 100px;
 
   @media (max-width: 768px) {
     padding: 1.5rem 1.5rem;
-    height: 80px;
   }
-`;
-
-// Magical Light Effect
-const MagicalLight = styled.div`
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  animation: ${glow} 3s infinite;
-  z-index: 0;
 `;
 
 // Stars Container
@@ -57,7 +34,7 @@ const Stars = styled.div`
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 `;
 
 // Individual Star
@@ -80,7 +57,7 @@ const Logo = styled.div`
   align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
-  z-index: 1;
+  z-index: 2;
 
   @media (max-width: 768px) {
     font-size: 1.2rem;
@@ -103,66 +80,58 @@ const IconButtons = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
-  z-index: 1;
+  position: relative;
+  z-index: 3;
 
   @media (max-width: 768px) {
     gap: 10px;
   }
 `;
 
-// Menu Icon
-const MenuIcon = styled.div`
-  cursor: pointer;
-  color: white;
-
-  @media (min-width: 769px) {
-    display: none;
-  }
-`;
-
-// Profile and Cart Icons
-const IconButton = styled.button`
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: white;
-  font-size: 1.5rem;
-
-  &:hover {
-    color: #ddd;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-`;
-
-// Mobile Menu
-const MobileMenu = styled.div`
+// Dropdown Menu for Login/Register
+const Dropdown = styled.div`
   position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-  text-align: center;
-  padding: 1rem 0;
+  top: 120%;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 0;
+  z-index: 5;
+  width: 150px;
 
   a {
-    display: block;
     color: white;
     text-decoration: none;
-    margin: 0.5rem 0;
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
 
     &:hover {
-      color: #ddd;
+      background: #4b0082;
+      color: #fff;
     }
   }
 `;
 
 const Nav = () => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleProfileClick = (e) => {
+    e.stopPropagation(); // Prevent closing the dropdown when clicking on the profile icon
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = () => {
+    setDropdownOpen(false); // Close the dropdown when clicking outside
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const stars = Array.from({ length: 50 }).map((_, index) => (
     <Star
@@ -181,27 +150,25 @@ const Nav = () => {
         <Image src={mercuryImage} alt="Logo" />
         <span className="md:ml-5">Astrology</span>
       </Logo>
-      {/* <MagicalLight /> */}
       <Stars>{stars}</Stars>
       <IconButtons>
-      <IconButton>
-          <FiShoppingCart /> 
-        </IconButton>
-        <MenuIcon onClick={() => setMenuOpen(!isMenuOpen)}>
-          <FiMenu size={24} />
-        </MenuIcon>
-        <IconButton>
-          <FiUser />
-        </IconButton>
-      
+        <FiShoppingCart />
+        <div
+          onClick={handleProfileClick}
+          style={{
+            position: "relative",
+            cursor: "pointer",
+          }}
+        >
+          <FiUser style={{ fontSize: "1.5rem" }} />
+          {isDropdownOpen && (
+            <Dropdown>
+              <Link to="/login">Login</Link> {/* Use Link for routing */}
+              <Link to="/register">Register</Link> {/* Use Link for routing */}
+            </Dropdown>
+          )}
+        </div>
       </IconButtons>
-      <MobileMenu isOpen={isMenuOpen}>
-        <a href="#">Home</a>
-        <a href="#">Products</a>
-        <a href="#">Services</a>
-        <a href="#">About Us</a>
-        <a href="#">Contact</a>
-      </MobileMenu>
     </Navbar>
   );
 };

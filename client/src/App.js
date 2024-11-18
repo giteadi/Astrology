@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Vastu from "./pages/Vastu";
 import Numerology from "./pages/Numrology";
 import RegistrationForm from "./pages/Registration";
+import LoginForm from "./pages/Login";
 function App() {
   return (
     <div className="font-bold">
@@ -18,7 +19,8 @@ function App() {
         <Route path='/astrology' element={<Astrology/>}/>
         <Route path='/vastu' element={<Vastu/>}/>
         <Route path='/numerology' element={<Numerology/>}/>
-        <Route path='/form' element={<RegistrationForm/>}/>
+        <Route path='/register' element={<RegistrationForm/>}/>
+        <Route path="/login" element={<LoginForm/>}/>
       </Routes>
       <Footer/>
     </div>
