@@ -1,10 +1,10 @@
-import React from "react";
+import React from "react"; 
 import styled from "styled-components";
 
 // Custom Testimonial Card Styled Component
 const TestimonialCard = styled.div`
   width: 100%;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.2); /* Add slight transparency */
   border-radius: 1rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
   padding: 2rem;
@@ -15,7 +15,7 @@ const TestimonialCard = styled.div`
   gap: 1.5rem; /* Spacing between content */
   backdrop-filter: blur(10px); /* Subtle blur effect for background */
   text-align: center;
-  
+
   /* Responsive Design */
   @media (max-width: 640px) {
     padding: 1.5rem;
@@ -23,22 +23,23 @@ const TestimonialCard = styled.div`
   }
 `;
 
+// Other Styled Components
 const TestimonialText = styled.p`
   font-size: 1rem;
-  color: #333;
+  color: #fff; /* Light text for visibility on dark background */
   line-height: 1.6;
   font-style: italic;
 `;
 
 const AuthorName = styled.h3`
   font-size: 1.25rem;
-  color: #6a0dad;
+  color: #fff; /* White color for name */
   font-weight: 600;
 `;
 
 const AuthorPosition = styled.p`
   font-size: 1rem;
-  color: #888;
+  color: #ddd; /* Slightly lighter color for the position */
 `;
 
 const AuthorImage = styled.div`
@@ -50,17 +51,6 @@ const AuthorImage = styled.div`
   border-radius: 50%;
   border: 3px solid #fff;
 `;
-
-const Testimonial = ({ image, name, position, text }) => {
-  return (
-    <TestimonialCard>
-      <AuthorImage imgUrl={image} />
-      <TestimonialText>{text}</TestimonialText>
-      <AuthorName>{name}</AuthorName>
-      <AuthorPosition>{position}</AuthorPosition>
-    </TestimonialCard>
-  );
-};
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -89,13 +79,12 @@ const TestimonialsSection = () => {
       <h2 className="text-4xl font-bold text-white mt-16 mb-12">What Our Clients Say</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 w-full max-w-screen-xl">
         {testimonials.map((testimonial, index) => (
-          <Testimonial
-            key={index}
-            image={testimonial.image}
-            name={testimonial.name}
-            position={testimonial.position}
-            text={testimonial.text}
-          />
+          <TestimonialCard key={index}>
+            <AuthorImage imgUrl={testimonial.image} />
+            <TestimonialText>{testimonial.text}</TestimonialText>
+            <AuthorName>{testimonial.name}</AuthorName>
+            <AuthorPosition>{testimonial.position}</AuthorPosition>
+          </TestimonialCard>
         ))}
       </div>
     </div>
