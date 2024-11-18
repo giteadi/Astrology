@@ -2,8 +2,8 @@ import React from "react";
 
 const SquareCarousel = () => {
   return (
-    <div className="flex justify-center items-center py-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-screen-xl">
+    <div className="flex justify-around items-center py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-screen-2xl justify-around">
         {[1, 2, 3].map((item) => (  // Three cards
           <div key={item} className="flex flex-col items-center">
             <div className="w-64 h-64 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold rounded-lg p-6">

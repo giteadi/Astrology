@@ -4,8 +4,11 @@ const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 mb-4 cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-      <div className="text-lg font-semibold">{question}</div>
+    <div
+      className="bg-white rounded-xl shadow-md p-6 mb-6 cursor-pointer hover:bg-gray-100 transition duration-200"
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      <div className="text-lg font-semibold text-purple-900">{question}</div>
       {isOpen && <p className="mt-2 text-gray-700">{answer}</p>}
     </div>
   );
@@ -21,9 +24,9 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="bg-gradient-to-b from-purple-900 to-indigo-900 py-8 px-4">
-      <h2 className="text-center text-3xl font-bold mb-8 text-white">FAQs</h2>
-      <div className="max-w-2xl mx-auto text-black">
+    <section className="py-8 px-4">
+      <h2 className="text-center text-3xl font-bold mb-12 text-white">FAQs</h2>
+      <div className="max-w-3xl mx-auto text-black space-y-4">
         {faqData.map((item, index) => (
           <FAQItem key={index} question={item.question} answer={item.answer} />
         ))}

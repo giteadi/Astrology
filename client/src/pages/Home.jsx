@@ -4,6 +4,10 @@ import TriangularCarousel from "../components/TriangularCarousal";
 import SquareCarousel from "../components/SquareCarosal";
 import styled from "styled-components";
 import Searchbar from "../components/Searchbar";
+import DownwardTriangle from "../components/DownwardTriangle";
+import AboutUs from "./AboutUs";
+import TestimonialsSection from "../components/Testimonials";
+import FAQ from "../components/FAQ";
 
 // Create the HomeContainer with a blue background
 const HomeContainer = styled.div`
@@ -110,6 +114,10 @@ export default function Home() {
         ASTROLOGY REPORTS
       </Title>
       <SquareCarousel />
+      <DownwardTriangle/>
+      <AboutUs/>
+      <TestimonialsSection/>
+      <FAQ/>
     </HomeContainer>
   );
 }
