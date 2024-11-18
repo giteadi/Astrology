@@ -8,6 +8,7 @@ import DownwardTriangle from "../components/DownwardTriangle";
 import AboutUs from "./AboutUs";
 import TestimonialsSection from "../components/Testimonials";
 import FAQ from "../components/FAQ";
+import BlogList from "../components/BlogList";
 
 // Create the HomeContainer with a blue background
 const HomeContainer = styled.div`
@@ -118,6 +119,7 @@ export default function Home() {
       <AboutUs/>
       <TestimonialsSection/>
       <FAQ/>
+      <BlogList/>
     </HomeContainer>
   );
 }
