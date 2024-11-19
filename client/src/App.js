@@ -10,6 +10,7 @@ import Vastu from "./pages/Vastu";
 import Numerology from "./pages/Numrology";
 import RegistrationForm from "./pages/Registration";
 import LoginForm from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 function App() {
   return (
     <div className="font-bold">
@@ -21,6 +22,7 @@ function App() {
         <Route path='/numerology' element={<Numerology/>}/>
         <Route path='/register' element={<RegistrationForm/>}/>
         <Route path="/login" element={<LoginForm/>}/>
+        <Route path="/dashboard" element={<Dashboard/>}/>
       </Routes>
       <Footer/>
     </div>

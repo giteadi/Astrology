@@ -152,7 +152,10 @@ const Nav = () => {
       </Logo>
       <Stars>{stars}</Stars>
       <IconButtons>
-        <FiShoppingCart />
+        {/* Add Link component around the cart icon to navigate to /cart */}
+        <Link to="/dashboard">
+          <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
+        </Link>
         <div
           onClick={handleProfileClick}
           style={{
