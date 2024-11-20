@@ -11,6 +11,7 @@ import Numerology from "./pages/Numrology";
 import RegistrationForm from "./pages/Registration";
 import LoginForm from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Invoice from "./pages/Invoice";
 function App() {
   return (
     <div className="font-bold">
@@ -23,6 +24,7 @@ function App() {
         <Route path='/register' element={<RegistrationForm/>}/>
         <Route path="/login" element={<LoginForm/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path='/invoice' element={<Invoice/>}/>
       </Routes>
       <Footer/>
     </div>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Dashboard = () => {
-  const [activeView, setActiveView] = useState("orders"); // Default to "Your Orders"
+  const [activeView, setActiveView] = useState("orders");
   const [ordersData, setOrdersData] = useState([
     { orderNo: "#15078", date: "June 21, 2024", payment: "Paid", fulfillment: "Fulfilled", total: "₹1,000" },
     { orderNo: "#15079", date: "June 22, 2024", payment: "Pending", fulfillment: "Processing", total: "₹2,500" },
@@ -14,39 +15,22 @@ const Dashboard = () => {
     password: "********",
   });
 
-  // Form state
-  const [formData, setFormData] = useState({
-    orderNo: "",
-    date: "",
-    payment: "",
-    fulfillment: "",
-    total: "",
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [accountForm, setAccountForm] = useState(accountDetails);
+  // Effect to handle new order coming from the "Book Now" action
+  useEffect(() => {
+    if (location.state?.newOrder) {
+      const { newOrder } = location.state;
+      setOrdersData((prev) => [...prev, newOrder]); // Add new order to the orders list
+      navigate(location.pathname, { state: {} }); // Clear the state to avoid duplicate orders
+    }
+  }, [location.state, navigate]);
 
-  // Handle form inputs
-  const handleFormChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleAccountChange = (e) => {
-    setAccountForm({ ...accountForm, [e.target.name]: e.target.value });
-  };
-
-  // Add order functionality
-  const handleAddOrder = (e) => {
-    e.preventDefault();
-    setOrdersData([...ordersData, formData]); // Add new order to the list
-    setFormData({ orderNo: "", date: "", payment: "", fulfillment: "", total: "" }); // Clear the form
-    setActiveView("orders");
-  };
-
-  // Update account details
-  const handleUpdateAccount = (e) => {
-    e.preventDefault();
-    setAccountDetails(accountForm);
-    setActiveView("accountDetails");
+  // Function to go to the Invoice page
+  const goToInvoicePage = () => {
+    const orderDetails = ordersData[ordersData.length - 1]; // Get last added order
+    navigate("/invoice", { state: { orderDetails } });
   };
 
   return (
@@ -57,36 +41,16 @@ const Dashboard = () => {
       {/* Buttons Section */}
       <div className="mt-4 flex gap-4">
         <button
-          onClick={() => setActiveView("accountDetails")}
-          className={`px-4 py-2 rounded-md text-sm ${
-            activeView === "accountDetails" ? "bg-purple-500" : "bg-purple-600"
-          } hover:bg-purple-500`}
-        >
-          Account Details
-        </button>
-        <button
           onClick={() => setActiveView("orders")}
-          className={`px-4 py-2 rounded-md text-sm ${
-            activeView === "orders" ? "bg-purple-500" : "bg-purple-600"
-          } hover:bg-purple-500`}
+          className={`px-4 py-2 rounded-md text-sm ${activeView === "orders" ? "bg-purple-500" : "bg-purple-600"} hover:bg-purple-500`}
         >
           Your Orders
         </button>
         <button
-          onClick={() => setActiveView("addOrder")}
-          className={`px-4 py-2 rounded-md text-sm ${
-            activeView === "addOrder" ? "bg-purple-500" : "bg-purple-600"
-          } hover:bg-purple-500`}
+          onClick={() => setActiveView("accountDetails")}
+          className={`px-4 py-2 rounded-md text-sm ${activeView === "accountDetails" ? "bg-purple-500" : "bg-purple-600"} hover:bg-purple-500`}
         >
-          Add Order
-        </button>
-        <button
-          onClick={() => setActiveView("updateAccount")}
-          className={`px-4 py-2 rounded-md text-sm ${
-            activeView === "updateAccount" ? "bg-purple-500" : "bg-purple-600"
-          } hover:bg-purple-500`}
-        >
-          Update Account
+          Account Details
         </button>
       </div>
 
@@ -118,6 +82,12 @@ const Dashboard = () => {
                 ))}
               </tbody>
             </table>
+            <button
+              onClick={goToInvoicePage}
+              className="mt-8 px-4 py-2 bg-purple-600 rounded-md hover:bg-purple-500"
+            >
+              View Invoice
+            </button>
           </>
         )}
 
@@ -133,86 +103,6 @@ const Dashboard = () => {
               ))}
             </div>
           </>
-        )}
-
-        {/* Add Order Form */}
-        {activeView === "addOrder" && (
-          <form onSubmit={handleAddOrder} className="bg-purple-800 p-4 rounded-md">
-            <h2 className="text-xl font-semibold mb-4">Add Order</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="orderNo"
-                value={formData.orderNo}
-                onChange={handleFormChange}
-                placeholder="Order No"
-                className="p-2 rounded-md bg-purple-700 focus:outline-none"
-                required
-              />
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleFormChange}
-                className="p-2 rounded-md bg-purple-700 focus:outline-none"
-                required
-              />
-              <input
-                type="text"
-                name="payment"
-                value={formData.payment}
-                onChange={handleFormChange}
-                placeholder="Payment Status"
-                className="p-2 rounded-md bg-purple-700 focus:outline-none"
-                required
-              />
-              <input
-                type="text"
-                name="fulfillment"
-                value={formData.fulfillment}
-                onChange={handleFormChange}
-                placeholder="Fulfillment Status"
-                className="p-2 rounded-md bg-purple-700 focus:outline-none"
-                required
-              />
-              <input
-                type="text"
-                name="total"
-                value={formData.total}
-                onChange={handleFormChange}
-                placeholder="Total"
-                className="p-2 rounded-md bg-purple-700 focus:outline-none"
-                required
-              />
-            </div>
-            <button type="submit" className="mt-4 px-4 py-2 bg-purple-600 rounded-md hover:bg-purple-500">
-              Add Order
-            </button>
-          </form>
-        )}
-
-        {/* Update Account Details Form */}
-        {activeView === "updateAccount" && (
-          <form onSubmit={handleUpdateAccount} className="bg-purple-800 p-4 rounded-md">
-            <h2 className="text-xl font-semibold mb-4">Update Account Details</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {Object.entries(accountForm).map(([key, value]) => (
-                <input
-                  key={key}
-                  type={key === "password" ? "password" : "text"}
-                  name={key}
-                  value={value}
-                  onChange={handleAccountChange}
-                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                  className="p-2 rounded-md bg-purple-700 focus:outline-none"
-                  required
-                />
-              ))}
-            </div>
-            <button type="submit" className="mt-4 px-4 py-2 bg-purple-600 rounded-md hover:bg-purple-500">
-              Update Account
-            </button>
-          </form>
         )}
       </div>
     </div>

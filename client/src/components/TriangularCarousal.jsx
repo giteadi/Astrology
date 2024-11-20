@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-// Triangle Box styled component
+// Styled components remain the same
 const TriangleCard = styled.div`
-  width: 18rem; /* 72 units */
-  height: 18rem; /* 72 units */
+  width: 18rem;
+  height: 18rem;
   background: linear-gradient(145deg, #6a0dad, #3a0078);
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   display: flex;
@@ -17,14 +18,13 @@ const TriangleCard = styled.div`
   position: relative;
 `;
 
-// Styled button without bubble animation
 const Button = styled.button`
   padding: 1rem 2rem;
   background-color: #6a0dad;
   color: white;
   font-weight: 600;
   border: none;
-  border-radius: 9999px; /* Fully rounded */
+  border-radius: 9999px;
   cursor: pointer;
   font-size: 1rem;
   margin-top: 20px;
@@ -42,25 +42,48 @@ const DescriptionContainer = styled.div`
   color: white;
   font-size: 1rem;
   font-weight: normal;
-  width: 18rem; /* Ensure it aligns with the card width */
+  width: 18rem;
 `;
 
 const TriangularCarousel = () => {
+  const navigate = useNavigate();
+
+  const handleBookNow = (item) => {
+    const newOrder = {
+      orderNo: `#${Math.floor(10000 + Math.random() * 90000)}`, // Random Order Number
+      date: new Date().toLocaleDateString(),
+      payment: "Pending",
+      fulfillment: "Processing",
+      total: "₹1000", // Example price
+      items: [
+        {
+          name: item.title,
+          description: item.description,
+          price: "₹1000",
+          quantity: 1,
+        },
+      ],
+    };
+
+    // Navigate to Dashboard with newOrder
+    navigate("/dashboard", { state: { newOrder } });
+  };
+
+  const services = [
+    { title: "Numerology", description: "Insights into your life's path." },
+    { title: "Astrology", description: "Celestial alignments insights." },
+    { title: "Tarot", description: "Guidance through life's challenges." },
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
-      {[1, 2, 3].map((item, index) => (
+      {services.map((item, index) => (
         <div key={index} className="flex flex-col items-center">
           <TriangleCard>
-            <div>SERVICE {item}</div>
+            <div>{item.title.toUpperCase()}</div>
           </TriangleCard>
-          <DescriptionContainer>
-            {item === 1
-              ? "Numerology can provide insights into your life's path."
-              : item === 2
-              ? "Astrology reveals the alignment of celestial bodies."
-              : "Tarot reading guides you through life's challenges."}
-          </DescriptionContainer>
-          <Button>BOOK NOW</Button>
+          <DescriptionContainer>{item.description}</DescriptionContainer>
+          <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
         </div>
       ))}
     </div>
