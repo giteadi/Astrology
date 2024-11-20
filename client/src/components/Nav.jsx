@@ -156,7 +156,7 @@ const Nav = () => {
         <Link to="/">
           <FiHome style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
-        <Link to="/dashboard">
+        <Link to="/cart">
           <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
         <div

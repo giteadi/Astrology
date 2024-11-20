@@ -12,6 +12,8 @@ import RegistrationForm from "./pages/Registration";
 import LoginForm from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Invoice from "./pages/Invoice";
+import Cart from "./pages/Cart";
+import CartManager from "./pages/ParentCard";
 function App() {
   return (
     <div className="font-bold">
@@ -25,6 +27,8 @@ function App() {
         <Route path="/login" element={<LoginForm/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path='/invoice' element={<Invoice/>}/>
+        <Route path='/cart' element={<Cart/>}/>
+        <Route path="/cart-manegar" element={<CartManager/>}/>
       </Routes>
       <Footer/>
     </div>
