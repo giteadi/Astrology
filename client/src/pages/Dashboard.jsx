@@ -33,27 +33,55 @@ const Dashboard = () => {
     navigate("/invoice", { state: { orderDetails } });
   };
 
+  // Function to go to the Home page
+  const goToHomePage = () => {
+    navigate("/"); // Navigate to the Home page
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 flex flex-col items-center text-white">
       {/* Dashboard Title */}
       <h1 className="text-3xl font-bold mt-8">DASHBOARD</h1>
 
+     
       {/* Buttons Section */}
-      <div className="mt-4 flex gap-4">
-        <button
-          onClick={() => setActiveView("orders")}
-          className={`px-4 py-2 rounded-md text-sm ${activeView === "orders" ? "bg-purple-500" : "bg-purple-600"} hover:bg-purple-500`}
-        >
-          Your Orders
-        </button>
-        <button
-          onClick={() => setActiveView("accountDetails")}
-          className={`px-4 py-2 rounded-md text-sm ${activeView === "accountDetails" ? "bg-purple-500" : "bg-purple-600"} hover:bg-purple-500`}
-        >
-          Account Details
-        </button>
-      </div>
+<div className="mt-4 flex gap-4 justify-center flex-wrap">
+  {/* View Invoice Button */}
+  <button
+    onClick={goToInvoicePage}
+    className="px-4 py-2 bg-purple-600 rounded-md hover:bg-purple-500"
+  >
+    View Invoice
+  </button>
 
+  {/* Go to Home Button */}
+  {/* <button
+    onClick={goToHomePage}
+    className="px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500"
+  >
+    Go to Home
+  </button> */}
+
+  {/* Your Orders Button */}
+  <button
+    onClick={() => setActiveView("orders")}
+    className={`px-4 py-2 rounded-md text-sm ${
+      activeView === "orders" ? "bg-purple-500" : "bg-purple-600"
+    } hover:bg-purple-500`}
+  >
+    Your Orders
+  </button>
+
+  {/* Account Details Button */}
+  <button
+    onClick={() => setActiveView("accountDetails")}
+    className={`px-4 py-2 rounded-md text-sm ${
+      activeView === "accountDetails" ? "bg-purple-500" : "bg-purple-600"
+    } hover:bg-purple-500`}
+  >
+    Account Details
+  </button>
+</div>
       {/* Content Section */}
       <div className="mt-8 w-11/12 md:w-3/4">
         {/* Orders View */}
@@ -82,12 +110,6 @@ const Dashboard = () => {
                 ))}
               </tbody>
             </table>
-            <button
-              onClick={goToInvoicePage}
-              className="mt-8 px-4 py-2 bg-purple-600 rounded-md hover:bg-purple-500"
-            >
-              View Invoice
-            </button>
           </>
         )}
 

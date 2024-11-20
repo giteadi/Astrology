@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
-import { FiMenu, FiUser, FiShoppingCart } from "react-icons/fi";
+import { FiMenu, FiUser, FiShoppingCart, FiHome } from "react-icons/fi";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import mercuryImage from "../assets/mercury.webp";
 
@@ -152,7 +152,10 @@ const Nav = () => {
       </Logo>
       <Stars>{stars}</Stars>
       <IconButtons>
-        {/* Add Link component around the cart icon to navigate to /cart */}
+        {/* Add Link component for Home Page */}
+        <Link to="/">
+          <FiHome style={{ fontSize: "1.5rem", cursor: "pointer" }} />
+        </Link>
         <Link to="/dashboard">
           <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
@@ -166,8 +169,8 @@ const Nav = () => {
           <FiUser style={{ fontSize: "1.5rem" }} />
           {isDropdownOpen && (
             <Dropdown>
-              <Link to="/login">Login</Link> {/* Use Link for routing */}
-              <Link to="/register">Register</Link> {/* Use Link for routing */}
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
             </Dropdown>
           )}
         </div>

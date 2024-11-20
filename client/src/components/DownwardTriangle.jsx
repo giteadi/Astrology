@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 // Downward Triangle Box styled component (pointing downwards)
@@ -46,6 +47,30 @@ const DescriptionContainer = styled.div`
 `;
 
 const TriangularCarousel = () => {
+  const navigate = useNavigate(); // Initialize navigate function
+
+  // Handle Book Now button click
+  const handleBookNow = (service) => {
+    const newOrder = {
+      orderNo: `#${Math.floor(Math.random() * 10000)}`,  // Random Order No
+      date: new Date().toLocaleDateString(),
+      payment: "Pending",
+      fulfillment: "Processing",
+      total: "₹2,000", // Set the total cost here
+      items: [
+        {
+          name: `Service ${service}`,
+          description: `Description for Service ${service}`,
+          price: "₹2,000",
+          quantity: 1,
+        },
+      ],
+    };
+
+    // Navigate to Dashboard and pass the order data as state
+    navigate("/dashboard", { state: { newOrder } });
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
       {[1, 2, 3].map((item, index) => (
@@ -60,7 +85,7 @@ const TriangularCarousel = () => {
               ? "Astrology reveals the alignment of celestial bodies."
               : "Tarot reading guides you through life's challenges."}
           </DescriptionContainer>
-          <Button>BOOK NOW</Button>
+          <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
         </div>
       ))}
     </div>
