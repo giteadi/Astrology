@@ -50,7 +50,7 @@ const TriangularCarousel = () => {
 
   const handleBookNow = (item) => {
     const newOrder = {
-      orderNo: `#${Math.floor(10000 + Math.random() * 90000)}`, // Random Order Number
+      orderNo: `#${Math.floor(10000 + Math.random() * 90000)}`, 
       date: new Date().toLocaleDateString(),
       payment: "Pending",
       fulfillment: "Processing",
@@ -72,7 +72,7 @@ const TriangularCarousel = () => {
   const services = [
     { title: "Numerology", description: "Insights into your life's path." },
     { title: "Astrology", description: "Celestial alignments insights." },
-    { title: "Tarot", description: "Guidance through life's challenges." },
+    { title: "Vastu", description: "Guidance through life's challenges." },
   ];
 
   return (

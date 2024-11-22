@@ -5,12 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
+import { Provider } from 'react-redux';
+import { store } from './Redux/store';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
+
+   <Provider store={store}>
+    <BrowserRouter>
   <Toaster/>
    <App />
   </BrowserRouter>
+   </Provider>
+
 );
 
 // If you want to start measuring performance in your app, pass a function
