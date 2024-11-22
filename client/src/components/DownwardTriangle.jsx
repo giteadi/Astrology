@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../Redux/CartSlice"; // Correct import for addToCart action
 
 // Downward Triangle Box styled component (pointing downwards)
 const DownwardTriangle = styled.div`
@@ -48,27 +50,21 @@ const DescriptionContainer = styled.div`
 
 const TriangularCarousel = () => {
   const navigate = useNavigate(); // Initialize navigate function
+  const dispatch = useDispatch(); // Access dispatch from Redux
 
   // Handle Book Now button click
   const handleBookNow = (service) => {
-    const newOrder = {
-      orderNo: `#${Math.floor(Math.random() * 10000)}`,  // Random Order No
-      date: new Date().toLocaleDateString(),
-      payment: "Pending",
-      fulfillment: "Processing",
-      total: "₹2,000", // Set the total cost here
-      items: [
-        {
-          name: `Service ${service}`,
-          description: `Description for Service ${service}`,
-          price: "₹2,000",
-          quantity: 1,
-        },
-      ],
-    };
+    // Dispatch action to add service to cart
+    dispatch(addToCart({
+      name: `Service ${service}`,
+      description: `Description for Service ${service}`,
+      price: "₹2,000",  // Example price
+      quantity: 1,
+      imageUrl: "https://via.placeholder.com/150",  // Example image URL
+    }));
 
-    // Navigate to Dashboard and pass the order data as state
-    navigate("/dashboard", { state: { newOrder } });
+    // Optionally, navigate to a different page
+    navigate("/cart"); // Redirect to the cart page
   };
 
   return (

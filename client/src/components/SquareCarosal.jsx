@@ -1,29 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../Redux/CartSlice"; 
 
 const SquareCarousel = () => {
   const navigate = useNavigate(); // Initialize navigate
 
-  // Handle Book Now button click
-  const handleBookNow = (service) => {
-    const newOrder = {
-      orderNo: `#${Math.floor(Math.random() * 10000)}`,  // Random Order No
-      date: new Date().toLocaleDateString(),
-      payment: "Pending",
-      fulfillment: "Processing",
-      total: "₹2,000", // Set the total cost here
-      items: [
-        {
-          name: `Service ${service}`,
-          description: `Description for Service ${service}`,
-          price: "₹2,000",
-          quantity: 1,
-        },
-      ],
-    };
+  const dispatch = useDispatch(); // Access dispatch from Redux
 
-    // Pass new order data to the Dashboard via state
-    navigate("/dashboard", { state: { newOrder } });
+  const handleBookNow = (item) => {
+    // Dispatch an action to add the item to the cart
+    dispatch(addToCart({
+      name: item.title,
+      description: item.description,
+      price: "₹1000",  // Example price
+      quantity: 1,
+      imageUrl: "https://via.placeholder.com/150",  // Example image URL
+    }));
   };
 
   return (

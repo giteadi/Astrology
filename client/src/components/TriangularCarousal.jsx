@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../Redux/CartSlice"; // Import the addToCart action
 
 // Styled components remain the same
 const TriangleCard = styled.div`
@@ -46,27 +47,17 @@ const DescriptionContainer = styled.div`
 `;
 
 const TriangularCarousel = () => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch(); // Access dispatch from Redux
 
   const handleBookNow = (item) => {
-    const newOrder = {
-      orderNo: `#${Math.floor(10000 + Math.random() * 90000)}`, 
-      date: new Date().toLocaleDateString(),
-      payment: "Pending",
-      fulfillment: "Processing",
-      total: "₹1000", // Example price
-      items: [
-        {
-          name: item.title,
-          description: item.description,
-          price: "₹1000",
-          quantity: 1,
-        },
-      ],
-    };
-
-    // Navigate to Dashboard with newOrder
-    navigate("/dashboard", { state: { newOrder } });
+    // Dispatch an action to add the item to the cart
+    dispatch(addToCart({
+      name: item.title,
+      description: item.description,
+      price: "₹1000",  // Example price
+      quantity: 1,
+      imageUrl: "https://via.placeholder.com/150",  // Example image URL
+    }));
   };
 
   const services = [

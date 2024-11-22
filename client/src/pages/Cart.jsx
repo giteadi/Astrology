@@ -1,92 +1,60 @@
-const Cart = ({ cartItems = [], setCartItems }) => {
-  const updateQuantity = (id, newQuantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
+import { useSelector, useDispatch } from 'react-redux';
+import { removeFromCart } from '../Redux/CartSlice';
+
+const Cart = () => {
+  const { cartItems, totalAmount } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+
+  const handleRemove = (item) => {
+    dispatch(removeFromCart(item));
   };
 
-  const calculateTotal = (price, quantity) => price * quantity;
-
-  const calculateCartTotal = () =>
-    cartItems.reduce(
-      (total, item) => total + calculateTotal(item.price, item.quantity),
-      0
-    );
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 flex justify-center items-start py-10">
-      <div className="w-full max-w-6xl flex bg-white/10 rounded-xl backdrop-blur-md p-4">
-        <div className="flex flex-col w-3/4 space-y-4 overflow-y-auto max-h-[500px]">
-          {cartItems?.length > 0 ? (
-            cartItems.map((item) => (
+    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 py-10 px-4">
+      <div className="max-w-5xl mx-auto bg-white/10 rounded-lg p-6 shadow-lg backdrop-blur-md">
+        <h2 className="text-3xl font-bold text-white mb-6 text-center">Your Cart</h2>
+        {cartItems.length === 0 ? (
+          <p className="text-center text-gray-300 text-lg">Your cart is empty</p>
+        ) : (
+          <div className="space-y-6">
+            {cartItems.map((item, index) => (
               <div
-                key={item.id}
-                className="flex items-center justify-between bg-white/20 rounded-lg p-4 shadow-lg"
+                key={index}
+                className="flex justify-between items-center bg-white/20 rounded-lg p-4 shadow-lg"
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={item.imageUrl}
+                    src={item.image || 'https://via.placeholder.com/100'}
                     alt={item.name}
-                    className="w-16 h-16 object-cover rounded-lg"
+                    className="w-16 h-16 object-cover rounded-md"
                   />
                   <div>
-                    <h3 className="text-lg font-semibold text-white">
-                      {item.name}
-                    </h3>
+                    <h3 className="text-lg font-semibold text-white">{item.name}</h3>
                     <p className="text-sm text-gray-300">{item.description}</p>
+                    <p className="text-white font-semibold">₹{item.price}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-6">
-                  <p className="text-white text-lg">₹{item.price}</p>
-                  <div className="flex items-center gap-4">
-                    <button
-                      className="px-2 py-1 bg-purple-600 rounded-full hover:bg-purple-500 text-white"
-                      onClick={() =>
-                        updateQuantity(item.id, item.quantity - 1)
-                      }
-                      disabled={item.quantity <= 1}
-                    >
-                      -
-                    </button>
-                    <p className="mx-2 text-white">{item.quantity}</p>
-                    <button
-                      className="px-2 py-1 bg-purple-600 rounded-full hover:bg-purple-500 text-white"
-                      onClick={() =>
-                        updateQuantity(item.id, item.quantity + 1)
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
-                  <p className="text-white text-lg">
-                    ₹{calculateTotal(item.price, item.quantity)}
-                  </p>
+                <div className="flex items-center gap-4">
+                  <p className="text-white">Quantity: {item.quantity}</p>
+                  <button
+                    onClick={() => handleRemove(item)}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-white">Your cart is empty.</p>
-          )}
-        </div>
-        <div className="w-1/4 ml-4 bg-purple-800 text-white rounded-xl p-6 flex flex-col items-center justify-between backdrop-blur-md">
-          <h3 className="text-2xl font-bold mb-4">Cart Summary</h3>
-          <div className="space-y-4 w-full">
-            <div className="flex justify-between">
-              <p>Subtotal</p>
-              <p>₹{calculateCartTotal()}</p>
-            </div>
-            <div className="flex justify-between">
-              <p>Shipping</p>
-              <p>₹50</p>
-            </div>
-            <div className="flex justify-between font-bold text-lg">
-              <p>Total</p>
-              <p>₹{calculateCartTotal() + 50}</p>
-            </div>
+            ))}
           </div>
-          <button className="mt-6 w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">
+        )}
+        <div className="mt-6 bg-purple-800 p-4 rounded-lg shadow-lg">
+          <h3 className="text-lg font-bold text-white flex justify-between">
+            Total: <span>₹{totalAmount}</span>
+          </h3>
+          <button
+            className="mt-4 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-lg"
+            disabled={cartItems.length === 0}
+          >
             Proceed to Checkout
           </button>
         </div>

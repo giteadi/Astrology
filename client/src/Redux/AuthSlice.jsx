@@ -8,7 +8,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post('http://localhost:4000/api/v1/user/register', userData);
-      return response.data;
+      return response.data;  // Expecting user data with userId
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: 'Registration failed!' });
     }
@@ -22,7 +22,7 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post('http://localhost:4000/api/v1/user/login', userData);
       console.log('API Response:', response.data); // Debugging the API response
-      return response.data; // Expecting user data with name and role
+      return response.data; // Expecting user data with userId
     } catch (error) {
       console.error('Login Error:', error.response?.data); // Debugging the error
       return rejectWithValue(error.response?.data || { message: 'Login failed!' });
@@ -47,12 +47,14 @@ const authSlice = createSlice({
     error: null,
     user: null,
     role: null, // Track user role
+    userId: null, // Store userId
     isAuthenticated: false,
   },
   reducers: {
     clearUserData: (state) => {
       state.user = null;
       state.role = null;
+      state.userId = null; // Clear userId on logout
       state.isAuthenticated = false;
       state.error = null;
     },
@@ -67,6 +69,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload?.user || {};
+        state.userId = action.payload?.user?.userId || null; // Store userId from response
         state.isAuthenticated = true;
         toast.success('Registration successful! Welcome!');
       })
@@ -85,6 +88,7 @@ const authSlice = createSlice({
         console.log('Action Payload:', action.payload); // Debugging the payload
         state.loading = false;
         state.user = action.payload?.user || {}; // Ensure user data is always an object
+        state.userId = action.payload?.user?.userId || null; // Store userId from response
         state.role = action.payload?.user?.role || null; // Default role
         state.isAuthenticated = true;
 
