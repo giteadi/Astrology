@@ -2,8 +2,8 @@ const express = require("express");
 const { db } = require("../config/db");
 const { sendOtpEmail } = require("../middleware/mail");
 const bcrypt = require("bcrypt");
-const otpStore = new Map();  
-const tempUserStore = new Map(); 
+const otpStore = new Map();
+const tempUserStore = new Map();
 
 // Function to send OTP
 const sendOtp = async (email) => {
@@ -75,8 +75,6 @@ const register = async (req, res) => {
     }
 };
 
-
-
 // Helper function to save user to the database
 const saveUser = async (name, age, birthdate, email, phone, password, role, res) => {
     const hashedPassword = await bcrypt.hash(password, 10); // Hash the password for security
@@ -97,14 +95,21 @@ const saveUser = async (name, age, birthdate, email, phone, password, role, res)
         );
     });
 
+    // After inserting, you can fetch the userId from the database if necessary
+    const userIdQuery = "SELECT user_id FROM userdata WHERE email = ?";
+    const user = await new Promise((resolve, reject) => {
+        db.query(userIdQuery, [email.trim()], (err, result) => {
+            if (err) return reject(err);
+            resolve(result[0]?.user_id);  // Assuming `user_id` is the field in your database
+        });
+    });
+
     res.status(201).json({
         success: true,
         message: "User registered successfully",
-        user: { name, email, phone, role, birthdate, age },
+        user: { name, email, phone, role, birthdate, age, userId: user ? user.user_id : null }, // Include userId in response
     });
 };
-
-
 
 // OTP Verification Endpoint
 const verifyOtp = async (req, res) => {
@@ -175,7 +180,12 @@ const login = async (req, res) => {
             return res.status(200).json({
                 success: true,
                 message: "Login successful",
-                user: { name: user.name, email: user.email, role: user.role }, // Include role in response
+                user: { 
+                    name: user.name, 
+                    email: user.email, 
+                    role: user.role,
+                    userId: user.user_id  // Include userId in the response
+                },
             });
         } else {
             return res.status(401).json({ error: "Invalid credentials." });
@@ -189,6 +199,5 @@ const login = async (req, res) => {
         });
     }
 };
-
 
 module.exports = { register, verifyOtp, login };
