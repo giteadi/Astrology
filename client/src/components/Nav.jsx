@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { FiMenu, FiUser, FiShoppingCart, FiHome } from "react-icons/fi";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useSelector, useDispatch } from "react-redux"; // Redux hooks
+import { logoutUser } from "../Redux/AuthSlice"; // Import logout action
 import mercuryImage from "../assets/mercury.webp";
 
 // Keyframes for star twinkle
@@ -10,7 +12,7 @@ const twinkle = keyframes`
   50% { opacity: 1; }
 `;
 
-// Styled Navbar
+// Styled Components
 const Navbar = styled.nav`
   background: linear-gradient(90deg, #1c1c3d, #4b0082);
   padding: 2rem 4rem;
@@ -26,7 +28,6 @@ const Navbar = styled.nav`
   }
 `;
 
-// Stars Container
 const Stars = styled.div`
   position: absolute;
   top: 0;
@@ -37,7 +38,6 @@ const Stars = styled.div`
   z-index: 1;
 `;
 
-// Individual Star
 const Star = styled.div`
   position: absolute;
   width: 3px;
@@ -46,12 +46,10 @@ const Star = styled.div`
   border-radius: 50%;
   animation: ${twinkle} 2s infinite;
   opacity: 0.5;
-
   top: ${({ top }) => top}%;
   left: ${({ left }) => left}%;
 `;
 
-// Logo
 const Logo = styled.div`
   display: flex;
   align-items: center;
@@ -64,7 +62,6 @@ const Logo = styled.div`
   }
 `;
 
-// Styled Image
 const Image = styled.img`
   height: 50px;
   width: 50px;
@@ -75,7 +72,6 @@ const Image = styled.img`
   }
 `;
 
-// Hamburger and Profile Container
 const IconButtons = styled.div`
   display: flex;
   align-items: center;
@@ -88,50 +84,30 @@ const IconButtons = styled.div`
   }
 `;
 
-// Dropdown Menu for Login/Register
-const Dropdown = styled.div`
-  position: absolute;
-  top: 120%;
-  right: 0;
-  background: rgba(0, 0, 0, 0.9);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  padding: 0.5rem 0;
-  z-index: 5;
-  width: 150px;
+const UserName = styled.span`
+  font-size: 1rem;
+  font-weight: bold;
+  margin-right: 15px;
 
-  a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 0.5rem 1rem;
+  @media (max-width: 768px) {
     font-size: 0.9rem;
-
-    &:hover {
-      background: #4b0082;
-      color: #fff;
-    }
+    margin-right: 10px;
   }
 `;
 
+// Navbar Component
 const Nav = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleProfileClick = (e) => {
-    e.stopPropagation(); // Prevent closing the dropdown when clicking on the profile icon
-    setDropdownOpen(!isDropdownOpen);
+  // Get user and authentication state from Redux
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/"); // Navigate to home page on logout
   };
-
-  const handleClickOutside = () => {
-    setDropdownOpen(false); // Close the dropdown when clicking outside
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
 
   const stars = Array.from({ length: 50 }).map((_, index) => (
     <Star
@@ -144,6 +120,12 @@ const Nav = () => {
     />
   ));
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/"); // Navigate to homepage after login or registration
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <Navbar>
       <Logo>
@@ -152,28 +134,79 @@ const Nav = () => {
       </Logo>
       <Stars>{stars}</Stars>
       <IconButtons>
-        {/* Add Link component for Home Page */}
         <Link to="/">
           <FiHome style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
         <Link to="/cart">
           <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
-        <div
-          onClick={handleProfileClick}
-          style={{
-            position: "relative",
-            cursor: "pointer",
-          }}
-        >
-          <FiUser style={{ fontSize: "1.5rem" }} />
-          {isDropdownOpen && (
-            <Dropdown>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
-            </Dropdown>
-          )}
-        </div>
+
+        {isAuthenticated ? (
+          <>
+            {/* Show user's name */}
+            <UserName>{`Hi, ${user?.name || "User"}`}</UserName>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: "none",
+                border: "1px solid white",
+                color: "white",
+                padding: "5px 10px",
+                cursor: "pointer",
+                borderRadius: "4px",
+              }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <div
+            onClick={() => setDropdownOpen(!isDropdownOpen)}
+            style={{ position: "relative", cursor: "pointer" }}
+          >
+            <FiUser style={{ fontSize: "1.5rem" }} />
+            {isDropdownOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "120%",
+                  right: "0",
+                  background: "rgba(0, 0, 0, 0.9)",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                  padding: "0.5rem 0",
+                  zIndex: 5,
+                  width: "150px",
+                }}
+              >
+                <Link
+                  to="/login"
+                  style={{
+                    color: "white",
+                    textDecoration: "none",
+                    display: "block",
+                    padding: "0.5rem 1rem",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  style={{
+                    color: "white",
+                    textDecoration: "none",
+                    display: "block",
+                    padding: "0.5rem 1rem",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </IconButtons>
     </Navbar>
   );
