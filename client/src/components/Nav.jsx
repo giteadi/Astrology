@@ -120,12 +120,6 @@ const Nav = () => {
     />
   ));
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/"); // Navigate to homepage after login or registration
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
     <Navbar>
       <Logo>
@@ -137,9 +131,13 @@ const Nav = () => {
         <Link to="/">
           <FiHome style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
-        <Link to="/cart">
-          <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
-        </Link>
+        
+        {/* Conditionally render the cart icon only if the user is authenticated */}
+        {isAuthenticated && (
+          <Link to="/cart">
+            <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
+          </Link>
+        )}
 
         {isAuthenticated ? (
           <>
