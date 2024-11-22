@@ -1,7 +1,7 @@
 const express = require("express");
 const { db } = require("../config/db");
 const { sendOtpEmail } = require("../middleware/mail");
-
+const bcrypt = require("bcrypt");
 const otpStore = new Map();  
 const tempUserStore = new Map(); 
 
@@ -22,28 +22,28 @@ const sendOtp = async (email) => {
 // Registration Endpoint
 const register = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword, role = "user" } = req.body;
+        const { name, age, birthdate, email, phone, password, confirmPassword, role = "user" } = req.body;
 
-        // Check for required fields
-        if (!name || !email || !password || !confirmPassword) {
+        // Validate inputs
+        if (!name || !age || !birthdate || !email || !phone || !password || !confirmPassword) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
             return res.status(400).json({ error: "Invalid email format" });
         }
 
-        // Check if passwords match
+        if (!/^[0-9]{10,15}$/.test(phone.trim())) {
+            return res.status(400).json({ error: "Invalid phone number" });
+        }
+
         if (password !== confirmPassword) {
             return res.status(400).json({ error: "Passwords do not match" });
         }
 
-        // Check if the user already exists
-        const existingUserQuery = "SELECT * FROM userdata WHERE email = ?";
+        // Check if user exists
         const existingUser = await new Promise((resolve, reject) => {
-            db.query(existingUserQuery, [email], (err, result) => {
+            db.query("SELECT * FROM userdata WHERE email = ?", [email.trim()], (err, result) => {
                 if (err) return reject(err);
                 resolve(result);
             });
@@ -53,18 +53,18 @@ const register = async (req, res) => {
             return res.status(400).json({ error: "User already exists." });
         }
 
-        // Handle admin role with OTP logic
+        // OTP logic for admin users
         if (role === "admin") {
-            const { otpExpiryTime } = await sendOtp(email);
-            tempUserStore.set(email, { name, password, role });
+            const { otpExpiryTime } = await sendOtp(email.trim());
+            tempUserStore.set(email.trim(), { name, age, birthdate, phone, password, role });
             return res.status(200).json({
                 message: "OTP sent to your email. Please verify to complete registration.",
                 otpExpiryTime,
             });
         }
 
-        // Save user for non-admin roles
-        await saveUser(name, email, password, role, res);
+        // Save regular users
+        await saveUser(name, age, birthdate, email, phone, password, role, res);
     } catch (error) {
         console.error("Error in registration:", error.message);
         res.status(500).json({
@@ -75,22 +75,36 @@ const register = async (req, res) => {
     }
 };
 
+
+
 // Helper function to save user to the database
-const saveUser = async (name, email, password, role, res) => {
-    const insertUserQuery = "INSERT INTO userdata (username, email, password, role) VALUES (?, ?, ?, ?)";
+const saveUser = async (name, age, birthdate, email, phone, password, role, res) => {
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password for security
+
+    const insertUserQuery = `
+        INSERT INTO userdata (name, email, phone_number, age, birthdate, password, role) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
     await new Promise((resolve, reject) => {
-        db.query(insertUserQuery, [name, email, password, role], (err) => {
-            if (err) return reject(err);
-            resolve();
-        });
+        db.query(
+            insertUserQuery,
+            [name.trim(), email.trim(), phone.trim(), age, birthdate, hashedPassword, role],
+            (err) => {
+                if (err) return reject(err);
+                resolve();
+            }
+        );
     });
 
     res.status(201).json({
         success: true,
         message: "User registered successfully",
-        user: { name, email, role }, // Include role in response
+        user: { name, email, phone, role, birthdate, age },
     });
 };
+
+
 
 // OTP Verification Endpoint
 const verifyOtp = async (req, res) => {
@@ -154,11 +168,14 @@ const login = async (req, res) => {
             return res.status(400).json({ error: "User does not exist." });
         }
 
-        if (trimmedPassword === user.password.trim()) {
+        // Compare hashed password with the input password
+        const isPasswordValid = await bcrypt.compare(trimmedPassword, user.password);
+
+        if (isPasswordValid) {
             return res.status(200).json({
                 success: true,
                 message: "Login successful",
-                user: { name: user.username, email: user.email, role: user.role }, // Include role in response
+                user: { name: user.name, email: user.email, role: user.role }, // Include role in response
             });
         } else {
             return res.status(401).json({ error: "Invalid credentials." });
@@ -172,5 +189,6 @@ const login = async (req, res) => {
         });
     }
 };
+
 
 module.exports = { register, verifyOtp, login };
