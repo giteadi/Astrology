@@ -59,7 +59,7 @@ const TriangularCarousel = () => {
   const handleBookNow = async (item) => {
     // Ensure price is a string before calling .replace()
     const price = String(item.price); // Convert the price to a string
-  
+
     const cartItem = {
       user_id: user.userId, // Get the userId from Redux store
       item_id: item.id, // Assuming item has an 'id' field
@@ -68,17 +68,17 @@ const TriangularCarousel = () => {
       price: price, // Ensure price is a string
       quantity: 1, // Default to 1 (you can adjust based on your needs)
     };
-  
-    // Dispatch an action to add the item to the cart (if you want to manage cart locally)
-    dispatch(addToCart(cartItem));
-  
+
     // Now send the item data to the backend via API
     try {
       const response = await axios.post('http://localhost:4000/api/cart/add', cartItem);
-  
+
       // Optionally handle response data (e.g., show a success message)
       if (response.status === 200) {
         console.log("Item successfully added to the database!");
+
+        // Dispatch the action to add the item to the Redux store only after it has been successfully added to the DB
+        dispatch(addToCart(cartItem));
       }
     } catch (error) {
       console.error("Failed to add item to the cart:", error);
