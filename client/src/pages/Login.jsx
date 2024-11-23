@@ -1,11 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../Redux/AuthSlice'; // Adjust the path to your AuthSlice
 import { FaFacebook, FaInstagram, FaGoogle } from 'react-icons/fa';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook for redirection
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const navigate = useNavigate(); // Used for navigation after successful login
+
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth); // Added isAuthenticated
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,16 +16,19 @@ const LoginForm = () => {
   const isEmailValid = (email) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  // Redirect user if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/'); 
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!isEmailValid(email)) {
       alert('Please enter a valid email.');
       return;
     }
-    // if (password.length < 6) {
-    //   alert('Password must be at least 6 characters long.');
-    //   return;
-    // }
     dispatch(loginUser({ email, password }));
   };
 

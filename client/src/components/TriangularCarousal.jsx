@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux"; // Access Redux store for user info
 import { addToCart } from "../Redux/CartSlice"; // Import the addToCart action
+import axios from "axios"; // Import Axios for API requests
 
 // Styled components remain the same
 const TriangleCard = styled.div`
@@ -48,28 +49,58 @@ const DescriptionContainer = styled.div`
 
 const TriangularCarousel = () => {
   const dispatch = useDispatch(); // Access dispatch from Redux
+  const { user } = useSelector((state) => state.auth); // Get user data from Redux store
 
-  const handleBookNow = (item) => {
-    // Dispatch an action to add the item to the cart
-    dispatch(addToCart({
-      name: item.title,
-      description: item.description,
-      price: "₹1000",  // Example price
-      quantity: 1,
-      imageUrl: "https://via.placeholder.com/150",  // Example image URL
-    }));
+  // Check if the user is authenticated (i.e., user exists)
+  if (!user) {
+    return <p>Please log in to add items to the cart.</p>; // Message if user is not logged in
+  }
+
+  const handleBookNow = async (item) => {
+    // Ensure price is a string before calling .replace()
+    const price = String(item.price); // Convert the price to a string
+  
+    const cartItem = {
+      user_id: user.userId, // Get the userId from Redux store
+      item_id: item.id, // Assuming item has an 'id' field
+      title: item.title, // Add title to cart item
+      description: item.description, // Add description to cart item
+      price: price, // Ensure price is a string
+      quantity: 1, // Default to 1 (you can adjust based on your needs)
+    };
+  
+    // Dispatch an action to add the item to the cart (if you want to manage cart locally)
+    dispatch(addToCart(cartItem));
+  
+    // Now send the item data to the backend via API
+    try {
+      const response = await axios.post('http://localhost:4000/api/cart/add', cartItem);
+  
+      // Optionally handle response data (e.g., show a success message)
+      if (response.status === 200) {
+        console.log("Item successfully added to the database!");
+      }
+    } catch (error) {
+      console.error("Failed to add item to the cart:", error);
+      if (error.response) {
+        alert(error.response.data.message || "Failed to add item to the cart");
+      } else {
+        alert("Network error, please try again later.");
+      }
+    }
   };
 
+  // Sample service data, assuming each item has an 'id', 'title', 'price', and 'description'
   const services = [
-    { title: "Numerology", description: "Insights into your life's path." },
-    { title: "Astrology", description: "Celestial alignments insights." },
-    { title: "Vastu", description: "Guidance through life's challenges." },
+    { id: 102, title: "Numerology", description: "Insights into your life's path.", price: 299.99 },
+    { id: 103, title: "Astrology", description: "Celestial alignments insights.", price: 399.99 },
+    { id: 104, title: "Vastu", description: "Guidance through life's challenges.", price: 499.99 },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
-      {services.map((item, index) => (
-        <div key={index} className="flex flex-col items-center">
+      {services.map((item) => (
+        <div key={item.id} className="flex flex-col items-center">
           <TriangleCard>
             <div>{item.title.toUpperCase()}</div>
           </TriangleCard>
