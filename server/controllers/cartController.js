@@ -1,15 +1,14 @@
 const express = require("express");
 const { db } = require("../config/db");
 
-
 // Create a new cart (if not exists) and add cart item
 const createCartItem = async (req, res) => {
     try {
-        const { user_id, item_id, price, quantity } = req.body;
+        const { user_id, item_id, price, quantity, description, title } = req.body;
 
         // Validate inputs
-        if (!user_id || !item_id || !price || !quantity) {
-            return res.status(400).json({ error: "user_id, item_id, price, and quantity are required" });
+        if (!user_id || !item_id || !price || !quantity || !description || !title) {
+            return res.status(400).json({ error: "user_id, item_id, price, quantity, description, and title are required" });
         }
 
         // First, check if the user already has a cart
@@ -38,8 +37,8 @@ const createCartItem = async (req, res) => {
 
             // Helper function to add the cart item
             function addCartItem(cart_id) {
-                const query = "INSERT INTO cart_item (cart_id, item_id, price, quantity) VALUES (?, ?, ?, ?)";
-                db.query(query, [cart_id, item_id, price, quantity], (err, result) => {
+                const query = "INSERT INTO cart_item (cart_id, item_id, price, quantity, description, title) VALUES (?, ?, ?, ?, ?, ?)";
+                db.query(query, [cart_id, item_id, price, quantity, description, title], (err, result) => {
                     if (err) {
                         return res.status(500).json({ error: err.message });
                     }
