@@ -66,18 +66,20 @@ const Cart = () => {
 
   return (
     <div className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] min-h-screen p-8 text-white">
-      <div className="max-w-6xl mx-auto bg-opacity-25 bg-white p-6 rounded-xl shadow-lg backdrop-blur-lg">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold my-6 text-center text-gray-100">
+      <div className="max-w-6xl mx-auto bg-opacity-10 bg-white p-6 rounded-xl shadow-lg backdrop-blur-lg focus-ring-white border border-white">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold my-6 text-center text-white opacity-80 transition-opacity duration-500">
           Your Cart
         </h2>
         {cartItems.length === 0 ? (
-          <p className="text-center text-gray-100 text-lg">Your cart is empty</p>
+          <p className="text-center text-white text-lg opacity-70 transition-opacity duration-500">
+            Your cart is empty
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-around">
             {cartItems.map((item) => (
               <div
                 key={item.cart_item_id || item.id}
-                className="bg-opacity-25 bg-white p-4 rounded-lg mb-4 backdrop-blur-sm flex flex-col items-center"
+                className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] p-4 rounded-lg mb-4 backdrop-blur-sm flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity duration-500 border border-white"
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -86,14 +88,14 @@ const Cart = () => {
                     className="w-16 h-16 object-cover rounded-md"
                   />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{item.title || 'Item Name'}</h3>
-                    <p className="text-sm text-gray-700">{item.description || 'No description available'}</p>
+                    <h3 className="text-lg font-semibold text-white">{item.title || 'Item Name'}</h3>
+                    <p className="text-sm text-gray-300">{item.description || 'No description available'}</p>
                   </div>
                 </div>
                 <div className="flex justify-around items-center gap-4 mt-4 w-full">
                   <div className="flex flex-col items-center">
-                    <p className="text-lg font-semibold text-gray-900">₹{item.price}</p>
-                    <p className="text-gray-700">Qty: {item.quantity}</p>
+                    <p className="text-lg font-semibold text-gray-300">₹{item.price}</p>
+                    <p className="text-gray-500">Qty: {item.quantity}</p>
                   </div>
                   <button
                     onClick={() => handleRemove(item.cart_item_id)} // Use cart_item_id for deletion
@@ -106,8 +108,8 @@ const Cart = () => {
             ))}
           </div>
         )}
-        <div className="mt-6 p-4 rounded-lg shadow-lg bg-gray-700">
-          <h3 className="text-lg font-bold flex justify-between text-gray-300">
+        <div className="mt-6 p-4 rounded-lg shadow-lg bg-gray-700 opacity-80 hover:opacity-100 transition-opacity duration-500">
+          <h3 className="text-lg font-bold flex justify-between text-white">
             Total: <span>₹{totalAmount}</span>
           </h3>
           <button
