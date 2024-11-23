@@ -65,13 +65,13 @@ const Cart = () => {
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-100 text-lg">Your cart is empty</p>
         ) : (
-          <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-around">
             {cartItems.map((item) => (
               <div
                 key={item.cart_item_id || item.id}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center bg-opacity-25 bg-white p-4 rounded-lg mb-4 backdrop-blur-sm"
+                className="bg-opacity-25 bg-white p-4 rounded-lg mb-4 backdrop-blur-sm flex flex-col items-center"
               >
-                <div className="flex items-center gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
+                <div className="flex items-center gap-4">
                   <img
                     src={item.image || 'https://via.placeholder.com/100'}
                     alt={item.title || 'Product Image'}
@@ -82,8 +82,8 @@ const Cart = () => {
                     <p className="text-sm text-gray-700">{item.description || 'No description available'}</p>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
-                  <div>
+                <div className="flex justify-around items-center gap-4 mt-4 w-full">
+                  <div className="flex flex-col items-center">
                     <p className="text-lg font-semibold text-gray-900">₹{item.price}</p>
                     <p className="text-gray-700">Qty: {item.quantity}</p>
                   </div>
