@@ -29,6 +29,12 @@ const Cart = () => {
     fetchCartItems();
   }, [dispatch, user]);
 
+  // Function to recalculate the total amount
+  const calculateTotal = () => {
+    const newTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    dispatch(setTotalAmount(newTotal)); // Update the total amount in Redux store
+  };
+
   // Handle remove item from cart
   const handleRemove = async (cart_item_id) => {
     if (!cart_item_id) {
@@ -45,16 +51,18 @@ const Cart = () => {
         // Dispatch Redux action to remove item from state
         dispatch(removeFromCart(cart_item_id));
 
-        // Update total amount in Redux after removal
-        const updatedTotal = cartItems
-          .filter((item) => item.cart_item_id !== cart_item_id)
-          .reduce((acc, item) => acc + item.price * item.quantity, 0);
-        dispatch(setTotalAmount(updatedTotal));
+        // Recalculate total after removal
+        calculateTotal();
       }
     } catch (error) {
       console.error("Error removing item from cart:", error);
     }
   };
+
+  // Recalculate the total whenever cartItems change
+  useEffect(() => {
+    calculateTotal();
+  }, [cartItems]);
 
   return (
     <div className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] min-h-screen p-8 text-white">
