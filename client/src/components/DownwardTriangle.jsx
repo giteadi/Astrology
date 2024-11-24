@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux"; // Access Redux store
-import { addToCart } from "../Redux/CartSlice"; // Redux action
-import axios from "axios"; // API requests
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../Redux/CartSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 const DownwardTriangle = styled.div`
   width: 18rem;
   height: 18rem;
   background: linear-gradient(145deg, #6a0dad, #3a0078);
-  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+  clip-path: polygon(50% 100%, 0% 0%, 100% 0%); /* Keep the downward triangle */
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -47,21 +48,24 @@ const DescriptionContainer = styled.div`
 `;
 
 const TriangularCarousel = () => {
-  const dispatch = useDispatch(); // Redux dispatch
-  const { user } = useSelector((state) => state.auth); // User data from Redux
-
-  if (!user) {
-    return <p>Please log in to add items to the cart.</p>; // Authentication check
-  }
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize navigate for redirection
+  const { user } = useSelector((state) => state.auth); // Get user data from Redux
 
   const handleBookNow = async (item) => {
+    if (!user) {
+      // If the user is not logged in, redirect to the login page
+      navigate("/login"); // Change '/login' to the path of your login page
+      return;
+    }
+
     const cartItem = {
-      user_id: user.userId, // Fetch user ID from Redux store
-      item_id: item.id, // Service ID
-      title: item.title, // Service title
-      description: item.description, // Service description
-      price: String(item.price), // Ensure price is a string
-      quantity: 1, // Default quantity
+      user_id: user.userId,
+      item_id: item.id,
+      title: item.title,
+      description: item.description,
+      price: String(item.price),
+      quantity: 1,
     };
 
     try {
@@ -69,7 +73,7 @@ const TriangularCarousel = () => {
 
       if (response.status === 200) {
         console.log("Item added to the cart successfully!");
-        dispatch(addToCart(cartItem)); // Update Redux store
+        dispatch(addToCart(cartItem));
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -77,10 +81,11 @@ const TriangularCarousel = () => {
     }
   };
 
+  // Service data
   const services = [
-    { id: 1, title: "Numerology", description: "Insights into your life's path.", price: 299.99 },
-    { id: 2, title: "Astrology", description: "Celestial alignments insights.", price: 399.99 },
-    { id: 3, title: "Tarot Reading", description: "Guidance through life's challenges.", price: 499.99 },
+    { id: 102, title: "Numerology", description: "Insights into your life's path.", price: 299.99 },
+    { id: 103, title: "Astrology", description: "Celestial alignments insights.", price: 399.99 },
+    { id: 104, title: "Vastu", description: "Guidance through life's challenges.", price: 499.99 },
   ];
 
   return (

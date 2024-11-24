@@ -1,8 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import Carosal from "./components/Carosal";
-import FAQ from "./components/FAQ";
 import Nav from "./components/Nav";
-import AboutUs from "./pages/AboutUs";
 import Home from "./pages/Home";
 import Astrology from "./pages/Astrology";
 import Footer from "./components/Footer";

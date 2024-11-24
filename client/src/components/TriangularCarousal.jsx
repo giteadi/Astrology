@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux"; // Access Redux store for user info
 import { addToCart } from "../Redux/CartSlice"; // Import the addToCart action
 import axios from "axios"; // Import Axios for API requests
+import { useNavigate } from "react-router-dom"; // For navigation
 
 // Styled components remain the same
 const TriangleCard = styled.div`
@@ -50,13 +51,16 @@ const DescriptionContainer = styled.div`
 const TriangularCarousel = () => {
   const dispatch = useDispatch(); // Access dispatch from Redux
   const { user } = useSelector((state) => state.auth); // Get user data from Redux store
+  const navigate = useNavigate(); // Access navigate function from React Router
 
   // Check if the user is authenticated (i.e., user exists)
-  if (!user) {
-    return <p>Please log in to add items to the cart.</p>; // Message if user is not logged in
-  }
-
   const handleBookNow = async (item) => {
+    if (!user) {
+      // If user is not logged in, redirect to the login page
+      navigate("/login"); // Navigate to the login page
+      return;
+    }
+
     // Ensure price is a string before calling .replace()
     const price = String(item.price); // Convert the price to a string
 
