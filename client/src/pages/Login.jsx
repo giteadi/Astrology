@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../Redux/AuthSlice'; // Adjust the path to your AuthSlice
-import { FaFacebook, FaInstagram, FaGoogle } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook for redirection
+import { Link } from 'react-router-dom'; // Import Link for internal navigation
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -71,12 +71,12 @@ const LoginForm = () => {
               <input type="checkbox" className="mr-2 accent-white" />
               Remember me
             </label>
-            <a
-              href="/forgot-password"
+            <Link
+              to="/forgot-password" // Use Link for internal navigation
               className="text-blue-400 underline hover:text-blue-500 transition"
             >
               Forgot password?
-            </a>
+            </Link>
           </div>
           <button
             type="submit"
@@ -91,28 +91,17 @@ const LoginForm = () => {
           </button>
         </form>
 
-        <div className="text-center mt-6">
-          <p className="text-sm mb-4">Or login using</p>
-          <div className="flex justify-center gap-4">
-            <button
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition"
-              onClick={() => console.log('Google Login')}
+        {/* Link to Register Page using Link component */}
+        <div className="text-center mt-4">
+          <p className="text-sm">
+            Don't have an account?{' '}
+            <Link
+              to="/register" // Use Link for internal navigation
+              className="text-blue-400 underline hover:text-blue-500 transition"
             >
-              <FaGoogle className="text-[#DB4437] text-xl sm:text-2xl" />
-            </button>
-            <button
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition"
-              onClick={() => console.log('Facebook Login')}
-            >
-              <FaFacebook className="text-[#1877F2] text-xl sm:text-2xl" />
-            </button>
-            <button
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition"
-              onClick={() => console.log('Instagram Login')}
-            >
-              <FaInstagram className="text-[#C13584] text-xl sm:text-2xl" />
-            </button>
-          </div>
+              Register here
+            </Link>
+          </p>
         </div>
       </div>
     </div>

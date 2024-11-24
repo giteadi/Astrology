@@ -74,6 +74,8 @@ const TriangularCarousel = () => {
       if (response.status === 200) {
         console.log("Item added to the cart successfully!");
         dispatch(addToCart(cartItem));
+        // Navigate to Numerology page after successful addition to cart
+        navigate("/numerology"); // Redirect to the Numerology service page
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../Redux/AuthSlice"; // Adjust the path
 import { FaFacebook, FaInstagram, FaGoogle } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 const RegistrationForm = () => {
   const dispatch = useDispatch();
@@ -145,6 +146,19 @@ const RegistrationForm = () => {
             {loading ? "Registering..." : "REGISTER NOW"}
           </button>
         </form>
+
+        {/* Link to Login Page */}
+        <div className="text-center mt-4">
+          <p className="text-sm">
+            Already have an account?{" "}
+            <Link
+              to="/login" // Link to the login page
+              className="text-blue-400 underline hover:text-blue-500 transition"
+            >
+              Login here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

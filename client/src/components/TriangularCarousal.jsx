@@ -105,7 +105,9 @@ const TriangularCarousel = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
       {services.map((item) => (
         <div key={item.id} className="flex flex-col items-center">
-          <TriangleCard>
+          <TriangleCard onClick={(()=>{
+            navigate("/astrology")
+          })}>
             <div>{item.title.toUpperCase()}</div>
           </TriangleCard>
           <DescriptionContainer>{item.description}</DescriptionContainer>

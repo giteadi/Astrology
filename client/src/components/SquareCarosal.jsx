@@ -82,6 +82,7 @@ const SquareCarousel = () => {
       if (response.status === 200) {
         console.log("Item added to the cart successfully!");
         dispatch(addToCart(cartItem)); // Update Redux store
+        navigate("/vastu"); // Navigate to Vastu page after adding to cart
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -99,7 +100,7 @@ const SquareCarousel = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
       {services.map((item) => (
         <div key={item.id} className="flex flex-col items-center text-white">
-          <Square>{item.title.toUpperCase()}</Square>
+          <Square onClick={() => navigate("/vastu")}>{item.title.toUpperCase()}</Square> {/* Navigate on card click */}
           <DescriptionContainer>{item.description}</DescriptionContainer>
           <Button onClick={() => handleBookNow(item)}>
             {isLoggedIn ? "BOOK NOW" : "LOGIN TO BOOK"} {/* Change text based on login status */}
