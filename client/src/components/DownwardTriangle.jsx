@@ -1,18 +1,17 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../Redux/CartSlice"; // Correct import for addToCart action
+import { useDispatch, useSelector } from "react-redux"; // Access Redux store
+import { addToCart } from "../Redux/CartSlice"; // Redux action
+import axios from "axios"; // API requests
 
-// Downward Triangle Box styled component (pointing downwards)
 const DownwardTriangle = styled.div`
-  width: 18rem; /* 72 units */
-  height: 18rem; /* 72 units */
+  width: 18rem;
+  height: 18rem;
   background: linear-gradient(145deg, #6a0dad, #3a0078);
-  clip-path: polygon(50% 100%, 0% 0%, 100% 0%); /* Inverted triangle */
+  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Align items at the top of the triangle */
+  align-items: flex-start;
   color: white;
   font-weight: bold;
   text-align: center;
@@ -20,14 +19,13 @@ const DownwardTriangle = styled.div`
   position: relative;
 `;
 
-// Styled button without bubble animation
 const Button = styled.button`
   padding: 1rem 2rem;
   background-color: #6a0dad;
   color: white;
   font-weight: 600;
   border: none;
-  border-radius: 9999px; /* Fully rounded */
+  border-radius: 9999px;
   cursor: pointer;
   font-size: 1rem;
   margin-top: 20px;
@@ -45,42 +43,54 @@ const DescriptionContainer = styled.div`
   color: white;
   font-size: 1rem;
   font-weight: normal;
-  width: 18rem; /* Ensure it aligns with the card width */
+  width: 18rem;
 `;
 
 const TriangularCarousel = () => {
-  const navigate = useNavigate(); // Initialize navigate function
-  const dispatch = useDispatch(); // Access dispatch from Redux
+  const dispatch = useDispatch(); // Redux dispatch
+  const { user } = useSelector((state) => state.auth); // User data from Redux
 
-  // Handle Book Now button click
-  const handleBookNow = (service) => {
-    // Dispatch action to add service to cart
-    dispatch(addToCart({
-      name: `Service ${service}`,
-      description: `Description for Service ${service}`,
-      price: "₹2,000",  // Example price
-      quantity: 1,
-      imageUrl: "https://via.placeholder.com/150",  // Example image URL
-    }));
+  if (!user) {
+    return <p>Please log in to add items to the cart.</p>; // Authentication check
+  }
 
-    // Optionally, navigate to a different page
-    navigate("/cart"); // Redirect to the cart page
+  const handleBookNow = async (item) => {
+    const cartItem = {
+      user_id: user.userId, // Fetch user ID from Redux store
+      item_id: item.id, // Service ID
+      title: item.title, // Service title
+      description: item.description, // Service description
+      price: String(item.price), // Ensure price is a string
+      quantity: 1, // Default quantity
+    };
+
+    try {
+      const response = await axios.post("http://localhost:4000/api/cart/add", cartItem);
+
+      if (response.status === 200) {
+        console.log("Item added to the cart successfully!");
+        dispatch(addToCart(cartItem)); // Update Redux store
+      }
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+      alert("Failed to add item. Please try again.");
+    }
   };
+
+  const services = [
+    { id: 1, title: "Numerology", description: "Insights into your life's path.", price: 299.99 },
+    { id: 2, title: "Astrology", description: "Celestial alignments insights.", price: 399.99 },
+    { id: 3, title: "Tarot Reading", description: "Guidance through life's challenges.", price: 499.99 },
+  ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
-      {[1, 2, 3].map((item, index) => (
-        <div key={index} className="flex flex-col items-center">
+      {services.map((item) => (
+        <div key={item.id} className="flex flex-col items-center">
           <DownwardTriangle>
-            <div>SERVICE {item}</div>
+            <div>{item.title.toUpperCase()}</div>
           </DownwardTriangle>
-          <DescriptionContainer>
-            {item === 1
-              ? "Numerology can provide insights into your life's path."
-              : item === 2
-              ? "Astrology reveals the alignment of celestial bodies."
-              : "Tarot reading guides you through life's challenges."}
-          </DescriptionContainer>
+          <DescriptionContainer>{item.description}</DescriptionContainer>
           <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
         </div>
       ))}
