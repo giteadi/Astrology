@@ -144,9 +144,163 @@ const deleteCartItem = async (req, res) => {
     }
 };
 
+const addService = async (req, res) => {
+    try {
+        const { title, description, price } = req.body;
+
+        // Validate required fields
+        if (!title || !description || price === undefined) {
+            return res.status(400).json({ error: "Title, description, and price are required" });
+        }
+
+        const query = "INSERT INTO services (title, description, price) VALUES (?, ?, ?)";
+        db.query(query, [title, description, price], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(201).json({
+                message: "Service added successfully",
+                serviceId: result.insertId, // Return the generated service ID
+            });
+        });
+    } catch (error) {
+        console.error("Error adding service:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error adding service",
+            error: error.message,
+        });
+    }
+};
+
+ // Fetch all services
+const getAllServices = async (req, res) => {
+    try {
+        const query = "SELECT * FROM services"; // Assuming 'services' table exists
+        db.query(query, (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error("Error fetching services:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching services",
+            error: error.message,
+        });
+    }
+};
+
+// Fetch a single service by ID
+const getServiceById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const query = "SELECT * FROM services WHERE id = ?"; // Assuming 'services' table has 'id' column
+        db.query(query, [id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (result.length === 0) {
+                return res.status(404).json({ message: "Service not found" });
+            }
+            res.status(200).json(result[0]);
+        });
+    } catch (error) {
+        console.error("Error fetching service by ID:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching service by ID",
+            error: error.message,
+        });
+    }
+};      
+
+const deleteService = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Delete service by id
+        const query = "DELETE FROM services WHERE id = ?";
+        db.query(query, [id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: "Service not found" });
+            }
+            res.status(200).json({ message: "Service deleted successfully" });
+        });
+    } catch (error) {
+        console.error("Error deleting service:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error deleting service",
+            error: error.message,
+        });
+    }
+};
+const updateService = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, price } = req.body;
+
+        // Validate required fields
+        if (!title && !description && price === undefined) {
+            return res.status(400).json({ error: "At least one field (title, description, price) is required" });
+        }
+
+        // Build the update query dynamically
+        const fields = [];
+        const values = [];
+
+        if (title) {
+            fields.push("title = ?");
+            values.push(title);
+        }
+        if (description) {
+            fields.push("description = ?");
+            values.push(description);
+        }
+        if (price !== undefined) {
+            fields.push("price = ?");
+            values.push(price);
+        }
+
+        const query = `UPDATE services SET ${fields.join(", ")} WHERE id = ?`;
+        values.push(id);
+
+        db.query(query, values, (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: "Service not found" });
+            }
+            res.status(200).json({ message: "Service updated successfully" });
+        });
+    } catch (error) {
+        console.error("Error updating service:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error updating service",
+            error: error.message,
+        });
+    }
+};
+
+
 module.exports = {
     createCartItem,
     getCartItems,
     updateCartItem,
     deleteCartItem,
+    getAllServices,
+    getServiceById,
+    deleteService,
+    updateService,
+    addService,
+    
 };

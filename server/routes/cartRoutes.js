@@ -6,19 +6,27 @@ const {
     createCartItem,
     getCartItems,
     updateCartItem,
-    deleteCartItem
+    deleteCartItem,
+    getAllServices,
+    getServiceById,
+    deleteService,
+    updateService,
+    addService,
 } = require('../controllers/cartController');
 
-// Route to create a cart item
+
+
+// cart item
 router.post('/add', createCartItem);
-
-// Route to get all cart items for a user
 router.get('/:user_id', getCartItems);
-
-// Route to update a specific cart item
 router.put('/update/:cart_item_id', updateCartItem);
-
-// Route to delete a specific cart item
 router.delete('/delete/:cart_item_id', deleteCartItem);
+
+//  services
+router.get("/", getAllServices);
+router.post("/addService", addService);
+router.get("/:id", getServiceById);
+router.delete("/:id", deleteService);
+router.put("/:id", updateService);
 
 module.exports = router;
