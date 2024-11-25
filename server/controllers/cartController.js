@@ -174,24 +174,26 @@ const addService = async (req, res) => {
 };
 
  // Fetch all services
-const getAllServices = async (req, res) => {
+ const getAllServices = async (req, res) => {
+    console.log("getAllServices route hit");
     try {
-        const query = "SELECT * FROM services"; // Assuming 'services' table exists
+        const query = "SELECT * FROM services";
         db.query(query, (err, results) => {
             if (err) {
-                return res.status(500).json({ error: err.message });
+                console.error("Error fetching services:", err.message);
+                return res.status(500).json({ error: "Database error", details: err.message });
+            }
+            if (results.length == 0) {
+                return res.status(404).json({ message: "No services found" });
             }
             res.status(200).json(results);
         });
     } catch (error) {
-        console.error("Error fetching services:", error.message);
-        res.status(500).json({
-            success: false,
-            message: "Error fetching services",
-            error: error.message,
-        });
+        console.error("Error in getAllServices:", error.message);
+        res.status(500).json({ success: false, message: "Error fetching services", error: error.message });
     }
 };
+
 
 // Fetch a single service by ID
 const getServiceById = async (req, res) => {

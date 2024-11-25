@@ -15,18 +15,17 @@ const {
 } = require('../controllers/cartController');
 
 
+// services
+router.get("/getService", getAllServices); 
+router.get("/getServiceByID/:id", getServiceById);
+router.post("/addService", addService);
+router.delete("/deleteServiceByID/:id", deleteService);
+router.put("/updateServiceByID/:id", updateService);
 
-// cart item
+// cart items
 router.post('/add', createCartItem);
-router.get('/:user_id', getCartItems);
+router.get('/:user_id', getCartItems); 
 router.put('/update/:cart_item_id', updateCartItem);
 router.delete('/delete/:cart_item_id', deleteCartItem);
-
-//  services
-router.get("/", getAllServices);
-router.post("/addService", addService);
-router.get("/:id", getServiceById);
-router.delete("/:id", deleteService);
-router.put("/:id", updateService);
 
 module.exports = router;
