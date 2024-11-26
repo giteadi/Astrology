@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Nav from "./components/Nav";
 import Home from "./pages/Home";
-// import Astrology from "./pages/Astrology";
+import Astrology from "./pages/Astrology";
 import Footer from "./components/Footer";
 import Vastu from "./pages/Vastu";
 import Numerology from "./pages/Numrology";
@@ -27,6 +27,7 @@ function App() {
         <Route path='/invoice' element={<Invoice/>}/>
         <Route path='/cart' element={<Cart/>}/>
         <Route path="/cart-manegar" element={<CartManager/>}/>
+        <Route path='/astrology' element={<Astrology/>}/>
       </Routes>
       <Footer/>
     </div>
