@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../Redux/AuthSlice";
 import mercuryImage from "../assets/mercury.webp";
-import rays from "../assets/sitare2.mp4"; // Import the video file
+import rays from "../assets/top2.mp4"; // Import the video file
 
 // Styled Components
 const Navbar = styled.nav`
@@ -89,7 +89,8 @@ const RaysVideo = styled.video`
   object-fit: cover;
   z-index: 1; /* Place it below the navbar elements */
   pointer-events: none; /* Ensure it doesn't block interactions */
-  opacity: 0.5; /* Blend the video with the background */
+  opacity: 0.7; /* Blend the video with the background */
+
 `;
 
 const Nav = () => {
