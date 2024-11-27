@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux"; // Access Redux store for user info
-import { addToCart } from "../Redux/CartSlice"; // Import the addToCart action
-import axios from "axios"; // Import Axios for API requests
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../Redux/CartSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-// Styled components remain the same
+// Updated Styled Components
 const TriangleCard = styled.div`
   width: 18rem;
   height: 18rem;
-  background: linear-gradient(145deg, #6a0dad, #3a0078);
+  background: transparent;
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   display: flex;
   justify-content: center;
@@ -19,6 +19,8 @@ const TriangleCard = styled.div`
   text-align: center;
   padding: 1.5rem;
   position: relative;
+  border: 2px solid #6a0dad; /* Add border for the gradient effect */
+  background: linear-gradient(145deg, #6a0dad, #3a0078); /* Gradient applied */
 `;
 
 const Button = styled.button`
@@ -48,40 +50,51 @@ const DescriptionContainer = styled.div`
   width: 18rem;
 `;
 
-const TriangularCarousel = () => {
-  const dispatch = useDispatch(); // Access dispatch from Redux
-  const { user } = useSelector((state) => state.auth); // Get user data from Redux store
-  const navigate = useNavigate(); // Access navigate function from React Router
+const BackgroundWrapper = styled.div`
+  height: 100vh; /* Full viewport height */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent; /* Transparent background */
+`;
 
-  // Check if the user is authenticated (i.e., user exists)
+const TriangleContainer = styled.div`
+  display: flex;
+  justify-content: space-around; /* Distributes triangles with space around */
+  flex-wrap: wrap; /* Allows triangles to wrap on smaller screens */
+  width: 100%;
+  padding: 2rem; /* Add some padding around the container */
+`;
+
+const TriangularCarousel = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   const handleBookNow = async (item) => {
     if (!user) {
-      // If user is not logged in, redirect to the login page
-      navigate("/login"); // Navigate to the login page
+      navigate("/login");
       return;
     }
 
-    // Ensure price is a string before calling .replace()
-    const price = String(item.price); // Convert the price to a string
-
+    const price = String(item.price);
     const cartItem = {
-      user_id: user.userId, // Get the userId from Redux store
-      item_id: item.id, // Assuming item has an 'id' field
-      title: item.title, // Add title to cart item
-      description: item.description, // Add description to cart item
-      price: price, // Ensure price is a string
-      quantity: 1, // Default to 1 (you can adjust based on your needs)
+      user_id: user.userId,
+      item_id: item.id,
+      title: item.title,
+      description: item.description,
+      price: price,
+      quantity: 1,
     };
 
-    // Now send the item data to the backend via API
     try {
-      const response = await axios.post('http://localhost:4000/api/cart/add', cartItem);
-
-      // Optionally handle response data (e.g., show a success message)
+      const response = await axios.post(
+        "http://localhost:4000/api/cart/add",
+        cartItem
+      );
       if (response.status === 200) {
         console.log("Item successfully added to the database!");
-
-        // Dispatch the action to add the item to the Redux store only after it has been successfully added to the DB
         dispatch(addToCart(cartItem));
       }
     } catch (error) {
@@ -94,7 +107,6 @@ const TriangularCarousel = () => {
     }
   };
 
-  // Sample service data, assuming each item has an 'id', 'title', 'price', and 'description'
   const services = [
     { id: 102, title: "Numerology", description: "Insights into your life's path.", price: 299.99 },
     { id: 103, title: "Astrology", description: "Celestial alignments insights.", price: 399.99 },
@@ -102,19 +114,23 @@ const TriangularCarousel = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
-      {services.map((item) => (
-        <div key={item.id} className="flex flex-col items-center cursor-pointer">
-          <TriangleCard onClick={(()=>{
-            navigate(`/astrology/${item.id}`)
-          })}>
-            <div>{item.title.toUpperCase()}</div>
-          </TriangleCard>
-          <DescriptionContainer>{item.description}</DescriptionContainer>
-          <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
-        </div>
-      ))}
-    </div>
+    <BackgroundWrapper>
+      <TriangleContainer>
+        {services.map((item) => (
+          <div key={item.id} className="flex flex-col items-center cursor-pointer">
+            <TriangleCard
+              onClick={() => {
+                navigate(`/astrology/${item.id}`);
+              }}
+            >
+              <div>{item.title.toUpperCase()}</div>
+            </TriangleCard>
+            <DescriptionContainer>{item.description}</DescriptionContainer>
+            <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
+          </div>
+        ))}
+      </TriangleContainer>
+    </BackgroundWrapper>
   );
 };
 

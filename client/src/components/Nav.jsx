@@ -1,53 +1,30 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import React, { useState } from "react";
+import styled from "styled-components";
 import { FiMenu, FiUser, FiShoppingCart, FiHome } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import { useSelector, useDispatch } from "react-redux"; // Redux hooks
-import { logoutUser } from "../Redux/AuthSlice"; // Import logout action
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../Redux/AuthSlice";
 import mercuryImage from "../assets/mercury.webp";
-
-// Keyframes for star twinkle
-const twinkle = keyframes`
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-`;
+import rays from "../assets/sitare2.mp4"; // Import the video file
 
 // Styled Components
 const Navbar = styled.nav`
-  background: linear-gradient(90deg, #1c1c3d, #4b0082);
+  position: relative;
+  background: radial-gradient(circle, #29004e, #3e32c6);
   padding: 2rem 4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
-  position: relative;
   z-index: 10;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
 
   @media (max-width: 768px) {
     padding: 1.5rem 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
-`;
-
-const Stars = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-`;
-
-const Star = styled.div`
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: white;
-  border-radius: 50%;
-  animation: ${twinkle} 2s infinite;
-  opacity: 0.5;
-  top: ${({ top }) => top}%;
-  left: ${({ left }) => left}%;
 `;
 
 const Logo = styled.div`
@@ -56,6 +33,7 @@ const Logo = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
   z-index: 2;
+  gap: 10px;
 
   @media (max-width: 768px) {
     font-size: 1.2rem;
@@ -81,6 +59,10 @@ const IconButtons = styled.div`
 
   @media (max-width: 768px) {
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 1rem;
   }
 `;
 
@@ -95,7 +77,21 @@ const UserName = styled.span`
   }
 `;
 
-// Navbar Component
+// Styled component for the video
+const RaysVideo = styled.video`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%; 
+  height: 100%;
+  object-fit: cover;
+  z-index: 1; /* Place it below the navbar elements */
+  pointer-events: none; /* Ensure it doesn't block interactions */
+  opacity: 0.7; /* Blend the video with the background */
+`;
+
 const Nav = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
@@ -109,30 +105,23 @@ const Nav = () => {
     navigate("/"); // Navigate to home page on logout
   };
 
-  const stars = Array.from({ length: 50 }).map((_, index) => (
-    <Star
-      key={index}
-      top={Math.random() * 100}
-      left={Math.random() * 100}
-      style={{
-        animationDuration: `${Math.random() * 2 + 1}s`,
-      }}
-    />
-  ));
-
   return (
     <Navbar>
+      {/* Video added to the left of the navbar */}
+      <RaysVideo autoPlay loop muted>
+        <source src={rays} type="video/mp4" />
+        Your browser does not support the video tag.
+      </RaysVideo>
+
       <Logo>
         <Image src={mercuryImage} alt="Logo" />
-        <span className="md:ml-5">Astrology</span>
+        <span>Astrology</span>
       </Logo>
-      <Stars>{stars}</Stars>
       <IconButtons>
         <Link to="/">
           <FiHome style={{ fontSize: "1.5rem", cursor: "pointer" }} />
         </Link>
-        
-        {/* Conditionally render the cart icon only if the user is authenticated */}
+
         {isAuthenticated && (
           <Link to="/cart">
             <FiShoppingCart style={{ fontSize: "1.5rem", cursor: "pointer" }} />
@@ -141,7 +130,6 @@ const Nav = () => {
 
         {isAuthenticated ? (
           <>
-            {/* Show user's name */}
             <UserName>{`Hi, ${user?.name || "User"}`}</UserName>
             <button
               onClick={handleLogout}
