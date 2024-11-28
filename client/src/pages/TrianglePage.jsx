@@ -5,35 +5,53 @@ import { useNavigate } from "react-router-dom"; // Navigation
 import axios from "axios"; // For API requests
 import { addToCart } from "../Redux/CartSlice"; // Add to Cart action
 
-// Styled components for consistent design
+// Styled components
 const Container = styled.div`
   padding: 2rem;
-  background: linear-gradient(180deg, #3a0078, #1e003e);
+  background: radial-gradient(circle, #3a0078, #1e003e 80%);
   min-height: 100vh;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+
+  /* Animated cosmic stars background */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/path/to/stars.png') repeat; /* Add a starry background */
+    opacity: 0.1;
+    z-index: 0;
+  }
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: bold;
   text-transform: uppercase;
-  margin-bottom: 5rem;  /* Increased margin-bottom to add more space at the bottom */
   text-align: center;
-  color: #fff;
+  color: #ffcb74; /* Golden tone */
+  background: linear-gradient(90deg, #ffcb74, #ffd700);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 5rem;
+  z-index: 1;
 
-  /* Adjust for mobile screens */
   @media (max-width: 768px) {
-    font-size: 1.8rem;  /* Smaller font size for mobile */
-    margin-bottom: 3rem; /* Increased margin for mobile */
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
   }
 
-  /* For larger screens like laptops */
   @media (min-width: 1024px) {
-    margin-bottom: 6rem;  /* Further increased bottom margin for large screens */
+    margin-bottom: 6rem;
   }
 `;
 
@@ -42,26 +60,27 @@ const Card = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 450px; /* Increased width */
+  max-width: 450px;
   margin: 0 auto;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-
-  /* Ensure the card doesn't stretch too much */
+  padding: 1.5rem;
+  border-radius: 15px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 
-  @media (max-width: 768px) {
-    max-width: 350px; /* Adjust max-width for mobile */
+  /* Premium glassmorphism styles */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.15);
   }
-`;
-
-const ProductImage = styled.img`
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  border-radius: 10px;
 `;
 
 const TriangleCard = styled.div`
@@ -73,7 +92,7 @@ const TriangleCard = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* Ensures title is aligned at the bottom */
+  align-items: flex-end;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -84,41 +103,40 @@ const TriangleCard = styled.div`
 
   h2 {
     position: absolute;
-    bottom: 10px; /* Adjusted to place title at the bottom */
+    bottom: 10px;
     color: white;
-    font-size: 1.5rem; /* Slightly larger text */
+    font-size: 1.5rem;
     text-align: center;
 
-    /* Adjust for mobile screens */
     @media (max-width: 768px) {
       font-size: 1.2rem;
-      bottom: 5px; /* Slightly adjusted bottom spacing for mobile */
+      bottom: 5px;
     }
   }
 `;
 
 const Price = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  color: #ff6347; /* Adjusted to a more vibrant color */
+  color: #ff6347;
   margin-top: 1rem;
 `;
 
 const Description = styled.p`
-  font-size: 1.1rem;
-  color: #333;
+  font-size: 1.2rem;
+  color: white;
   margin: 1rem 0;
   line-height: 1.6;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 
-  /* Adjust font size for smaller screens */
   @media (max-width: 768px) {
-    font-size: 1rem;  /* Smaller font size for mobile */
+    font-size: 1rem;
   }
 `;
 
 const Button = styled.button`
   padding: 0.8rem 2rem;
-  background-color: #6a0dad;
+  background: linear-gradient(90deg, #6a0dad, #9b51e0);
   color: white;
   font-weight: bold;
   border: none;
@@ -128,43 +146,11 @@ const Button = styled.button`
   transition: all 0.3s ease;
   margin-top: 1rem;
 
-  /* Adjust button for mobile */
-  @media (max-width: 768px) {
-    font-size: 1rem;  /* Smaller font size for mobile */
-    padding: 0.6rem 1.5rem;  /* Adjust padding for mobile */
-  }
-
   &:hover {
-    background-color: #5a0071;
-    transform: scale(1.05);
+    transform: scale(1.1);
+    background: linear-gradient(90deg, #5a0071, #8431c8);
+    box-shadow: 0 4px 15px rgba(154, 50, 255, 0.6);
   }
-`;
-
-const AstrologyConsultation = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: #f4f4f4;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-`;
-
-const AstrologyTitle = styled.h2`
-  color: #6a0dad;
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-`;
-
-const AstrologyDescription = styled.p`
-  font-size: 1.1rem;
-  color: #333;
-  line-height: 1.6;
 `;
 
 const AstrologyPage = () => {
@@ -200,30 +186,21 @@ const AstrologyPage = () => {
     }
   };
 
-  const service = { title: "Astrology Consultation", description: "Explore the mysteries of the cosmos with personalized astrology readings.", price: 399.99 };
+  const service = {
+    title: "Astrology Consultation",
+    description: "Explore the mysteries of the cosmos with personalized astrology readings.",
+    price: 399.99,
+  };
 
   return (
     <Container>
       <Title>Astrology Services</Title>
       <Card>
-        <TriangleCard>
-         
-        </TriangleCard>
+        <TriangleCard></TriangleCard>
         <Price>${service.price}</Price>
-        <Description>
-          {service.description}
-        </Description>
+        <Description>{service.description}</Description>
         <Button onClick={handleBookNow}>Book Now</Button>
       </Card>
-
-      {/* Astrology Consultation Section */}
-      <AstrologyConsultation>
-        <AstrologyTitle>Astrology Consultation</AstrologyTitle>
-        <AstrologyDescription>
-          Explore the mysteries of the cosmos with personalized astrology readings. 
-          Discover insights about your life path, relationships, and future.
-        </AstrologyDescription>
-      </AstrologyConsultation>
     </Container>
   );
 };
