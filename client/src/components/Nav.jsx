@@ -20,32 +20,35 @@ const VideoBackground = styled.video`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 120%;
-  object-fit: cover;
-  opacity: 0.6;
+  width: 100%; /* Make it span the full width */
+  height: 140%; /* Increase the height to make it bigger */
+  object-fit: cover; /* Ensure the video covers the area without distortion */
+  opacity: 0.4;
   pointer-events: none;
   filter: brightness(1.3);
-  clip-path: polygon(0 0, 100% 0, 100% 90%, 0 85%);
+  clip-path: none; /* Remove the clip-path to make sure the whole video is visible */
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    height: 100%;
-    clip-path: polygon(0 0, 100% 0, 100% 95%, 0 90%);
+    height: 120%; /* Adjust height for smaller screens */
   }
 
   @media (max-width: 480px) {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 95%);
+    height: 100%; /* Further adjust height for very small screens */
   }
 `;
+
 
 const ImageBackground = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  background: url(${backgroundImage}) no-repeat center center/cover;
+  background: url(${backgroundImage}) no-repeat center top/cover; /* Ensures it stays centered at the top */
   overflow: hidden;
+  background-size: cover; /* Maintain aspect ratio */
+  background-position: top center; /* Align the top of the image */
 `;
+
 
 const LogoContainer = styled.div`
   position: absolute;
