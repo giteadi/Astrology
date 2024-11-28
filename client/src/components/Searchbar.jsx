@@ -119,10 +119,12 @@ const GlassyNav = styled.div`
   color: white;
 `;
 
-const NavItem = styled.div`
+const NavItem = styled(Link)`
   margin: 0 1.5rem;
   font-weight: 500;
   cursor: pointer;
+  text-decoration: none;
+  color: white;
 
   &:hover {
     color: rgba(255, 255, 255, 1);
@@ -209,11 +211,11 @@ export default function SearchbarWithOptions() {
 
       {/* Glassy Navbar for Astrology, Numerology, and Vastu */}
       <GlassyNav>
-        <NavItem>Numerology</NavItem>
+        <NavItem to="/numerology">Numerology</NavItem>
         <span>|</span>
-        <NavItem>Astrology</NavItem>
+        <NavItem to="/astrology">Astrology</NavItem>
         <span>|</span>
-        <NavItem>Vastu</NavItem>
+        <NavItem to="/vastu">Vastu</NavItem>
       </GlassyNav>
     </SearchWrapper>
   );
