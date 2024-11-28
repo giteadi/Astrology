@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const SearchWrapper = styled.div`
@@ -9,7 +9,7 @@ const SearchWrapper = styled.div`
   align-items: center;
   width: 100%;
   padding: 0 1rem;
-  position: relative; /* Provide positioning context */
+  position: relative;
 `;
 
 const SearchInputWrapper = styled.div`
@@ -45,6 +45,7 @@ const SearchIcon = styled.span`
   top: 50%;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
 `;
 
 const ClearButton = styled.button`
@@ -64,10 +65,10 @@ const ClearButton = styled.button`
 
 const SuggestionsWrapper = styled.div`
   position: absolute;
-  top: calc(100% + 0.5rem); /* Below the input */
+  top: calc(100% + 0.5rem);
   left: 0;
-  right: 0; /* Align with input width */
-  margin: auto; /* Center horizontally */
+  right: 0;
+  margin: auto;
   width: 100%;
   max-width: 32rem;
   border-radius: 8px;
@@ -75,16 +76,15 @@ const SuggestionsWrapper = styled.div`
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   z-index: 10;
-  overflow: hidden; /* Ensure smooth clipping for animations */
+  overflow: hidden;
 
-  /* Animation styles */
   opacity: 0;
-  transform: translateY(-10px); /* Start slightly above */
+  transform: translateY(-10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
 
   &.open {
     opacity: 1;
-    transform: translateY(0); /* Slide into view */
+    transform: translateY(0);
   }
 `;
 
@@ -105,6 +105,7 @@ const SuggestionItem = styled(Link)`
 export default function SearchbarWithOptions() {
   const [query, setQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const services = [
     { name: "Astrology", path: "/astrology" },
@@ -134,6 +135,21 @@ export default function SearchbarWithOptions() {
     setFilteredSuggestions([]);
   };
 
+  const performSearch = () => {
+    // Navigate to the first matching result or show all suggestions
+    if (filteredSuggestions.length > 0) {
+      navigate(filteredSuggestions[0].path); // Navigate to the first suggestion's path
+    } else {
+      alert(`No results found for: ${query}`); // Show an alert if no results found
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      performSearch();
+    }
+  };
+
   return (
     <SearchWrapper>
       <SearchInputWrapper>
@@ -142,8 +158,9 @@ export default function SearchbarWithOptions() {
           placeholder="Search for Astrology, Numerology, Vastu..."
           value={query}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
         />
-        <SearchIcon>
+        <SearchIcon onClick={performSearch}>
           <FaSearch />
         </SearchIcon>
         {query && (
