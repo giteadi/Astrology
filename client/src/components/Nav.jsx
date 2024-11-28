@@ -6,6 +6,7 @@ import { logoutUser } from "../Redux/AuthSlice";
 import styled from "styled-components";
 import mercuryImage from "../assets/mercury.webp";
 import backgroundImage from "../assets/bg.jpg";
+import Searchbar from '../components/Searchbar'
 
 // Styled-components
 const Navbar = styled.nav`
@@ -23,7 +24,7 @@ const VideoBackground = styled.video`
   width: 100%; /* Make it span the full width */
   height: 140%; /* Increase the height to make it bigger */
   object-fit: cover; /* Ensure the video covers the area without distortion */
-  opacity: 0.4;
+  opacity: 0.3;
   pointer-events: none;
   filter: brightness(1.3);
   clip-path: none; /* Remove the clip-path to make sure the whole video is visible */
@@ -38,7 +39,6 @@ const VideoBackground = styled.video`
   }
 `;
 
-
 const ImageBackground = styled.div`
   position: relative;
   width: 100%;
@@ -48,7 +48,6 @@ const ImageBackground = styled.div`
   background-size: cover; /* Maintain aspect ratio */
   background-position: top center; /* Align the top of the image */
 `;
-
 
 const LogoContainer = styled.div`
   position: absolute;
@@ -149,6 +148,26 @@ const Menu = styled.div`
   }
 `;
 
+const SearchbarContainer = styled.div`
+  position: absolute;
+  top: 20%; /* Shifted slightly upwards from the center */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 60%; /* Adjust width for responsiveness */
+  max-width: 600px; /* Max width to prevent it from being too large on bigger screens */
+  
+  @media (max-width: 768px) {
+    top: 25%; /* Adjust top for smaller screens */
+    width: 80%; /* Take more width on smaller screens */
+  }
+
+  @media (max-width: 480px) {
+    top: 30%; /* Adjust top further for very small screens */
+    width: 90%; /* Take almost full width */
+  }
+`;
+
 const Nav = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -205,6 +224,11 @@ const Nav = () => {
           <span>Hi, {user?.name || "User"}</span>
         </Menu>
       )}
+
+      {/* Searchbar */}
+      <SearchbarContainer>
+        <Searchbar />
+      </SearchbarContainer>
     </Navbar>
   );
 };
