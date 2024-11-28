@@ -10,6 +10,7 @@ import TestimonialsSection from "../components/Testimonials";
 import FAQ from "../components/FAQ";
 import BlogList from "../components/BlogList";
 import DownwardCarousel from "../components/DownwardTriangle";
+import GlassyNav from "../components/GlassyNav";
 
 // HomeContainer with galaxy-inspired gradient background
 const HomeContainer = styled.div`
@@ -173,6 +174,7 @@ const DownwardCarouselWrapper = styled.div`
 export default function Home() {
   return (
     <HomeContainer>
+      {/* <GlassyNav/> */}
       {/* Section Title */}
       <Title>
         <span className="blinking-icon">✨</span> What We Offer

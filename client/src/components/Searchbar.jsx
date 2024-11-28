@@ -3,6 +3,7 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+// Searchbar Styles
 const SearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,7 +16,7 @@ const SearchWrapper = styled.div`
 const SearchInputWrapper = styled.div`
   position: relative;
   width: 100%;
-  max-width: 32rem;
+  max-width: 25rem; /* Reduced width of search bar */
 `;
 
 const SearchInput = styled.input`
@@ -70,7 +71,7 @@ const SuggestionsWrapper = styled.div`
   right: 0;
   margin: auto;
   width: 100%;
-  max-width: 32rem;
+  max-width: 25rem; /* Match search bar width */
   border-radius: 8px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   background-color: rgba(255, 255, 255, 0.1);
@@ -102,12 +103,13 @@ const SuggestionItem = styled(Link)`
   }
 `;
 
+// Navbar Styles
 const GlassyNav = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; /* Default to center on larger screens */
   width: 100%;
-  height: 4rem; /* Adjust the height for the nav */
+  height: 4rem;
   border-radius: 9999px;
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.1);
@@ -117,6 +119,12 @@ const GlassyNav = styled.div`
   padding: 0 2rem;
   font-size: 1.1rem;
   color: white;
+
+  @media (max-width: 400px) {
+    font-size: 1rem; /* Adjust font size for small screens */
+    padding: 0 1rem; /* Reduce padding */
+    justify-content: space-between; /* Space out navbar items on mobile */
+  }
 `;
 
 const NavItem = styled(Link)`
@@ -128,6 +136,11 @@ const NavItem = styled(Link)`
 
   &:hover {
     color: rgba(255, 255, 255, 1);
+  }
+
+  @media (max-width: 400px) {
+    margin: 0; /* Remove extra margin for small screens */
+    font-size: 0.9rem; /* Reduce font size */
   }
 `;
 

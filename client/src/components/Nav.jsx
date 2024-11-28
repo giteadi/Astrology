@@ -1,14 +1,14 @@
 import React from "react";
-import { FiShoppingCart, FiHome } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../Redux/AuthSlice";
-import styled from "styled-components";
 import mercuryImage from "../assets/mercury.webp";
 import backgroundImage from "../assets/bg.jpg";
-import Searchbar from '../components/Searchbar'
+import Searchbar from "../components/Searchbar";
+import GlassyNav from "./GlassyNav";
+import styled from "styled-components";
 
-// Styled-components
+// Styled-components for Nav
 const Navbar = styled.nav`
   position: relative;
   width: 100%;
@@ -28,15 +28,6 @@ const VideoBackground = styled.video`
   pointer-events: none;
   filter: brightness(1.3);
   clip-path: none; /* Remove the clip-path to make sure the whole video is visible */
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    height: 120%; /* Adjust height for smaller screens */
-  }
-
-  @media (max-width: 480px) {
-    height: 100%; /* Further adjust height for very small screens */
-  }
 `;
 
 const ImageBackground = styled.div`
@@ -68,82 +59,6 @@ const LogoContainer = styled.div`
 
     @media (max-width: 480px) {
       height: 2.5rem;
-    }
-  }
-`;
-
-const TopMenu = styled.div`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  z-index: 10;
-
-  a,
-  button {
-    font-size: 1.25rem;
-    color: white;
-    text-decoration: none;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-
-    &:hover {
-      color: #ffdf00;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      font-size: 1rem;
-    }
-
-    @media (max-width: 480px) {
-      font-size: 0.875rem;
-    }
-  }
-`;
-
-const Menu = styled.div`
-  position: absolute;
-  bottom: 2rem;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  z-index: 10;
-
-  a {
-    font-size: 1.25rem;
-    color: white;
-    text-decoration: none;
-
-    &:hover {
-      color: #ffdf00;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      font-size: 1rem;
-    }
-
-    @media (max-width: 480px) {
-      font-size: 0.875rem;
-    }
-  }
-
-  span {
-    font-size: 1.25rem;
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      font-size: 1rem;
-    }
-
-    @media (max-width: 480px) {
-      font-size: 0.875rem;
     }
   }
 `;
@@ -203,27 +118,8 @@ const Nav = () => {
         <img src={mercuryImage} alt="Logo" />
       </LogoContainer>
 
-      {/* Top Menu (Login and Home) */}
-      <TopMenu>
-        <Link to="/">
-          <FiHome />
-        </Link>
-        {isAuthenticated ? (
-          <button onClick={handleLogout}>Logout</button>
-        ) : (
-          <Link to="/login">Login</Link>
-        )}
-      </TopMenu>
-
-      {/* Bottom Menu */}
-      {isAuthenticated && (
-        <Menu>
-          <Link to="/cart">
-            <FiShoppingCart />
-          </Link>
-          <span>Hi, {user?.name || "User"}</span>
-        </Menu>
-      )}
+      {/* Glassy Navigation Bar */}
+      <GlassyNav/>
 
       {/* Searchbar */}
       <SearchbarContainer>
