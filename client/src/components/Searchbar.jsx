@@ -1,6 +1,106 @@
 import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const SearchWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem;
+  position: relative; /* Provide positioning context */
+`;
+
+const SearchInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: white;
+  border-radius: 9999px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  &:focus {
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+`;
+
+const SearchIcon = styled.span`
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+`;
+
+const ClearButton = styled.button`
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+`;
+
+const SuggestionsWrapper = styled.div`
+  position: absolute;
+  top: calc(100% + 0.5rem); /* Below the input */
+  left: 0;
+  right: 0; /* Align with input width */
+  margin: auto; /* Center horizontally */
+  width: 100%;
+  max-width: 32rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+  overflow: hidden; /* Ensure smooth clipping for animations */
+
+  /* Animation styles */
+  opacity: 0;
+  transform: translateY(-10px); /* Start slightly above */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  &.open {
+    opacity: 1;
+    transform: translateY(0); /* Slide into view */
+  }
+`;
+
+const SuggestionItem = styled(Link)`
+  display: block;
+  padding: 0.75rem 1rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
 
 export default function SearchbarWithOptions() {
   const [query, setQuery] = useState("");
@@ -29,75 +129,39 @@ export default function SearchbarWithOptions() {
     }
   };
 
+  const clearSearch = () => {
+    setQuery("");
+    setFilteredSuggestions([]);
+  };
+
   return (
-    <div className="flex flex-col items-center w-full px-4">
-      {/* Searchbar */}
-      <div className="relative w-full max-w-lg">
-        <input
+    <SearchWrapper>
+      <SearchInputWrapper>
+        <SearchInput
           type="text"
           placeholder="Search for Astrology, Numerology, Vastu..."
           value={query}
           onChange={handleInputChange}
-          className="w-full pl-12 pr-5 py-3 text-white text-base md:text-lg rounded-full bg-transparent border border-white/50 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-300"
         />
-        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/70">
-          <FaSearch className="w-6 h-6" />
-        </span>
-      </div>
+        <SearchIcon>
+          <FaSearch />
+        </SearchIcon>
+        {query && (
+          <ClearButton onClick={clearSearch}>
+            <FaTimes />
+          </ClearButton>
+        )}
+      </SearchInputWrapper>
 
-      {/* Suggestions Dropdown */}
       {filteredSuggestions.length > 0 && (
-        <div
-          className="absolute mt-2 w-full max-w-lg rounded-lg shadow-xl z-10 overflow-hidden border border-white/50"
-          style={{
-            background: "rgba(255, 255, 255, 0.1)", // Light transparency
-            backdropFilter: "blur(10px)", // Adds subtle blur to dropdown
-          }}
-          role="listbox"
-          aria-label="Search Suggestions"
-        >
+        <SuggestionsWrapper className="open">
           {filteredSuggestions.map((suggestion, index) => (
-            <Link
-              key={index}
-              to={suggestion.path}
-              className="block px-4 py-2 text-white hover:bg-white/20 focus:bg-white/20 focus:outline-none"
-              role="option"
-            >
+            <SuggestionItem key={index} to={suggestion.path}>
               {suggestion.name}
-            </Link>
+            </SuggestionItem>
           ))}
-        </div>
+        </SuggestionsWrapper>
       )}
-
-      {/* Options Section */}
-      <div
-        className="rounded-3xl flex justify-around items-center gap-4 p-4 md:p-6 w-full max-w-3xl mt-6 border border-white/50"
-        style={{
-          background: "rgba(255, 255, 255, 0.1)", // Transparent background with blur
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <Link
-          to="/astrology"
-          className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300 transition-all duration-200"
-        >
-          Astrology
-        </Link>
-        <div className="h-6 md:h-8 w-px bg-white/30"></div>
-        <Link
-          to="/vastu"
-          className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300 transition-all duration-200"
-        >
-          Vastu
-        </Link>
-        <div className="h-6 md:h-8 w-px bg-white/30"></div>
-        <Link
-          to="/numerology"
-          className="text-white text-sm md:text-lg font-semibold cursor-pointer hover:text-gray-300 transition-all duration-200"
-        >
-          Numerology
-        </Link>
-      </div>
-    </div>
+    </SearchWrapper>
   );
 }
