@@ -1,34 +1,63 @@
 import React from "react";
-import { FaStar } from "react-icons/fa"; // Import React Icon for stars
+import { FaStar } from "react-icons/fa";
 import TriangularCarousel from "../components/TriangularCarousal";
 import SquareCarousel from "../components/SquareCarosal";
 import styled from "styled-components";
 import Searchbar from "../components/Searchbar";
-import DownwardTriangle from "../components/DownwardTriangle";
+import StyledDownwardTriangle from "../components/DownwardTriangle"; // Correct import
 import AboutUs from "./AboutUs";
 import TestimonialsSection from "../components/Testimonials";
 import FAQ from "../components/FAQ";
 import BlogList from "../components/BlogList";
+import DownwardCarousel from "../components/DownwardTriangle";
 
-// HomeContainer with specified gradient background
+// HomeContainer with galaxy-inspired gradient background
 const HomeContainer = styled.div`
-  background: linear-gradient(to bottom, #29004e, #3e32c6); /* Top-to-bottom gradient */
-  min-height: 100vh; /* Full viewport height */
-  padding: 2rem; /* Spacing for internal content */
-  color: white; /* Text color for contrast */
-  text-align: center; /* Center align text inside */
+  background: linear-gradient(to bottom, #12002f, #29004e, #3e32c6); /* Darker top gradient transitioning to galaxy gradient */
+  min-height: 100vh;
+  padding: 2rem;
+  color: white;
+  text-align: center;
+  overflow: hidden; /* Prevent overflow due to animations */
+
+  /* Add animated stars */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("/path/to/stars.png") repeat; /* Replace with your starry texture */
+    opacity: 0.1;
+    animation: twinkle 20s infinite alternate;
+    z-index: 0;
+  }
+
+  @keyframes twinkle {
+    0% {
+      opacity: 0.1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 0.1;
+    }
+  }
 `;
 
-// Title component with gradient text and blinking icon effect
+// Styled Title with glowing gradient text
 const Title = styled.h2`
   margin: 2rem 0;
-  background: linear-gradient(180deg, #ffffff 80%, rgba(0, 191, 255, 0.5) 100%);
+  background: linear-gradient(180deg, #ffffff, #6a0dad);
   -webkit-background-clip: text;
   color: transparent;
-  position: relative;
-  display: inline-block;
   font-weight: bold;
   font-size: 2.5rem;
+  text-transform: uppercase;
+  position: relative;
+  display: inline-block;
 
   .blinking-icon {
     position: absolute;
@@ -52,7 +81,7 @@ const Title = styled.h2`
   }
 `;
 
-// StarContainer with animations
+// StarContainer with pulse animations
 const StarContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -93,15 +122,58 @@ const StarContainer = styled.div`
   }
 `;
 
+// CarouselWrapper to add a glassmorphism effect
+const CarouselWrapper = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 1200px;
+
+  /* Flex alignment for horizontal centering */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Ensure proper responsiveness */
+  @media (max-width: 768px) {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    width: 100%;
+  }
+`;
+const DownwardCarouselWrapper = styled.div`
+  display: flex;
+  flex-direction: row; /* Ensure horizontal alignment */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column; /* Switch to vertical for smaller screens */
+    align-items: center;
+  }
+`;
+
+
 export default function Home() {
   return (
     <HomeContainer>
       {/* Search bar at the top */}
-      <Searchbar/>
+      <Searchbar />
 
       {/* Section Title */}
-      <Title className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold my-6">
-        WHAT WE OFFER
+      <Title>
+        <span className="blinking-icon">✨</span> What We Offer
       </Title>
 
       {/* Animated Star Icons */}
@@ -111,19 +183,26 @@ export default function Home() {
         <FaStar className="star star-small" />
       </StarContainer>
 
-      {/* Triangular Carousel */}
-      <TriangularCarousel />
+      {/* Triangular Carousel with Glassmorphism Wrapper */}
+      <CarouselWrapper>
+        <TriangularCarousel />
+      </CarouselWrapper>
 
       {/* Section Title */}
-      <Title className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold my-6">
-        ASTROLOGY REPORTS
+      <Title>Astrology Reports</Title>
+
+      {/* Square Carousel with Glassmorphism Wrapper */}
+      <CarouselWrapper>
+        <SquareCarousel />
+      </CarouselWrapper>
+
+      {/* Downward Triangle Section with Glassmorphism */}
+      <Title>
+        <h3>Explore Our Services</h3>
       </Title>
-
-      {/* Square Carousel */}
-      <SquareCarousel />
-
-      {/* Downward Triangle Section */}
-      <DownwardTriangle />
+      <CarouselWrapper>
+        <DownwardCarousel />
+      </CarouselWrapper>
 
       {/* About Us Section */}
       <AboutUs />
