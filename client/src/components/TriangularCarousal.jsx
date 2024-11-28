@@ -18,9 +18,15 @@ const TriangleCard = styled.div`
   font-weight: bold;
   text-align: center;
   padding: 1.5rem;
+  border: 2px solid #6a0dad;
+  background: linear-gradient(145deg, #6a0dad, #3a0078);
   position: relative;
-  border: 2px solid #6a0dad; /* Add border for the gradient effect */
-  background: linear-gradient(145deg, #6a0dad, #3a0078); /* Gradient applied */
+
+  /* Adjust for smaller screens */
+  @media (max-width: 768px) {
+    width: 14rem;
+    height: 14rem;
+  }
 `;
 
 const Button = styled.button`
@@ -48,23 +54,37 @@ const DescriptionContainer = styled.div`
   font-size: 1rem;
   font-weight: normal;
   width: 18rem;
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    width: 14rem;
+  }
 `;
 
 const BackgroundWrapper = styled.div`
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: transparent; /* Transparent background */
+  align-items: flex-start; /* Align items to the top */
+  background: transparent;
+  padding-top: 3rem; /* Add padding-top to push content down */
 `;
 
 const TriangleContainer = styled.div`
   display: flex;
-  justify-content: space-around; /* Distributes triangles with space around */
-  flex-wrap: wrap; /* Allows triangles to wrap on smaller screens */
+  justify-content: space-around; /* Distribute items with space around */
+  flex-wrap: wrap; /* Wrap items to new rows on smaller screens */
   width: 100%;
-  padding: 2rem; /* Add some padding around the container */
+  padding: 2rem;
+  gap: 2rem; /* Increase space between items */
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+    align-items: center; /* Center items horizontally */
+    gap: 2rem; /* Add space between items */
+  }
 `;
 
 const TriangularCarousel = () => {
