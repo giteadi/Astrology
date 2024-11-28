@@ -97,7 +97,7 @@ export default function Home() {
   return (
     <HomeContainer>
       {/* Search bar at the top */}
-      <Searchbar />
+      <Searchbar/>
 
       {/* Section Title */}
       <Title className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold my-6">
