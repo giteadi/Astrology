@@ -13,7 +13,12 @@ import DownwardCarousel from "../components/DownwardTriangle";
 
 // HomeContainer with galaxy-inspired gradient background
 const HomeContainer = styled.div`
-  background: linear-gradient(to bottom, #12002f, #29004e, #3e32c6); /* Darker top gradient transitioning to galaxy gradient */
+  background: linear-gradient(
+    to bottom,
+    #12002f,
+    #29004e,
+    #3e32c6
+  ); /* Darker top gradient transitioning to galaxy gradient */
   min-height: 100vh;
   padding: 2rem;
   color: white;
@@ -129,7 +134,8 @@ const CarouselWrapper = styled.div`
   -webkit-backdrop-filter: blur(15px);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+    inset 0 0 15px rgba(255, 255, 255, 0.1);
   padding: 2rem;
   margin: 2rem auto;
   width: 90%;
@@ -164,13 +170,9 @@ const DownwardCarouselWrapper = styled.div`
   }
 `;
 
-
 export default function Home() {
   return (
     <HomeContainer>
-      {/* Search bar at the top */}
-      <Searchbar />
-
       {/* Section Title */}
       <Title>
         <span className="blinking-icon">✨</span> What We Offer

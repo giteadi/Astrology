@@ -102,6 +102,33 @@ const SuggestionItem = styled(Link)`
   }
 `;
 
+const GlassyNav = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 4rem; /* Adjust the height for the nav */
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 1rem;
+  padding: 0 2rem;
+  font-size: 1.1rem;
+  color: white;
+`;
+
+const NavItem = styled.div`
+  margin: 0 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+`;
+
 export default function SearchbarWithOptions() {
   const [query, setQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -179,6 +206,15 @@ export default function SearchbarWithOptions() {
           ))}
         </SuggestionsWrapper>
       )}
+
+      {/* Glassy Navbar for Astrology, Numerology, and Vastu */}
+      <GlassyNav>
+        <NavItem>Numerology</NavItem>
+        <span>|</span>
+        <NavItem>Astrology</NavItem>
+        <span>|</span>
+        <NavItem>Vastu</NavItem>
+      </GlassyNav>
     </SearchWrapper>
   );
 }
