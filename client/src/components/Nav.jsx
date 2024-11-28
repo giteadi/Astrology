@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../Redux/AuthSlice";
 import styled from "styled-components";
 import mercuryImage from "../assets/mercury.webp";
-import rays from "../assets/top2.mp4";
 
 // Styled-components
 const Navbar = styled.nav`
@@ -19,10 +18,9 @@ const Navbar = styled.nav`
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 
-  /* Responsive adjustments for smaller screens */
   @media (max-width: 768px) {
     padding: 1rem;
-    flex-wrap: nowrap; /* Prevent breaking into rows */
+    flex-wrap: nowrap;
   }
 `;
 
@@ -63,7 +61,7 @@ const Menu = styled.div`
     text-decoration: none;
 
     &:hover {
-      color: ;
+      color: #ffdf00;
     }
   }
 `;
@@ -72,8 +70,8 @@ const LogoutButton = styled.button`
   background: transparent;
   border: 1px solid white;
   color: white;
-  padding: 0.25rem 0.75rem; /* Reduced padding */
-  font-size: 1rem; /* Smaller font size */
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
 
@@ -87,8 +85,8 @@ const LoginButton = styled.button`
   background: transparent;
   border: 1px solid white;
   color: white;
-  padding: 0.25rem 0.75rem; /* Reduced padding */
-  font-size: 1rem; /* Smaller font size */
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
 
@@ -101,7 +99,6 @@ const LoginButton = styled.button`
 const Nav = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
@@ -111,15 +108,24 @@ const Nav = () => {
 
   return (
     <Navbar>
-      <VideoBackground autoPlay loop muted>
-        <source src={rays} type="video/mp4" />
+      {/* Video Background */}
+      <VideoBackground
+        autoPlay
+        loop
+        muted
+        playsInline
+        poster="https://res.cloudinary.com/bazeercloud/image/upload/v1732787677/top2_thumbnail.jpg"
+      >
+        <source
+          src="https://res.cloudinary.com/bazeercloud/video/upload/f_auto,q_auto/v1732787677/top2_br0zzc.mp4"
+          type="video/mp4"
+        />
         Your browser does not support the video tag.
       </VideoBackground>
 
       {/* Logo */}
       <LogoContainer>
         <img src={mercuryImage} alt="Logo" />
-        
       </LogoContainer>
 
       {/* Menu */}
