@@ -62,14 +62,22 @@ const DescriptionContainer = styled.div`
 `;
 
 const BackgroundWrapper = styled.div`
-  height: 100vh;
+  min-height: 100vh; /* Ensure it spans at least the full height of the viewport */
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-start; /* Align items to the top */
   background: transparent;
-  padding-top: 3rem; /* Add padding-top to push content down */
+  padding-top: 3rem; /* Push content down for spacing */
+
+  /* Adjust for mobile screens */
+  @media (max-width: 768px) {
+    padding: 1rem; /* Reduce padding for smaller screens */
+    flex-direction: column; /* Stack content vertically */
+  }
 `;
+
+
 
 const TriangleContainer = styled.div`
   display: flex;
@@ -134,7 +142,7 @@ const TriangularCarousel = () => {
   ];
 
   return (
-    <BackgroundWrapper>
+    <BackgroundWrapper className="bg-wpr">
       <TriangleContainer>
         {services.map((item) => (
           <div key={item.id} className="flex flex-col items-center cursor-pointer">
