@@ -21,6 +21,12 @@ const TriangleCard = styled.div`
   border: 2px solid #6a0dad;
   background: linear-gradient(145deg, #6a0dad, #3a0078);
   position: relative;
+  cursor: pointer; /* Ensure cursor pointer on hover */
+  transition: transform 0.3s; /* Smooth scaling transition */
+
+  &:hover {
+    transform: scale(1.05); /* Scale effect on hover */
+  }
 
   /* Adjust for smaller screens */
   @media (max-width: 768px) {
@@ -76,8 +82,6 @@ const BackgroundWrapper = styled.div`
     flex-direction: column; /* Stack content vertically */
   }
 `;
-
-
 
 const TriangleContainer = styled.div`
   display: flex;

@@ -5,7 +5,7 @@ const FAQItem = ({ question, answer }) => {
 
   return (
     <div
-      className="bg-white bg-opacity-20 backdrop-blur-xl rounded-xl shadow-2xl p-6 mb-6 cursor-pointer hover:bg-opacity-30 transition duration-200"
+      className="bg-white bg-opacity-20 backdrop-blur-xl rounded-xl shadow-xl p-6 mb-6 cursor-pointer hover:bg-opacity-30 transition-all duration-300"
       onClick={() => setIsOpen(!isOpen)}
     >
       <div className="text-lg font-semibold text-white">{question}</div>
@@ -25,8 +25,8 @@ const FAQ = () => {
 
   return (
     <section className="py-8 px-4">
-      <h2 className="text-center text-3xl font-bold mb-12 text-white">FAQs</h2>
-      <div className="max-w-3xl mx-auto text-black space-y-4">
+      <h2 className="text-center text-4xl font-extrabold mb-12 text-white">FAQs</h2>
+      <div className="max-w-3xl mx-auto text-black space-y-6">
         {faqData.map((item, index) => (
           <FAQItem key={index} question={item.question} answer={item.answer} />
         ))}
