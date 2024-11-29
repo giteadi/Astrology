@@ -1,7 +1,55 @@
-import React from "react"; 
-import styled from "styled-components";
+import React from "react";
+import styled, { keyframes, css } from "styled-components";
 
-// Custom Testimonial Card Styled Component
+// Keyframe for cards coming from top to bottom
+const moveFromTop = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(-100%); /* Start from the top */
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0); /* Move to the normal position */
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0); /* Stay in position */
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(0); /* Stay in position */
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%); /* Move out to the bottom */
+  }
+`;
+
+// Keyframe for cards coming from bottom to top
+const moveFromBottom = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(100%); /* Start from the bottom */
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0); /* Move to the normal position */
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0); /* Stay in position */
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(0); /* Stay in position */
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%); /* Move out to the top */
+  }
+`;
+
+// Custom Testimonial Card Styled Component with looping animation
 const TestimonialCard = styled.div`
   width: 100%;
   background: rgba(255, 255, 255, 0.2); /* Add slight transparency */
@@ -15,12 +63,15 @@ const TestimonialCard = styled.div`
   gap: 1.5rem; /* Spacing between content */
   backdrop-filter: blur(10px); /* Subtle blur effect for background */
   text-align: center;
-
-  /* Responsive Design */
-  @media (max-width: 640px) {
-    padding: 1.5rem;
-    gap: 1rem;
-  }
+  opacity: 0;
+  animation: ${({ animation }) =>
+    animation === "top-to-bottom"
+      ? css`
+          ${moveFromTop} 6s ease-in-out infinite
+        `
+      : css`
+          ${moveFromBottom} 6s ease-in-out infinite
+        `};
 `;
 
 // Other Styled Components
@@ -72,14 +123,35 @@ const TestimonialsSection = () => {
       position: "Software Engineer",
       text: "I was skeptical at first, but after using this product, I can’t imagine going back. It’s truly a must-have!",
     },
+    {
+      image: "https://randomuser.me/api/portraits/women/47.jpg",
+      name: "Anna Lee",
+      position: "Product Manager, ABC Tech",
+      text: "The features and design are incredible. It has improved our workflow drastically.",
+    },
+    {
+      image: "https://randomuser.me/api/portraits/men/48.jpg",
+      name: "Mark Brown",
+      position: "Designer",
+      text: "The design is sleek and intuitive. A fantastic product all around!",
+    },
+    {
+      image: "https://randomuser.me/api/portraits/women/49.jpg",
+      name: "Sarah White",
+      position: "Founder, StartUp Co.",
+      text: "I can't imagine running our business without this. Truly invaluable!",
+    },
   ];
 
   return (
     <div className="flex flex-col items-center min-h-screen p-8">
       <h2 className="text-4xl font-bold text-white mt-16 mb-12">What Our Clients Say</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 w-full max-w-screen-xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-12 w-full max-w-screen-xl">
         {testimonials.map((testimonial, index) => (
-          <TestimonialCard key={index}>
+          <TestimonialCard
+            key={index}
+            animation={index % 2 === 0 ? "top-to-bottom" : "bottom-to-top"} // Even-index for top-to-bottom, odd-index for bottom-to-top
+          >
             <AuthorImage imgUrl={testimonial.image} />
             <TestimonialText>{testimonial.text}</TestimonialText>
             <AuthorName>{testimonial.name}</AuthorName>
