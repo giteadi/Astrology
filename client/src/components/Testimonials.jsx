@@ -5,15 +5,15 @@ import styled, { keyframes, css } from "styled-components";
 const moveFromTop = keyframes`
   0% {
     opacity: 0;
-    transform: translateY(-100%); /* Start from the top */
+    transform: translateY(-100%);
   }
   50% {
     opacity: 1;
-    transform: translateY(0); /* Move to the normal position */
+    transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: translateY(100%); /* Move down off-screen */
+    transform: translateY(100%);
   }
 `;
 
@@ -21,32 +21,32 @@ const moveFromTop = keyframes`
 const moveFromBottom = keyframes`
   0% {
     opacity: 0;
-    transform: translateY(100%); /* Start from the bottom */
+    transform: translateY(100%);
   }
   50% {
     opacity: 1;
-    transform: translateY(0); /* Move to the normal position */
+    transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: translateY(-100%); /* Move up off-screen */
+    transform: translateY(-100%);
   }
 `;
 
 // Custom Testimonial Card Styled Component with looping animation
 const TestimonialCard = styled.div`
-  width: 90%; /* Reduced width */
-  max-width: 350px; /* Set a max width */
-  background: rgba(255, 255, 255, 0.2); /* Add slight transparency */
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
-  padding: 1rem; /* Reduced padding */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem; /* Spacing between content */
-  backdrop-filter: blur(10px); /* Subtle blur effect for background */
+  gap: 1rem;
+  backdrop-filter: blur(10px);
   text-align: center;
   opacity: 0;
   animation: ${({ animation }) =>
@@ -57,47 +57,98 @@ const TestimonialCard = styled.div`
       : css`
           ${moveFromBottom} 8s ease-in-out infinite
         `};
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 768px) {
+    max-width: 90%;
+    padding: 0.8rem;
+  }
 `;
 
 // Other Styled Components
 const TestimonialText = styled.p`
-  font-size: 0.875rem; /* Reduced font size */
-  color: #fff; /* Light text for visibility on dark background */
+  font-size: 0.875rem;
+  color: #fff;
   line-height: 1.6;
   font-style: italic;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
 `;
 
 const AuthorName = styled.h3`
-  font-size: 1.125rem; /* Adjusted font size */
-  color: #fff; /* White color for name */
+  font-size: 1.125rem;
+  color: #fff;
   font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const AuthorPosition = styled.p`
-  font-size: 0.875rem; /* Reduced font size */
-  color: #ddd; /* Slightly lighter color for the position */
+  font-size: 0.875rem;
+  color: #ddd;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
 `;
 
 const AuthorImage = styled.div`
-  width: 4rem; /* Reduced size */
-  height: 4rem; /* Reduced size */
+  width: 4rem;
+  height: 4rem;
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
   background-position: center;
   border-radius: 50%;
   border: 3px solid #fff;
+
+  @media (max-width: 768px) {
+    width: 3rem;
+    height: 3rem;
+  }
 `;
 
-// Container for both groups (top-to-bottom and bottom-to-top)
+// Adjusted container for both groups (top-to-bottom and bottom-to-top)
 const CardsContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
-  max-width: 1200px; /* Adjust as necessary */
+  max-width: 1200px;
   overflow: hidden;
   margin: 0 auto;
   padding: 2rem;
-  gap: 3px; /* Reduced gap between left and right card groups to 3px */
+  gap: 0;
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+  }
+`;
+
+// Adjusted Left Column to reduce gap between columns
+const LeftColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 16px; /* Space between columns */
+  }
+`;
+
+// Adjusted Right Column to reduce gap between columns
+const RightColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    margin-top: 16px; /* Space between columns */
+  }
 `;
 
 // Section for Testimonials with top-to-bottom and bottom-to-top movement
@@ -145,35 +196,29 @@ const TestimonialsSection = () => {
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
       <h2 className="text-4xl font-bold text-white mt-16 mb-12">What Our Clients Say</h2>
       <CardsContainer>
-        {/* Left Group (Top to Bottom) */}
-        <div className="flex flex-col gap-12">
+        {/* Left Column (Top to Bottom) */}
+        <LeftColumn>
           {testimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={index}
-              animation="top-to-bottom" // Even-index for top-to-bottom
-            >
+            <TestimonialCard key={index} animation="top-to-bottom">
               <AuthorImage imgUrl={testimonial.image} />
               <TestimonialText>{testimonial.text}</TestimonialText>
               <AuthorName>{testimonial.name}</AuthorName>
               <AuthorPosition>{testimonial.position}</AuthorPosition>
             </TestimonialCard>
           ))}
-        </div>
+        </LeftColumn>
 
-        {/* Right Group (Bottom to Top) */}
-        <div className="flex flex-col gap-12">
+        {/* Right Column (Bottom to Top) */}
+        <RightColumn>
           {testimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={index}
-              animation="bottom-to-top" // Odd-index for bottom-to-top
-            >
+            <TestimonialCard key={index} animation="bottom-to-top">
               <AuthorImage imgUrl={testimonial.image} />
               <TestimonialText>{testimonial.text}</TestimonialText>
               <AuthorName>{testimonial.name}</AuthorName>
               <AuthorPosition>{testimonial.position}</AuthorPosition>
             </TestimonialCard>
           ))}
-        </div>
+        </RightColumn>
       </CardsContainer>
     </div>
   );
