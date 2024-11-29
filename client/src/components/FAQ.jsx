@@ -5,11 +5,11 @@ const FAQItem = ({ question, answer }) => {
 
   return (
     <div
-      className="bg-white rounded-xl shadow-md p-6 mb-6 cursor-pointer hover:bg-gray-100 transition duration-200"
+      className="bg-white bg-opacity-20 backdrop-blur-xl rounded-xl shadow-2xl p-6 mb-6 cursor-pointer hover:bg-opacity-30 transition duration-200"
       onClick={() => setIsOpen(!isOpen)}
     >
-      <div className="text-lg font-semibold text-purple-900">{question}</div>
-      {isOpen && <p className="mt-2 text-gray-700">{answer}</p>}
+      <div className="text-lg font-semibold text-white">{question}</div>
+      {isOpen && <p className="mt-2 text-gray-200">{answer}</p>}
     </div>
   );
 };
