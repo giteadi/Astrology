@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../Redux/AuthSlice";
-import { FiMenu, FiX, FiUser, FiShoppingCart } from "react-icons/fi";
+import { FiMenu, FiX, FiShoppingCart, FiHome, FiUser } from "react-icons/fi";
 import mercuryImage from "../assets/mercury.webp";
 import backgroundImage from "../assets/bg.jpg";
 import Searchbar from "../components/Searchbar";
@@ -62,11 +62,11 @@ const LogoContainer = styled.div`
 
 const IconContainer = styled.div`
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1.5rem;
+  right: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1rem; /* Increased gap between the icons */
   z-index: 10;
 
   .icon {
@@ -75,13 +75,26 @@ const IconContainer = styled.div`
     cursor: pointer;
 
     @media (max-width: 768px) {
-      font-size: 1.2rem;
+      font-size: 1.5rem; /* Keep the home icon size the same */
     }
 
-    /* Hide Profile icon on mobile */
-    @media (max-width: 768px) {
+    @media (max-width: 480px) {
+      font-size: 1rem;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Adjust icons for mobile: Hide profile and cart on mobile */
+  @media (max-width: 768px) {
+    .profile-icon,
+    .cart-icon {
       display: none;
     }
+    /* Make the Home and Hamburger icons side by side on mobile */
+    display: flex;
+    justify-content: center; /* Center the icons */
+    gap: 1rem; /* Adjust gap between the icons */
+    padding-right: 1rem; /* Add space to the right */
   }
 `;
 
@@ -113,32 +126,33 @@ const ProfileMenu = styled.div`
 
 const MobileMenuIcon = styled.div`
   position: absolute;
-  top: 1rem;
-  right: 2rem;
+  top: 1.5rem; /* Aligned with Home icon */
+  right: 1rem; /* Added space from the right edge */
   z-index: 20;
   display: none;
 
   .icon {
-    font-size: 2rem;
+    font-size: 1.2rem; /* Reduced the font size of hamburger */
     color: white;
     cursor: pointer;
   }
 
   @media (max-width: 768px) {
-    display: block;
+    display: block; /* Show only on mobile */
   }
 `;
+
 
 const SlideMenu = styled.div`
   position: fixed;
   top: 0;
-  right: ${({ isOpen }) => (isOpen ? "0" : "-70%")}; /* Slide-in effect */
+  right: ${({ isOpen }) => (isOpen ? "0" : "-70%")};
   width: 70%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
   z-index: 30;
-  transition: right 0.3s ease-in-out; /* Smooth slide transition */
+  transition: right 0.3s ease-in-out;
   padding: 2rem 1rem;
 
   .close-btn {
@@ -152,7 +166,8 @@ const SlideMenu = styled.div`
   .menu-items {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
+    margin-top: 3rem;
 
     button {
       background: none;
@@ -164,6 +179,13 @@ const SlideMenu = styled.div`
 
       &:hover {
         color: #f0a500;
+      }
+    }
+
+    /* Hide cart in the slide menu for mobile */
+    @media (max-width: 768px) {
+      .cart-text {
+        display: none;
       }
     }
   }
@@ -251,18 +273,23 @@ const Nav = () => {
         </UsernameContainer>
       )}
 
-      {/* Icons (Profile & Cart) */}
+      {/* Icons Container (Desktop view) */}
       <IconContainer>
+        <FiHome
+          className="icon"
+          title="Home"
+          onClick={() => navigate("/")}
+        />
+        {/* Only display cart icon on desktop */}
         {isAuthenticated && (
           <FiShoppingCart
-            className="icon"
+            className="icon cart-icon"
             title="Cart"
             onClick={() => navigate("/cart")}
           />
         )}
-        {/* The Profile icon is hidden on mobile */}
         <FiUser
-          className="icon"
+          className="icon profile-icon"
           title="Profile"
           onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
         />
@@ -280,24 +307,23 @@ const Nav = () => {
         {isMobileMenuOpen ? <FiX className="icon" /> : <FiMenu className="icon" />}
       </MobileMenuIcon>
 
-      {/* Slide-in Mobile Menu */}
+      {/* Slide Menu */}
       <SlideMenu isOpen={isMobileMenuOpen}>
         <div className="close-btn" onClick={() => setMobileMenuOpen(false)}>
           <FiX />
         </div>
         <div className="menu-items">
+          <button onClick={() => navigate("/")}>Home</button>
+          {/* Hide cart in the slide menu for mobile */}
           {isAuthenticated && (
-            <div>{`Hello, ${user.name}`}</div>
+            <div className="cart-text">
+              <span>Cart</span>
+            </div>
           )}
-          {isAuthenticated ? (
-            <button onClick={handleLogout}>Logout</button>
-          ) : (
+          {!isAuthenticated ? (
             <button onClick={() => navigate("/login")}>Login</button>
-          )}
-          {isAuthenticated && (
-            <button onClick={() => navigate("/cart")}>
-              <FiShoppingCart /> Cart
-            </button>
+          ) : (
+            <button onClick={handleLogout}>Logout</button>
           )}
         </div>
       </SlideMenu>
@@ -307,7 +333,6 @@ const Nav = () => {
         <Searchbar />
       </SearchbarContainer>
 
-      {/* Glassy Navigation Bar */}
       <GlassyNav />
     </Navbar>
   );
