@@ -13,10 +13,10 @@ import Cart from "./pages/Cart";
 import CartManager from "./pages/ParentCard";
 import AstrologyPage from "./pages/TrianglePage";
 import NumrologyService from "./pages/SquareServicePage";
+import ProductPage from "./pages/ProductPage";
 function App() {
   return (
     <div className="font-bold">
-     <Nav/>
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/astrology/:id" element={<AstrologyPage/>}/>
@@ -30,7 +30,7 @@ function App() {
         <Route path="/cart-manegar" element={<CartManager/>}/>
         <Route path='/astrology' element={<Astrology/>}/>
         <Route path='/numerologyPage' element={<NumrologyService/>}/>
-        
+        <Route path="/product" element={<ProductPage/>}/>
       </Routes>
       <Footer/>
     </div>

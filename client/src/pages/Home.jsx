@@ -11,6 +11,7 @@ import FAQ from "../components/FAQ";
 import BlogList from "../components/BlogList";
 import DownwardCarousel from "../components/DownwardTriangle";
 import GlassyNav from "../components/GlassyNav";
+import Nav from "../components/Nav";
 
 // HomeContainer with galaxy-inspired gradient background
 const HomeContainer = styled.div`
@@ -173,7 +174,12 @@ const DownwardCarouselWrapper = styled.div`
 
 export default function Home() {
   return (
-    <HomeContainer>
+
+
+      <div>
+        <Nav/>
+          <HomeContainer>
+      
       {/* <GlassyNav/> */}
       {/* Section Title */}
       <Title>
@@ -220,5 +226,8 @@ export default function Home() {
       {/* Blog List Section */}
       <BlogList />
     </HomeContainer>
+      </div>
+    
+    
   );
 }
