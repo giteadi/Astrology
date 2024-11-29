@@ -1,70 +1,39 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../Redux/CartSlice";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 // Styled Components
 const PageContainer = styled.div`
-  background: linear-gradient(to right, #1c1c3d, #4b0082);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1rem;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #1c1c3d, #4b0082);
+  padding: 2rem;
 `;
 
 const Title = styled.h1`
-  text-align: center;
   font-size: 2.5rem;
   color: white;
-  font-weight: bold;
+  margin-bottom: 1rem;
+`;
+
+const Description = styled.p`
+  font-size: 1.2rem;
+  color: white;
+  text-align: center;
+  max-width: 600px;
   margin-bottom: 2rem;
 `;
 
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  width: 100%;
-  max-width: 1200px;
-  justify-content: center;
-`;
-
-const ServiceCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-`;
-
-const TriangleCardContainer = styled.div`
-  width: 18rem;
-  height: 18rem;
-  background: linear-gradient(to bottom right, #4b0082, #6c63ff);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  color: white;
+const Price = styled.span`
+  font-size: 1.5rem;
+  color: #ffcc00;
   font-weight: bold;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: transform 0.3s ease-in-out;
-  &:hover {
-    transform: scale(1.05);
-  }
 `;
 
-const Description = styled.div`
-  margin-top: 1rem;
-  color: white;
-  font-size: 1rem;
-`;
-
-const BookNowButton = styled.button`
-  margin-top: 1rem;
+const BackButton = styled.button`
   padding: 0.75rem 2rem;
   background-color: #4b0082;
   color: white;
@@ -73,69 +42,44 @@ const BookNowButton = styled.button`
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+
   &:hover {
     background-color: #6c63ff;
     transform: scale(1.1);
   }
 `;
 
-// Service Page Component
-const ServicePage = () => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+const AstrologyDetails = () => {
+  const { id } = useParams(); // Capture the dynamic ID from the URL
   const navigate = useNavigate();
 
-  const handleBookNow = async (item) => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const price = String(item.price);
-    const cartItem = {
-      user_id: user.userId,
-      item_id: item.id,
-      title: item.title,
-      description: item.description,
-      price,
-      quantity: 1,
-    };
-
-    try {
-      const response = await axios.post("http://localhost:4000/api/cart/add", cartItem);
-      if (response.status === 200) {
-        dispatch(addToCart(cartItem));
-      }
-    } catch (error) {
-      console.error("Error adding to cart", error);
-    }
-  };
-
+  // Services array (should match the one used in the carousel)
   const services = [
-    { id: 101, title: "Numerology", description: "Discover the secrets of your numbers.", price: 299.99 },
-    { id: 102, title: "Astrology", description: "Understand your life through the stars.", price: 399.99 },
-    { id: 103, title: "Vastu Shastra", description: "Align your home with cosmic energy.", price: 499.99 },
+    { id: 102, title: "Astrology", description: "Insights into your life's path.", price: 299.99 },
+    { id: 103, title: "Vastu", description: "Celestial alignments insights.", price: 399.99 },
+    { id: 104, title: "Numerology", description: "Guidance through life's challenges.", price: 499.99 },
   ];
+
+  // Find the service by ID
+  const service = services.find((item) => item.id === Number(id));
+
+  if (!service) {
+    return (
+      <PageContainer>
+        <Title>Service Not Found</Title>
+        <BackButton onClick={() => navigate(-1)}>Go Back</BackButton>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
-      <Title>Our Astrology Services</Title>
-      <GridContainer>
-        {services.map((item) => (
-          <ServiceCard key={item.id}>
-            {/* Triangular Card */}
-            <TriangleCardContainer onClick={() => navigate(`/astrology/${item.id}`)}>
-              {item.title.toUpperCase()}
-            </TriangleCardContainer>
-            {/* Service Description */}
-            <Description>{item.description}</Description>
-            {/* Booking Button */}
-            <BookNowButton onClick={() => handleBookNow(item)}>BOOK NOW</BookNowButton>
-          </ServiceCard>
-        ))}
-      </GridContainer>
+      <Title>{service.title}</Title>
+      <Description>{service.description}</Description>
+      <Price>Price: ${service.price}</Price>
+      <BackButton onClick={() => navigate(-1)}>Back to Services</BackButton>
     </PageContainer>
   );
 };
 
-export default ServicePage;
+export default AstrologyDetails;

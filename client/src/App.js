@@ -19,7 +19,7 @@ function App() {
     <div className="font-bold">
       <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/astrology/:id" element={<AstrologyPage/>}/>
+        <Route path="/astrology-page/:id" element={<AstrologyPage/>}/>
         <Route path='/vastu' element={<Vastu/>}/>
         <Route path='/numerology' element={<Numerology/>}/>
         <Route path='/register' element={<RegistrationForm/>}/>
@@ -28,7 +28,7 @@ function App() {
         <Route path='/invoice' element={<Invoice/>}/>
         <Route path='/cart' element={<Cart/>}/>
         <Route path="/cart-manegar" element={<CartManager/>}/>
-        <Route path='/astrology' element={<Astrology/>}/>
+        <Route path='/astrology/:id' element={<Astrology/>}/>
         <Route path='/numerologyPage' element={<NumrologyService/>}/>
         <Route path="/product" element={<ProductPage/>}/>
       </Routes>
