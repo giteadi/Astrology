@@ -74,8 +74,13 @@ const IconContainer = styled.div`
     color: white;
     cursor: pointer;
 
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       font-size: 1.2rem;
+    }
+
+    /* Hide Profile icon on mobile */
+    @media (max-width: 768px) {
+      display: none;
     }
   }
 `;
@@ -106,38 +111,6 @@ const ProfileMenu = styled.div`
   }
 `;
 
-const MobileMenu = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  z-index: 30;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-  padding: 2rem 1rem;
-
-  .menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      text-align: left;
-
-      &:hover {
-        color: #f0a500;
-      }
-    }
-  }
-`;
-
 const MobileMenuIcon = styled.div`
   position: absolute;
   top: 1rem;
@@ -153,6 +126,46 @@ const MobileMenuIcon = styled.div`
 
   @media (max-width: 768px) {
     display: block;
+  }
+`;
+
+const SlideMenu = styled.div`
+  position: fixed;
+  top: 0;
+  right: ${({ isOpen }) => (isOpen ? "0" : "-70%")}; /* Slide-in effect */
+  width: 70%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  z-index: 30;
+  transition: right 0.3s ease-in-out; /* Smooth slide transition */
+  padding: 2rem 1rem;
+
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      text-align: left;
+
+      &:hover {
+        color: #f0a500;
+      }
+    }
   }
 `;
 
@@ -247,6 +260,7 @@ const Nav = () => {
             onClick={() => navigate("/cart")}
           />
         )}
+        {/* The Profile icon is hidden on mobile */}
         <FiUser
           className="icon"
           title="Profile"
@@ -266,8 +280,11 @@ const Nav = () => {
         {isMobileMenuOpen ? <FiX className="icon" /> : <FiMenu className="icon" />}
       </MobileMenuIcon>
 
-      {/* Mobile Menu */}
-      <MobileMenu isOpen={isMobileMenuOpen}>
+      {/* Slide-in Mobile Menu */}
+      <SlideMenu isOpen={isMobileMenuOpen}>
+        <div className="close-btn" onClick={() => setMobileMenuOpen(false)}>
+          <FiX />
+        </div>
         <div className="menu-items">
           {isAuthenticated && (
             <div>{`Hello, ${user.name}`}</div>
@@ -283,7 +300,7 @@ const Nav = () => {
             </button>
           )}
         </div>
-      </MobileMenu>
+      </SlideMenu>
 
       {/* Searchbar */}
       <SearchbarContainer>
