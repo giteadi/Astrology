@@ -64,26 +64,26 @@ const ProductPage = () => {
       </div>
 
       {/* Main Product Section */}
-      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+      <div className="flex flex-col gap-8 md:flex-row md:gap-8">
         {/* Image Section */}
         <div className="flex flex-col md:flex-row md:w-1/2 bg-opacity-10 p-4 rounded-lg">
-          {/* Small Images - Moved to the left */}
-          <div className="flex flex-col gap-2 justify-center items-center md:w-1/3">
+          {/* Main Image */}
+          <div className="flex flex-col gap-6 justify-start w-full md:w-2/3">
+            <div className="w-full h-72 bg-gray-400 rounded-lg"></div>
+          </div>
+
+          {/* Small Images */}
+          <div className="flex flex-row gap-4 justify-center items-center md:w-1/3 md:flex-col md:flex-col-reverse md:gap-2 mt-4 sm:mt-8">
             {Array(4)
               .fill(0)
               .map((_, index) => (
                 <div key={index} className="w-12 h-12 bg-gray-400 rounded-lg" />
               ))}
           </div>
-
-          {/* Main Image */}
-          <div className="flex flex-col gap-4 justify-start w-full md:w-2/3">
-            <div className="w-full h-72 bg-gray-400 rounded-lg"></div>
-          </div>
         </div>
 
         {/* Details Section */}
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="flex-1 flex flex-col gap-6">
           <h1 className="text-3xl">Vastu Consultation Platinum</h1>
           <p className="text-xl">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
           <p className="text-2xl font-bold">
@@ -106,44 +106,30 @@ const ProductPage = () => {
       {/* FAQs Section */}
       <FAQsSection>
         <h2 className="text-2xl mb-4">FAQs</h2>
-        <div
-          className="faq-item"
-          onClick={() => handleFAQClick(1)}
-        >
+        <div className="faq-item" onClick={() => handleFAQClick(1)}>
           What is included in the Vastu Consultation Platinum?
         </div>
         {openFAQ === 1 && (
           <div className="faq-answer show-answer">
-            The Vastu Consultation Platinum package includes personalized guidance,
-            space analysis, and a complete energy alignment consultation with certified
-            professionals. It’s tailored to optimize your environment for peace and prosperity.
+            The Vastu Consultation Platinum package includes personalized guidance, space analysis, and a complete energy alignment consultation with certified professionals. It’s tailored to optimize your environment for peace and prosperity.
           </div>
         )}
 
-        <div
-          className="faq-item"
-          onClick={() => handleFAQClick(2)}
-        >
+        <div className="faq-item" onClick={() => handleFAQClick(2)}>
           How can I book a consultation with an expert?
         </div>
         {openFAQ === 2 && (
           <div className="faq-answer show-answer">
-            Booking a consultation is easy! Simply visit our website, select your preferred
-            expert, and choose a time slot. You’ll receive a confirmation email with all the
-            details.
+            Booking a consultation is easy! Simply visit our website, select your preferred expert, and choose a time slot. You’ll receive a confirmation email with all the details.
           </div>
         )}
 
-        <div
-          className="faq-item"
-          onClick={() => handleFAQClick(3)}
-        >
+        <div className="faq-item" onClick={() => handleFAQClick(3)}>
           Are these consultations certified by professionals?
         </div>
         {openFAQ === 3 && (
           <div className="faq-answer show-answer">
-            Yes! All consultations are conducted by certified professionals who are highly
-            experienced in Vastu Shastra and aligned with modern practices for your space’s harmony.
+            Yes! All consultations are conducted by certified professionals who are highly experienced in Vastu Shastra and aligned with modern practices for your space’s harmony.
           </div>
         )}
       </FAQsSection>
