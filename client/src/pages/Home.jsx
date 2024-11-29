@@ -194,12 +194,13 @@ export default function Home() {
       </StarContainer>
 
       {/* Triangular Carousel with Glassmorphism Wrapper */}
+      <Title>Astrology</Title>
       <CarouselWrapper>
         <TriangularCarousel />
       </CarouselWrapper>
 
       {/* Section Title */}
-      <Title>Astrology Reports</Title>
+      <Title>Vastu</Title>
 
       {/* Square Carousel with Glassmorphism Wrapper */}
       <CarouselWrapper>
@@ -208,7 +209,7 @@ export default function Home() {
 
       {/* Downward Triangle Section with Glassmorphism */}
       <Title>
-        <h3>Explore Our Services</h3>
+      Numerology
       </Title>
       <CarouselWrapper>
         <DownwardCarousel />

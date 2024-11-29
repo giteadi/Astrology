@@ -107,10 +107,11 @@ const SuggestionItem = styled(Link)`
 const GlassyNav = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center; /* Default to center on larger screens */
-  width: 100%;
+  justify-content: space-around; /* Use space-around to evenly space the items */
+  gap: 1rem; /* Optional: Set a gap between items, adjust as needed */
+  width: 80%; /* Adjust width as needed */
   height: 4rem;
-  border-radius: 9999px;
+  border-radius: 1.1rem;
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -121,11 +122,14 @@ const GlassyNav = styled.div`
   color: white;
 
   @media (max-width: 400px) {
-    font-size: 1rem; /* Adjust font size for small screens */
-    padding: 0 1rem; /* Reduce padding */
-    justify-content: space-between; /* Space out navbar items on mobile */
+    font-size: 1rem;
+    padding: 0 1rem;
+    justify-content: space-between;
+    gap: 0.5rem; /* Adjust gap for small screens if necessary */
   }
 `;
+
+
 
 const NavItem = styled(Link)`
   margin: 0 1.5rem;
@@ -224,11 +228,11 @@ export default function SearchbarWithOptions() {
 
       {/* Glassy Navbar for Astrology, Numerology, and Vastu */}
       <GlassyNav>
-        <NavItem to="/numerology">Numerology</NavItem>
-        <span>|</span>
-        <NavItem to="/astrology">Astrology</NavItem>
+      <NavItem to="/astrology">Astrology</NavItem>
         <span>|</span>
         <NavItem to="/vastu">Vastu</NavItem>
+        <span>|</span>
+        <NavItem to="/numerology">Numerology</NavItem>
       </GlassyNav>
     </SearchWrapper>
   );

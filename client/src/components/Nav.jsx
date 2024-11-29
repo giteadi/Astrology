@@ -198,7 +198,7 @@ const SearchbarContainer = styled.div`
   transform: translateX(-50%);
   z-index: 10;
   width: 60%;
-  max-width: 600px;
+  max-width: 900px;
 
   @media (max-width: 768px) {
     top: 25%;
@@ -333,7 +333,7 @@ const Nav = () => {
         <Searchbar />
       </SearchbarContainer>
 
-      <GlassyNav />
+
     </Navbar>
   );
 };

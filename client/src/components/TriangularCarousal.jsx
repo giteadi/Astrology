@@ -136,9 +136,9 @@ const TriangularCarousel = () => {
   };
 
   const services = [
-    { id: 102, title: "Numerology", description: "Insights into your life's path.", price: 299.99 },
-    { id: 103, title: "Astrology", description: "Celestial alignments insights.", price: 399.99 },
-    { id: 104, title: "Vastu", description: "Guidance through life's challenges.", price: 499.99 },
+    { id: 102, title: "Astrology", description: "Insights into your life's path.", price: 299.99 },
+    { id: 103, title: "Vastu", description: "Celestial alignments insights.", price: 399.99 },
+    { id: 104, title: "Numerology", description: "Guidance through life's challenges.", price: 499.99 },
   ];
 
   return (
@@ -148,7 +148,7 @@ const TriangularCarousel = () => {
           <div key={item.id} className="flex flex-col items-center cursor-pointer">
             <TriangleCard
               onClick={() => {
-                navigate(`/astrology/${item.id}`);
+                navigate(`/product`);
               }}
             >
               <div>{item.title.toUpperCase()}</div>
