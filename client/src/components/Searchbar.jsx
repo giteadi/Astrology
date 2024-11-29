@@ -107,9 +107,10 @@ const SuggestionItem = styled(Link)`
 const GlassyNav = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around; /* Use space-around to evenly space the items */
+  justify-content: space-around; /* Evenly space the items */
   gap: 1rem; /* Optional: Set a gap between items, adjust as needed */
-  width: 80%; /* Adjust width as needed */
+  width: 100%; /* Ensure full width on larger screens */
+  max-width: 1200px; /* Optional: Set a max-width to prevent stretching */
   height: 4rem;
   border-radius: 1.1rem;
   backdrop-filter: blur(10px);
@@ -120,14 +121,18 @@ const GlassyNav = styled.div`
   padding: 0 2rem;
   font-size: 1.1rem;
   color: white;
-
+  overflow: hidden; /* Prevents overflow */
+  flex-wrap: wrap; /* Allow items to wrap if needed */
+  
   @media (max-width: 400px) {
     font-size: 1rem;
     padding: 0 1rem;
     justify-content: space-between;
-    gap: 0.5rem; /* Adjust gap for small screens if necessary */
+    gap: 0.5rem;
+    flex-wrap: wrap; /* Allows wrapping of items on small screens */
   }
 `;
+
 
 
 
