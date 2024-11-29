@@ -80,7 +80,6 @@ const CarouselContainer = styled.div`
   }
 `;
 
-
 const DownwardCarousel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -106,7 +105,7 @@ const DownwardCarousel = () => {
       if (response.status === 200) {
         console.log("Item added to the cart successfully!");
         dispatch(addToCart(cartItem));
-        navigate("/numerology");
+        navigate(`/numerology-page${item.id}`); // Navigate to dynamic numerology page
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -123,12 +122,21 @@ const DownwardCarousel = () => {
   return (
     <CarouselContainer>
       {services.map((item) => (
-        <div key={item.id} className="flex flex-col items-center cursor-pointer">
+        <div
+          key={item.id}
+          className="flex flex-col items-center cursor-pointer"
+          onClick={() => navigate(`/numerology-page/${item.id}`)} // Navigate to dynamic page on click
+        >
           <DownwardTriangle>
             <div>{item.title.toUpperCase()}</div>
           </DownwardTriangle>
           <DescriptionContainer>{item.description}</DescriptionContainer>
-          <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
+          <Button onClick={(e) => {
+            e.stopPropagation(); // Prevent navigation when clicking on the button
+            handleBookNow(item);
+          }}>
+            BOOK NOW
+          </Button>
         </div>
       ))}
     </CarouselContainer>
