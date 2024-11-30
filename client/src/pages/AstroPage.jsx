@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 // Styled Component for Triangle Card
 const TriangleCard = styled.div`
@@ -29,29 +30,41 @@ const TriangleCard = styled.div`
     height: 14rem;
   }
 
-  /* Add margin for spacing */
   margin: 1rem;
 `;
+
+const ItemDetails = ({ item, onBuyNow }) => (
+  <div className="text-center">
+    <p className="text-sm">{item.description}</p>
+    <p className="text-lg font-semibold text-yellow-400">{`$${item.price.toFixed(2)}`}</p>
+    <button
+      className="mt-2 bg-[#ff6347] hover:bg-[#ff4500] text-white font-medium py-2 px-4 rounded transition-colors duration-300"
+      onClick={onBuyNow}
+      aria-label={`Buy ${item.title}`}
+    >
+      Buy Now
+    </button>
+  </div>
+);
 
 const Astrology = () => {
   // Dummy data array
   const astrologyItems = [
-    {
-      title: "Zodiac Analysis",
-      description: "Understand your zodiac sign and its traits.",
-      price: "$19.99",
-    },
-    {
-      title: "Astrology Report",
-      description: "Detailed personal astrology report.",
-      price: "$29.99",
-    },
-    {
-      title: "Future Predictions",
-      description: "Insights into your future based on planetary positions.",
-      price: "$39.99",
-    },
+    { id: 102, title: "Astrology", description: "Insights into your life's path.", price: 299.99 },
+    { id: 103, title: "Vastu", description: "Celestial alignments insights.", price: 399.99 },
+    { id: 104, title: "Numerology", description: "Guidance through life's challenges.", price: 499.99 },
   ];
+
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleBuyNow = (title) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate(`/product/${title}`);
+      setIsLoading(false);
+    }, 500); // Simulate a loading delay
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] flex flex-col items-center justify-center text-white">
@@ -61,24 +74,24 @@ const Astrology = () => {
       </p>
       <div className="flex flex-wrap justify-center gap-8">
         {astrologyItems.map((item, index) => (
-          <div key={index} className="flex flex-col items-center gap-4">
+          <div key={item.id} className="flex flex-col items-center gap-4">
             {/* Triangle Card */}
-            <TriangleCard>
-              <div className="absolute bottom-4 text-center">
-                <h2 className="text-xl font-bold">{item.title}</h2>
-              </div>
+            <TriangleCard
+              onClick={() => handleBuyNow(item.title)}
+              aria-label={`Go to ${item.title} details`}
+            >
+              <div>{item.title.toUpperCase()}</div>
             </TriangleCard>
             {/* Card Details */}
-            <div className="text-center">
-              <p className="text-sm">{item.description}</p>
-              <p className="text-lg font-semibold text-yellow-400">{item.price}</p>
-              <button className="mt-2 bg-[#ff6347] hover:bg-[#ff4500] text-white font-medium py-2 px-4 rounded transition-colors duration-300">
-                Buy Now
-              </button>
-            </div>
+            <ItemDetails item={item} onBuyNow={() => handleBuyNow(item.title)} />
           </div>
         ))}
       </div>
+      {isLoading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
+          <p>Loading...</p>
+        </div>
+      )}
     </div>
   );
 };
