@@ -101,7 +101,7 @@ const TriangularCarousel = () => {
   }
 
   const handleCardClick = (serviceName) => {
-    navigate(`/service/${serviceName}`);
+    navigate(`/product/${serviceName}`);
   };
 
   return (
@@ -120,9 +120,10 @@ const TriangularCarousel = () => {
                   <div>{item.serviceName.toUpperCase()}</div>
                 </TriangleCard>
                 <DescriptionContainer>{item.description}</DescriptionContainer>
-                <Button onClick={() => console.log("Book Now Clicked")}>
-                  BOOK NOW
-                </Button>
+                <Button onClick={() => handleCardClick(item.serviceName)}>
+  BOOK NOW
+</Button>
+
               </div>
             ))}
           </Slide>

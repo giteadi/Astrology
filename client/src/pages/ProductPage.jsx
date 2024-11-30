@@ -5,10 +5,8 @@ import { addToCart } from "../Redux/CartSlice"; // Redux action
 import axios from "axios"; // API requests
 import { useNavigate, useParams } from "react-router-dom"; // For navigation
 
-// importing array  of services 
-import astroArray from '../components/astrologyArray';
-import vastuArray from '../components/numerologyArray';
-
+// import centralized array of services
+import servicesArray from '../components/astrologyArray'; // Centralized array with all services
 
 // Styled-components for custom styling
 const FAQsSection = styled.section`
@@ -63,29 +61,17 @@ const ProductPage = () => {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   const navigate = useNavigate();
-  const { title } = useParams();
+  const { serviceName } = useParams();  // The service name passed in the URL
 
   const [openFAQ, setOpenFAQ] = useState(null);
 
   const isLoggedIn = user !== null;
 
-  // Services data
-  const services = [
-    { id: 102, title: "Astrology", description: "Insights into your life's path.", price: 299.99 },
-    { id: 103, title: "Vastu", description: "Celestial alignments insights.", price: 399.99 },
-    { id: 104, title: "Numerology", description: "Guidance through life's challenges.", price: 499.99 },
-    { id: 201, title: "Palmistry", description: "Read your palm lines.", price: 299.99 },
-    { id: 202, title: "Tarot", description: "Guidance through tarot cards.", price: 399.99 },
-    { id: 203, title: "Crystal Healing", description: "Energy through crystals.", price: 499.99 },
-    { id: 1, title: "Fitness", description: "Stay fit with personalized plans.", price: 199.99 },
-    { id: 2, title: "Meditation", description: "Achieve peace with guided sessions.", price: 149.99 },
-    { id: 3, title: "Yoga", description: "Boost flexibility and strength.", price: 249.99 },
-  ];
+  // Dynamically select the correct service from the centralized array based on the 'serviceName' param
+  const service = servicesArray.find(service => service.serviceName.toLowerCase() === serviceName.toLowerCase());
 
-  const product = services.find((service) => service.title.toLowerCase() === title.toLowerCase());
-
-  if (!product) {
-    return <div>Product not found</div>;
+  if (!service) {
+    return <div>Service not found</div>;
   }
 
   const handleFAQClick = (index) => {
@@ -99,7 +85,7 @@ const ProductPage = () => {
     }
 
     const orderData = {
-      amount: product.price * 100,
+      amount: service.price * 100,
       currency: "INR",
       receipt: `receipt#${Math.floor(Math.random() * 1000)}`,
     };
@@ -128,7 +114,7 @@ const ProductPage = () => {
     const cartItem = {
       user_id: user.userId,
       item_id: item.id,
-      title: item.title,
+      serviceName: item.serviceName,
       description: item.description,
       price: price,
       quantity: 1,
@@ -186,12 +172,12 @@ const ProductPage = () => {
         </div>
 
         <div className="flex-1 flex flex-col gap-6">
-          <h1 className="text-4xl font-extrabold">{product.title} Consultation</h1>
+          <h1 className="text-4xl font-extrabold">{service.serviceName} Consultation</h1>
           <p className="text-xl text-gray-300">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
           <p className="text-2xl font-bold text-yellow-400">
-            ₹{product.price} <span className="line-through text-gray-500">₹1,599</span>
+            ₹{service.price} <span className="line-through text-gray-500">₹1,599</span>
           </p>
-          <p className="text-lg text-gray-200">{product.description}</p>
+          <p className="text-lg text-gray-200">{service.description}</p>
           <div className="flex flex-row gap-6">
             <button
               className="bg-gradient-to-r from-blue-700 to-blue-800 hover:bg-opacity-80 py-3 px-8 rounded-lg text-white shadow-lg transition duration-300"
@@ -201,7 +187,7 @@ const ProductPage = () => {
             </button>
             <button
               className="bg-gradient-to-r from-green-600 to-green-700 hover:bg-opacity-80 py-3 px-8 rounded-lg text-white shadow-lg transition duration-300"
-              onClick={() => handleBookNow(product)}
+              onClick={() => handleBookNow(service)}
             >
               Add to Cart
             </button>
@@ -217,8 +203,8 @@ const ProductPage = () => {
             { question: "What payment methods are accepted?", answer: "We accept all major credit/debit cards." },
           ].map((faq, index) => (
             <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
-              <h3>{faq.question}</h3>
-              <p className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>{faq.answer}</p>
+              <div className="text-lg font-semibold">{faq.question}</div>
+              <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>{faq.answer}</div>
             </div>
           ))}
         </div>

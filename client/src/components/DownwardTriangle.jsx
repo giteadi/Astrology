@@ -124,7 +124,7 @@ const DownwardCarousel = () => {
   }
 
   const handleBookNow = (item) => {
-    navigate(`/service/${item.id}`);
+    navigate(`/product/${item}`);
   };
 
   return (
@@ -134,7 +134,7 @@ const DownwardCarousel = () => {
           <Slide key={groupIndex}>
             {group.map((item) => (
               <div key={item.id} className="flex flex-col items-center cursor-pointer">
-                <DownwardTriangle onClick={() => navigate(`/service/${item.id}`)}>
+                <DownwardTriangle onClick={() => navigate(`/product/${item.serviceName}`)}>
                   <div>{item.title.toUpperCase()}</div>
                 </DownwardTriangle>
                 <DescriptionContainer>{item.description}</DescriptionContainer>
