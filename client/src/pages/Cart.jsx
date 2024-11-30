@@ -16,8 +16,12 @@ const Cart = () => {
         const cartData = response.data;
 
         if (cartData && cartData.length > 0) {
-          cartData.forEach(item => {
-            dispatch(addToCart(item));  // Add to Redux store
+          cartData.forEach((item) => {
+            // Only dispatch if item is not already in cart
+            const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
+            if (!existingItem) {
+              dispatch(addToCart(item));  // Add to Redux store
+            }
           });
         } else {
           dispatch(clearCart()); // If no data, clear the cart
@@ -26,8 +30,11 @@ const Cart = () => {
         console.error("Error fetching cart items:", error);
       }
     };
-    fetchCartItems();
-  }, [dispatch, user]);
+
+    if (user && user.userId) {
+      fetchCartItems();
+    }
+  }, [dispatch, user, cartItems]);  // Add cartItems as a dependency to prevent duplicate fetches
 
   // Function to recalculate the total amount
   const calculateTotal = () => {
@@ -64,6 +71,18 @@ const Cart = () => {
     calculateTotal();
   }, [cartItems]);
 
+  // Handle adding an item to the cart from carousel or product page
+  const handleAddToCart = (item) => {
+    const existingItem = cartItems.find((cartItem) => cartItem.id === item.id);
+    if (existingItem) {
+      console.log("Item is already in the cart.");
+      return;  // Prevent adding again
+    }
+
+    // Otherwise, add to cart
+    dispatch(addToCart(item));
+  };
+
   return (
     <div className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] min-h-screen p-8 text-white">
       <div className="max-w-6xl mx-auto bg-opacity-10 bg-white p-6 rounded-xl shadow-lg backdrop-blur-lg focus-ring-white border border-white">
@@ -75,7 +94,7 @@ const Cart = () => {
             Your cart is empty
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-around">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-start">
             {cartItems.map((item) => (
               <div
                 key={item.cart_item_id || item.id}
