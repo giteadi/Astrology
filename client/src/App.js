@@ -16,6 +16,7 @@ import NumrologyService from "./pages/SquareServicePage";
 import ProductPage from "./pages/ProductPage";
 import VastuPage from './pages/VastuPage'
 import NumrologyPage from './pages/Numrology-Page';
+import AstroPage2 from './pages/AstroPage'
 function App() {
   return (
     <div className="font-bold">
@@ -35,6 +36,7 @@ function App() {
         <Route path='/numerology-page/:id' element={<NumrologyPage/>}/>
         <Route path='/numerologyPage' element={<NumrologyService/>}/>
         <Route path="/product/:title" element={<ProductPage/>}/>
+        <Route path='/astroSingle' element={<AstroPage2/>}/>
       </Routes>
       <Footer/>
     </div>

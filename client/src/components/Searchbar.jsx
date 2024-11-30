@@ -233,7 +233,7 @@ export default function SearchbarWithOptions() {
 
       {/* Glassy Navbar for Astrology, Numerology, and Vastu */}
       <GlassyNav>
-      <NavItem to="/astrology/1">Astrology</NavItem>
+      <NavItem to="/astroSingle">Astrology</NavItem>
         <span>|</span>
         <NavItem to="/vastu">Vastu</NavItem>
         <span>|</span>
