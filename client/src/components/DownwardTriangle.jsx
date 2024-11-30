@@ -1,11 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../Redux/CartSlice";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import numerologyServices from "./numerologyArray";
-// Styled Components
+
+// Styled Components for Downward Triangle Carousel
 const DownwardTriangle = styled.div`
   width: 18rem;
   height: 18rem;
@@ -23,7 +20,7 @@ const DownwardTriangle = styled.div`
   border: 2px solid rgba(255, 255, 255, 0.3); /* Subtle border for depth */
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
-
+  margin: 2rem;
   &:hover {
     transform: translateY(-10px); /* Lift effect on hover */
     box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.3);
@@ -80,66 +77,79 @@ const CarouselContainer = styled.div`
   }
 `;
 
+const Wrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
+`;
+
+const SliderContainer = styled.div`
+  display: flex;
+  transition: transform 1s ease-in-out;
+`;
+
+const Slide = styled.div`
+  display: flex;
+  justify-content: center; /* Ensure cards are centered */
+  gap: 2rem; /* Space between cards */
+`;
+
 const DownwardCarousel = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
-
-  const handleBookNow = async (item) => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const cartItem = {
-      user_id: user.userId,
-      item_id: item.id,
-      title: item.title,
-      description: item.description,
-      price: String(item.price),
-      quantity: 1,
-    };
-
-    try {
-      const response = await axios.post("http://localhost:4000/api/cart/add", cartItem);
-      if (response.status === 200) {
-        console.log("Item added to the cart successfully!");
-        dispatch(addToCart(cartItem));
-        navigate(`/numerology-page${item.id}`); // Navigate to dynamic numerology page
-      }
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-      alert("Failed to add item. Please try again.");
-    }
-  };
+  const groupSize = 3; // Number of items per slide
 
   const services = [
     { id: 201, title: "Palmistry", description: "Read your palm lines.", price: 299.99 },
     { id: 202, title: "Tarot", description: "Guidance through tarot cards.", price: 399.99 },
     { id: 203, title: "Crystal Healing", description: "Energy through crystals.", price: 499.99 },
+    { id: 204, title: "Astrology", description: "Find your life's path.", price: 199.99 },
+    { id: 205, title: "Numerology", description: "Unlock your future through numbers.", price: 249.99 },
+    { id: 206, title: "Reiki Healing", description: "Heal your body with energy.", price: 349.99 },
   ];
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex + 1 >= Math.ceil(services.length / groupSize) ? 0 : prevIndex + 1
+      );
+    }, 5000); // 5 seconds for each slide
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, []);
+
+  const groupedServices = [];
+  for (let i = 0; i < services.length; i += groupSize) {
+    groupedServices.push(services.slice(i, i + groupSize));
+  }
+
+  const handleBookNow = (item) => {
+    navigate(`/service/${item.id}`);
+  };
+
   return (
-    <CarouselContainer>
-      {services.map((item) => (
-        <div
-          key={item.id}
-          className="flex flex-col items-center cursor-pointer"
-          onClick={() => navigate(`/product/${item.title}`)} // Navigate to dynamic page on click
-        >
-          <DownwardTriangle>
-            <div>{item.title.toUpperCase()}</div>
-          </DownwardTriangle>
-          <DescriptionContainer>{item.description}</DescriptionContainer>
-          <Button onClick={(e) => {
-            e.stopPropagation(); // Prevent navigation when clicking on the button
-            handleBookNow(item);
-          }}>
-            BOOK NOW
-          </Button>
-        </div>
-      ))}
-    </CarouselContainer>
+    <Wrapper>
+      <SliderContainer style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+        {groupedServices.map((group, groupIndex) => (
+          <Slide key={groupIndex}>
+            {group.map((item) => (
+              <div key={item.id} className="flex flex-col items-center cursor-pointer">
+                <DownwardTriangle onClick={() => navigate(`/service/${item.id}`)}>
+                  <div>{item.title.toUpperCase()}</div>
+                </DownwardTriangle>
+                <DescriptionContainer>{item.description}</DescriptionContainer>
+                <Button onClick={(e) => {
+                  e.stopPropagation(); // Prevent navigation when clicking on the button
+                  handleBookNow(item);
+                }}>
+                  BOOK NOW
+                </Button>
+              </div>
+            ))}
+          </Slide>
+        ))}
+      </SliderContainer>
+    </Wrapper>
   );
 };
 
