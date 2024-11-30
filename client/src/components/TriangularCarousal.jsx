@@ -1,11 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../Redux/CartSlice";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import astrologyServices from "./astrologyArray";
 
-// Updated Styled Components
 const TriangleCard = styled.div`
   width: 18rem;
   height: 18rem;
@@ -21,14 +18,14 @@ const TriangleCard = styled.div`
   border: 2px solid #6a0dad;
   background: linear-gradient(145deg, #6a0dad, #3a0078);
   position: relative;
-  cursor: pointer; /* Ensure cursor pointer on hover */
-  transition: transform 0.3s; /* Smooth scaling transition */
+  cursor: pointer;
+  transition: transform 0.3s;
+  margin: 0 2rem; /* Add horizontal margin between cards */
 
   &:hover {
-    transform: scale(1.05); /* Scale effect on hover */
+    transform: scale(1.05);
   }
 
-  /* Adjust for smaller screens */
   @media (max-width: 768px) {
     width: 14rem;
     height: 14rem;
@@ -61,108 +58,77 @@ const DescriptionContainer = styled.div`
   font-weight: normal;
   width: 18rem;
 
-  /* Responsive Design */
   @media (max-width: 768px) {
     width: 14rem;
   }
 `;
 
-const BackgroundWrapper = styled.div`
-  min-height: 100vh; /* Ensure it spans at least the full height of the viewport */
+const Wrapper = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Align items to the top */
-  background: transparent;
-  padding-top: 3rem; /* Push content down for spacing */
-
-  /* Adjust for mobile screens */
-  @media (max-width: 768px) {
-    padding: 1rem; /* Reduce padding for smaller screens */
-    flex-direction: column; /* Stack content vertically */
-  }
+  overflow: hidden;
 `;
 
-const TriangleContainer = styled.div`
+const SliderContainer = styled.div`
   display: flex;
-  justify-content: space-around; /* Distribute items with space around */
-  flex-wrap: wrap; /* Wrap items to new rows on smaller screens */
-  width: 100%;
-  padding: 2rem;
-  gap: 2rem; /* Increase space between items */
+  transition: transform 1s ease-in-out;
+`;
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    flex-direction: column; /* Stack items vertically on smaller screens */
-    align-items: center; /* Center items horizontally */
-    gap: 2rem; /* Add space between items */
-  }
+const Slide = styled.div`
+  display: flex;
+  justify-content: center; /* Ensure cards are centered */
+  gap: 0; /* Reset gap to avoid double spacing */
+
 `;
 
 const TriangularCarousel = () => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
+  const groupSize = 3;
 
-  const handleBookNow = async (item) => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const price = String(item.price);
-    const cartItem = {
-      user_id: user.userId,
-      item_id: item.id,
-      title: item.title,
-      description: item.description,
-      price: price,
-      quantity: 1,
-    };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/api/cart/add",
-        cartItem
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex + 1 >= Math.ceil(astrologyServices.length / groupSize) ? 0 : prevIndex + 1
       );
-      if (response.status === 200) {
-        console.log("Item successfully added to the database!");
-        dispatch(addToCart(cartItem));
-      }
-    } catch (error) {
-      console.error("Failed to add item to the cart:", error);
-      if (error.response) {
-        alert(error.response.data.message || "Failed to add item to the cart");
-      } else {
-        alert("Network error, please try again later.");
-      }
-    }
+    }, 5000); // 5 seconds for each slide
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, []);
+
+  const groupedServices = [];
+  for (let i = 0; i < astrologyServices.length; i += groupSize) {
+    groupedServices.push(astrologyServices.slice(i, i + groupSize));
+  }
+
+  const handleCardClick = (serviceName) => {
+    navigate(`/service/${serviceName}`);
   };
 
-  const services = [
-    { id: 102, title: "Astrology", description: "Insights into your life's path.", price: 299.99 },
-    { id: 103, title: "Vastu", description: "Celestial alignments insights.", price: 399.99 },
-    { id: 104, title: "Numerology", description: "Guidance through life's challenges.", price: 499.99 },
-  ];
-
   return (
-    <BackgroundWrapper className="bg-wpr">
-      <TriangleContainer>
-        {services.map((item) => (
-          <div key={item.id} className="flex flex-col items-center cursor-pointer">
-            <TriangleCard
-              onClick={() => {
-                navigate(`/product/${item.title}`);
-              }}
-            >
-              <div>{item.title.toUpperCase()}</div>
-            </TriangleCard>
-            <DescriptionContainer>{item.description}</DescriptionContainer>
-            <Button onClick={() => handleBookNow(item)}>BOOK NOW</Button>
-          </div>
+    <Wrapper>
+      <SliderContainer
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {groupedServices.map((group, groupIndex) => (
+          <Slide key={groupIndex}>
+            {group.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center cursor-pointer"
+              >
+                <TriangleCard onClick={() => handleCardClick(item.serviceName)}>
+                  <div>{item.serviceName.toUpperCase()}</div>
+                </TriangleCard>
+                <DescriptionContainer>{item.description}</DescriptionContainer>
+                <Button onClick={() => console.log("Book Now Clicked")}>
+                  BOOK NOW
+                </Button>
+              </div>
+            ))}
+          </Slide>
         ))}
-      </TriangleContainer>
-    </BackgroundWrapper>
+      </SliderContainer>
+    </Wrapper>
   );
 };
 

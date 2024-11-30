@@ -5,6 +5,11 @@ import { addToCart } from "../Redux/CartSlice"; // Redux action
 import axios from "axios"; // API requests
 import { useNavigate, useParams } from "react-router-dom"; // For navigation
 
+// importing array  of services 
+import astroArray from '../components/astrologyArray';
+import vastuArray from '../components/numerologyArray';
+
+
 // Styled-components for custom styling
 const FAQsSection = styled.section`
   margin-top: 4rem;
