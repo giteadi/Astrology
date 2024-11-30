@@ -24,7 +24,7 @@ const astrologyServices = [
         answer: "Typically, 3-5 business days after receiving your details."
       }
     ],
-    pricing: "₹3,000 – ₹5,000"
+    pricing: "5,000"
   },
   {
     serviceName: "Kundali Matching",
@@ -51,7 +51,7 @@ const astrologyServices = [
         answer: "Yes, consultations can be conducted virtually."
       }
     ],
-    pricing: "₹2,000 – ₹3,000"
+    pricing: "3,000"
   },
   {
     serviceName: "Career Counselling",
@@ -78,7 +78,7 @@ const astrologyServices = [
         answer: "Yes, remedies to boost success are included."
       }
     ],
-    pricing: "₹2,500 – ₹4,000"
+    pricing: "4,000"
   },
   {
     serviceName: "Dasha Prediction",
@@ -105,7 +105,7 @@ const astrologyServices = [
         answer: "Yes, effective remedies are suggested."
       }
     ],
-    pricing: "₹3,000 – ₹4,500"
+    pricing: "4,500"
   },
   {
     serviceName: "Birth Time Rectification",
@@ -132,7 +132,7 @@ const astrologyServices = [
         answer: "It’s a highly precise estimate based on astrological principles."
       }
     ],
-    pricing: "₹3,500 – ₹5,000"
+    pricing: "5,000"
   },
   {
     serviceName: "Past Life Karma Analysis",
@@ -159,7 +159,7 @@ const astrologyServices = [
         answer: "The analysis typically requires 2-3 hours of preparation and a 1-hour consultation."
       }
     ],
-    pricing: "₹4,000 – ₹6,000"
+    pricing: "6,000"
   },
   {
     serviceName: "Relationship Analysis",
@@ -186,7 +186,7 @@ const astrologyServices = [
         answer: "Absolutely, it’s beneficial for understanding partnerships."
       }
     ],
-    pricing: "₹3,000 – ₹4,500"
+    pricing: "4,500"
   },
   {
     serviceName: "Maha Dasha Analysis and Remedies",
@@ -213,7 +213,7 @@ const astrologyServices = [
         answer: "Yes, but periodic reviews are recommended during Maha Dasha transitions."
       }
     ],
-    pricing: "₹4,000 – ₹6,000"
+    pricing: "6,000"
   },
   {
     serviceName: "Gemstones Recommendation and Remedies",
@@ -240,7 +240,7 @@ const astrologyServices = [
         answer: "Recommendations for trusted sellers will be provided."
       }
     ],
-    pricing: "₹2,500 – ₹4,000"
+    pricing: "4,000"
   }
 ];
 

@@ -114,7 +114,7 @@ const ProductPage = () => {
     const cartItem = {
       user_id: user.userId,
       item_id: item.id,
-      serviceName: item.serviceName,
+      title: item.serviceName,
       description: item.description,
       price: price,
       quantity: 1,
@@ -175,7 +175,7 @@ const ProductPage = () => {
           <h1 className="text-4xl font-extrabold">{service.serviceName} Consultation</h1>
           <p className="text-xl text-gray-300">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
           <p className="text-2xl font-bold text-yellow-400">
-            ₹{service.price} <span className="line-through text-gray-500">₹1,599</span>
+            ₹{service.pricing} <span className="line-through text-gray-500">₹11,599</span>
           </p>
           <p className="text-lg text-gray-200">{service.description}</p>
           <div className="flex flex-row gap-6">
