@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../Redux/CartSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import numerologyServices from "./numerologyArray";
 // Styled Components
 const DownwardTriangle = styled.div`
   width: 18rem;

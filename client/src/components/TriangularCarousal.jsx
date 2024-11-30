@@ -20,7 +20,7 @@ const TriangleCard = styled.div`
   position: relative;
   cursor: pointer;
   transition: transform 0.3s;
-  margin: 0 2rem; /* Add horizontal margin between cards */
+  margin: 3rem; /* Add horizontal margin between cards */
 
   &:hover {
     transform: scale(1.05);
