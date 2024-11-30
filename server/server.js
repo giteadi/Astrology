@@ -1,15 +1,19 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
-require("dotenv").config();
 const fileUpload = require('express-fileupload');
+require("dotenv").config();
+
 const userRoutes = require("./routes/userRoutes"); 
-const carRoutes=require("./routes/cartRoutes");
-const cloudinaryConnect=require("./config/cloudinary")
+const cartRoutes = require("./routes/cartRoutes");
+const paymentRoutes = require("./routes/paymentRoutes"); 
+const cloudinaryConnect = require("./config/cloudinary");
+
+const app = express();
+const port = process.env.PORT || 4001;
+
+// Initialize Cloudinary connection
 cloudinaryConnect();
 
-
-const port=process.env.PORT || 4001
 // Middlewares
 app.use(express.json());
 app.use(cors());
@@ -18,14 +22,17 @@ app.use(fileUpload({
   tempFileDir: '/tmp/'
 }));
 
-// intigration of routes
+// Integration of routes
 app.use("/api/v1/user", userRoutes);
-app.use("/api/cart",carRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/payments", paymentRoutes); // Integrate Razorpay routes
 
-app.listen(port,(req,res)=>{
-    console.log(`server is running at port no ${port}`);
-})
+// Root route
+app.get("/", (req, res) => {
+  res.send(`<h1> Say Hello To Astrology..</h1>`);
+});
 
-app.get("/",(req,res)=>{
-    res.send(`<h1> Say Hellow To Astrology..`)
-})
+// Server listener
+app.listen(port, () => {
+  console.log(`Server is running at port ${port}`);
+});
