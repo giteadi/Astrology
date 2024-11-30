@@ -100,7 +100,7 @@ const SquareCarousel = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center py-12">
       {services.map((item) => (
         <div key={item.id} className="flex flex-col items-center text-white cursor-pointer">
-          <Square onClick={() => navigate(`/vastu-page/${item.id}`)}>{item.title.toUpperCase()}</Square> {/* Navigate on card click */}
+          <Square onClick={() => navigate(`/product/${item.title}`)}>{item.title.toUpperCase()}</Square> {/* Navigate on card click */}
           <DescriptionContainer>{item.description}</DescriptionContainer>
           <Button onClick={() => handleBookNow(item)}>
             {isLoggedIn ? "BOOK NOW" : "LOGIN TO BOOK"} {/* Change text based on login status */}

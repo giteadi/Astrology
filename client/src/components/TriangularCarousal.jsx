@@ -152,7 +152,7 @@ const TriangularCarousel = () => {
           <div key={item.id} className="flex flex-col items-center cursor-pointer">
             <TriangleCard
               onClick={() => {
-                navigate(`/astrology/${item.id}`);
+                navigate(`/product/${item.title}`);
               }}
             >
               <div>{item.title.toUpperCase()}</div>

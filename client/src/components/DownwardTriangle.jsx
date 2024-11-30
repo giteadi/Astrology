@@ -125,7 +125,7 @@ const DownwardCarousel = () => {
         <div
           key={item.id}
           className="flex flex-col items-center cursor-pointer"
-          onClick={() => navigate(`/numerology-page/${item.id}`)} // Navigate to dynamic page on click
+          onClick={() => navigate(`/product/${item.title}`)} // Navigate to dynamic page on click
         >
           <DownwardTriangle>
             <div>{item.title.toUpperCase()}</div>

@@ -34,7 +34,7 @@ function App() {
         <Route path='/vastu-page/:id' element={<VastuPage/>}/>
         <Route path='/numerology-page/:id' element={<NumrologyPage/>}/>
         <Route path='/numerologyPage' element={<NumrologyService/>}/>
-        <Route path="/product" element={<ProductPage/>}/>
+        <Route path="/product/:title" element={<ProductPage/>}/>
       </Routes>
       <Footer/>
     </div>
