@@ -9,32 +9,53 @@ import { useNavigate, useParams } from "react-router-dom"; // For navigation
 const FAQsSection = styled.section`
   margin-top: 4rem;
   .faq-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism background */
     padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(8px); /* Apply blur for glass effect */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     &:hover {
       background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-5px); /* Slight lift on hover */
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* Stronger shadow */
     }
   }
   .faq-answer {
     background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     margin-top: 1rem;
     border-radius: 8px;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease, transform 0.3s ease;
+    transform: translateY(-10px);
+    backdrop-filter: blur(8px);
   }
   .show-answer {
     opacity: 1;
+    transform: translateY(0);
   }
+`;
+
+const CartNotification = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 50%;
+  padding: 5px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for pop effect */
 `;
 
 const ProductPage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Get user from Redux store
+  const { cartItems } = useSelector((state) => state.cart); // Get cart items from Redux
   const navigate = useNavigate(); // For navigation
   const { title } = useParams(); // Retrieve dynamic 'title' param from URL
   const [openFAQ, setOpenFAQ] = useState(null); // For controlling FAQ visibility
@@ -101,31 +122,40 @@ const ProductPage = () => {
     }
   };
 
+  // Calculate the total cart item count
+  const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
   return (
     <div className="min-h-screen bg-gradient-to-t from-purple-800 to-indigo-900 text-white p-8">
       {/* Navbar */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-end items-center mb-8">
         <button
           className="bg-opacity-20 hover:bg-opacity-40 text-white py-2 px-6 rounded-lg transition duration-300"
           onClick={() => navigate("/")}
         >
           Home
         </button>
-        <button
-          className="bg-opacity-20 hover:bg-opacity-40 text-white py-2 px-6 rounded-lg transition duration-300"
-          onClick={() => navigate("/faqs")}
-        >
-          FAQs
-        </button>
+        <div className="relative">
+          <button
+            className="bg-opacity-20 hover:bg-opacity-40 text-white py-2 px-6 rounded-lg transition duration-300"
+            onClick={() => navigate("/cart")}
+          >
+            Cart
+            {/* Display the cart item count notification */}
+            {totalCartItems > 0 && (
+              <CartNotification>{totalCartItems}</CartNotification>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Main Product Section */}
       <div className="flex flex-col gap-8 md:flex-row md:gap-8">
         {/* Image Section */}
-        <div className="flex flex-col md:flex-row md:w-1/2 bg-opacity-10 p-4 rounded-lg">
+        <div className="flex flex-col md:flex-row md:w-1/2 bg-opacity-10 p-4 rounded-lg shadow-lg backdrop-blur-md">
           {/* Main Image */}
           <div className="flex flex-col gap-6 justify-start w-full md:w-2/3">
-            <div className="w-full h-72 bg-gray-400 rounded-lg"></div>
+            <div className="w-full h-72 bg-gray-400 rounded-lg shadow-lg" />
           </div>
 
           {/* Small Images */}
@@ -133,62 +163,51 @@ const ProductPage = () => {
             {Array(4)
               .fill(0)
               .map((_, index) => (
-                <div key={index} className="w-12 h-12 bg-gray-400 rounded-lg" />
+                <div key={index} className="w-12 h-12 bg-gray-400 rounded-lg shadow-md" />
               ))}
           </div>
         </div>
 
         {/* Details Section */}
         <div className="flex-1 flex flex-col gap-6">
-          <h1 className="text-3xl">{product.title} Consultation</h1>
-          <p className="text-xl">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
-          <p className="text-2xl font-bold">
-            ₹{product.price} <span className="line-through text-gray-400">₹1,599</span>
+          <h1 className="text-4xl font-extrabold text-white">{product.title} Consultation</h1>
+          <p className="text-xl text-gray-300">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
+          <p className="text-2xl font-bold text-yellow-400">
+            ₹{product.price} <span className="line-through text-gray-500">₹1,599</span>
           </p>
-          <p className="text-lg">{product.description}</p>
+          <p className="text-lg text-gray-200">{product.description}</p>
           <div className="flex gap-4">
             <button
-              className="bg-opacity-20 hover:bg-opacity-40 py-2 px-6 rounded-lg text-white transition duration-300"
+              className="bg-gradient-to-r from-blue-700 to-blue-800 hover:bg-opacity-80 py-3 px-8 rounded-lg text-white shadow-lg transition duration-300"
               onClick={() => handleBookNow(product)} // Call handleBookNow on button click
             >
               {isLoggedIn ? "BOOK NOW" : "LOGIN TO BOOK"}
             </button>
-            <button className="bg-opacity-20 hover:bg-opacity-40 py-2 px-6 rounded-lg text-white transition duration-300">
+            <button className="bg-gradient-to-r from-blue-600 to-blue-800 hover:bg-opacity-80 py-3 px-8 rounded-lg text-white shadow-lg transition duration-300">
               Buy Now
             </button>
           </div>
         </div>
       </div>
 
-      {/* FAQs Section */}
+      {/* FAQ Section */}
       <FAQsSection>
-        <h2 className="text-2xl mb-4">FAQs</h2>
-        <div className="faq-item" onClick={() => handleFAQClick(1)}>
-          What is included in the {product.title} Consultation?
+        <h2 className="text-2xl font-extrabold text-white mt-8">Frequently Asked Questions</h2>
+        <div className="mt-4">
+          {[{ question: "How do I book a consultation?", answer: "You can book directly through this page." },
+            { question: "How do I pay?", answer: "We accept online payments via credit card, debit card, and UPI." },
+            { question: "What is the duration of the consultation?", answer: "Each consultation lasts 60 minutes." }]
+            .map((faq, index) => (
+              <div key={index} className="faq-item">
+                <div onClick={() => handleFAQClick(index)}>
+                  <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
+                </div>
+                <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
+                  <p className="text-gray-300">{faq.answer}</p>
+                </div>
+              </div>
+            ))}
         </div>
-        {openFAQ === 1 && (
-          <div className="faq-answer show-answer">
-            The {product.title} Consultation package includes personalized guidance, space analysis, and a complete energy alignment consultation with certified professionals. It’s tailored to optimize your environment for peace and prosperity.
-          </div>
-        )}
-
-        <div className="faq-item" onClick={() => handleFAQClick(2)}>
-          How can I book a consultation with an expert?
-        </div>
-        {openFAQ === 2 && (
-          <div className="faq-answer show-answer">
-            Booking a consultation is easy! Simply visit our website, select your preferred expert, and choose a time slot. You’ll receive a confirmation email with all the details.
-          </div>
-        )}
-
-        <div className="faq-item" onClick={() => handleFAQClick(3)}>
-          Are these consultations certified by professionals?
-        </div>
-        {openFAQ === 3 && (
-          <div className="faq-answer show-answer">
-            Yes! All consultations are conducted by certified professionals who are highly experienced in {product.title} and aligned with modern practices for your space’s harmony.
-          </div>
-        )}
       </FAQsSection>
     </div>
   );
