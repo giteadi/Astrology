@@ -1,15 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { removeFromCart, addToCart, setTotalAmount, clearCart } from '../Redux/CartSlice'; // Redux actions
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Cart = () => {
-  const { cartItems, totalAmount } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
+  const [cartItems, setCartItems] = useState([]);  // Local state for cart items
+  const [totalAmount, setTotalAmount] = useState(0);
   const user = useSelector((state) => state.auth.user); // Assuming user is stored in auth slice
   console.log("user id cart", user);
 
-  // Fetch cart items when user is logged in and avoid refetching if cart items are already present
+  // Fetch cart items from the server when user is logged in
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -17,14 +16,8 @@ const Cart = () => {
         const cartData = response.data;
         console.log("Fetched Cart Data:", cartData);
 
-        // Only add items that are not already in the cart
         if (cartData && cartData.length > 0) {
-          cartData.forEach((item) => {
-            const existingItem = cartItems.find(cartItem => cartItem.cart_item_id === item.cart_item_id);
-            if (!existingItem) {
-              dispatch(addToCart(item));
-            }
-          });
+          setCartItems(cartData);
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -34,16 +27,16 @@ const Cart = () => {
     if (user && user.userId) {
       fetchCartItems();
     }
-  }, [dispatch, user, cartItems.length]); // Depend on user and cartItems.length to ensure it's only fetched once
+  }, [user]);  // Only fetch when the user is logged in
 
   // Calculate total whenever cartItems change
   useEffect(() => {
     const calculateTotal = () => {
       const newTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      dispatch(setTotalAmount(newTotal));
+      setTotalAmount(newTotal);
     };
     calculateTotal();
-  }, [cartItems, dispatch]);
+  }, [cartItems]);  // Recalculate total when cartItems changes
 
   const handleRemove = async (cart_item_id) => {
     if (!cart_item_id) {
@@ -56,20 +49,27 @@ const Cart = () => {
       const response = await axios.delete(`http://localhost:4000/api/cart/delete/${cart_item_id}`);
       if (response.status === 200) {
         console.log(`Item with cart_item_id: ${cart_item_id} removed successfully`);
-        dispatch(removeFromCart(cart_item_id)); // Remove item from Redux state
+        // Remove the item from the local state (no Redux needed)
+        setCartItems(cartItems.filter(item => item.cart_item_id !== cart_item_id));
       }
     } catch (error) {
       console.error("Error removing item from cart:", error);
     }
   };
 
-  const handleAddToCart = (item) => {
-    const existingItem = cartItems.find((cartItem) => cartItem.cart_item_id === item.cart_item_id);
-    if (existingItem) {
-      console.log("Item is already in the cart.");
-      return;
+  const handleAddToCart = async (item) => {
+    try {
+      // Send add request to the server (only interact with DB)
+      const response = await axios.post(`http://localhost:4000/api/cart/add`, { userId: user.userId, item });
+      if (response.status === 200) {
+        console.log('Item added to cart on the server!');
+        // Fetch updated cart data after adding the item
+        const updatedCart = await axios.get(`http://localhost:4000/api/cart/${user.userId}`);
+        setCartItems(updatedCart.data); // Update the local state with updated cart
+      }
+    } catch (error) {
+      console.error("Error adding item to the cart:", error);
     }
-    dispatch(addToCart(item)); // Directly add to Redux state
   };
 
   return (
@@ -86,7 +86,7 @@ const Cart = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-start">
             {cartItems.map((item) => (
               <div
-                key={item.cart_item_id || item.id} // Use cart_item_id for unique key
+                key={item.cart_item_id || item.id}  // Use cart_item_id for unique key
                 className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] p-4 rounded-lg mb-4 backdrop-blur-sm flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity duration-500 border border-white"
               >
                 <div className="flex items-center gap-4">
