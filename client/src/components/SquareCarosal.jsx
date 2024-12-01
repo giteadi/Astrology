@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios for API calls
+import axios from "axios";
 
 // Styled components for the square card
 const Square = styled.div`
@@ -18,14 +18,13 @@ const Square = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out;
-  margin: 2rem; /* Add margin between squares */
+  margin: 2rem;
 
   &:hover {
     transform: scale(1.05);
   }
 `;
 
-// Styled button for 'BOOK NOW'
 const Button = styled.button`
   padding: 1rem 2rem;
   background-color: #6a0dad;
@@ -44,7 +43,6 @@ const Button = styled.button`
   }
 `;
 
-// Styled component for the description
 const DescriptionContainer = styled.div`
   margin-top: 1.5rem;
   text-align: center;
@@ -66,7 +64,7 @@ const SliderContainer = styled.div`
 
 const Slide = styled.div`
   display: flex;
-  gap: 2rem; /* Ensure there's space between items */
+  gap: 2rem;
   justify-content: center;
   flex: 1;
 `;
@@ -74,37 +72,33 @@ const Slide = styled.div`
 const SquareCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state for API
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const groupSize = 3;
 
-  // Fetch services from the API
   useEffect(() => {
     axios
       .get("http://localhost:4000/api/cart/getService")
       .then((response) => {
-        // Filter services with IDs between 15 and 19
         const filteredServices = response.data.filter(
           (service) => service.id >= 15 && service.id <= 19
         );
-        setServices(filteredServices); // Store filtered services in state
-        setLoading(false); // Set loading to false once the data is fetched
+        setServices(filteredServices);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching services:", error);
-        setLoading(false); // Set loading to false if there's an error
+        setLoading(false);
       });
   }, []);
 
-  // Group services into chunks of 'groupSize'
   const groupedServices = [];
   for (let i = 0; i < services.length; i += groupSize) {
     groupedServices.push(services.slice(i, i + groupSize));
   }
 
-  // Function to handle card click and navigate to the service details page
-  const handleCardClick = (serviceName) => {
-    navigate(`/product/${serviceName}`);
+  const handleCardClick = (serviceId) => {
+    navigate(`/product/${serviceId}`); // Navigate using the service ID
   };
 
   useEffect(() => {
@@ -112,13 +106,13 @@ const SquareCarousel = () => {
       setCurrentIndex((prevIndex) =>
         prevIndex + 1 >= Math.ceil(services.length / groupSize) ? 0 : prevIndex + 1
       );
-    }, 5000); // Slide every 5 seconds
+    }, 5000);
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, [services]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading message until data is fetched
+    return <div>Loading...</div>;
   }
 
   return (
@@ -126,14 +120,13 @@ const SquareCarousel = () => {
       <SliderContainer style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {groupedServices.map((group, groupIndex) => (
           <Slide key={groupIndex}>
-            {group.map((item, index) => (
-              <div key={index} className="flex flex-col items-center cursor-pointer">
-                {/* Render the square card */}
-                <Square onClick={() => handleCardClick(item?.title)}>
+            {group.map((item) => (
+              <div key={item.id} className="flex flex-col items-center cursor-pointer">
+                <Square onClick={() => handleCardClick(item?.id)}>
                   {item?.title ? item.title.toUpperCase() : "No Service Name"}
                 </Square>
                 <DescriptionContainer>{item?.description}</DescriptionContainer>
-                <Button onClick={() => handleCardClick(item?.title)}>
+                <Button onClick={() => handleCardClick(item?.id)}>
                   BOOK NOW
                 </Button>
               </div>
