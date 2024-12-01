@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import astrologyServices from "./astrologyArray";
+import axios from "axios"; // Import Axios
 
 const TriangleCard = styled.div`
   width: 18rem;
@@ -77,32 +77,56 @@ const Slide = styled.div`
   display: flex;
   justify-content: center; /* Ensure cards are centered */
   gap: 0; /* Reset gap to avoid double spacing */
-
 `;
 
 const TriangularCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
   const navigate = useNavigate();
   const groupSize = 3;
 
+  // Fetch data from API
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex + 1 >= Math.ceil(astrologyServices.length / groupSize) ? 0 : prevIndex + 1
-      );
-    }, 5000); // 5 seconds for each slide
-
-    return () => clearInterval(interval); // Cleanup on component unmount
+    axios
+      .get("http://localhost:4000/api/cart/getService")
+      .then((response) => {
+        // Filter services with IDs between 6 and 14
+        const filteredServices = response.data.filter(
+          (service) => service.id >= 6 && service.id <= 14
+        );
+        setServices(filteredServices); // Store services in state
+        setLoading(false); // Set loading to false after data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+        setLoading(false); // Set loading to false in case of error
+      });
   }, []);
 
+  // Group the services into chunks of `groupSize`
   const groupedServices = [];
-  for (let i = 0; i < astrologyServices.length; i += groupSize) {
-    groupedServices.push(astrologyServices.slice(i, i + groupSize));
+  for (let i = 0; i < services.length; i += groupSize) {
+    groupedServices.push(services.slice(i, i + groupSize));
   }
 
   const handleCardClick = (serviceName) => {
     navigate(`/product/${serviceName}`);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex + 1 >= Math.ceil(services.length / groupSize) ? 0 : prevIndex + 1
+      );
+    }, 5000); // 5 seconds for each slide
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [services]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading message while fetching data
+  }
 
   return (
     <Wrapper>
@@ -116,14 +140,13 @@ const TriangularCarousel = () => {
                 key={index}
                 className="flex flex-col items-center cursor-pointer"
               >
-                <TriangleCard onClick={() => handleCardClick(item.serviceName)}>
-                  <div>{item.serviceName.toUpperCase()}</div>
+                <TriangleCard onClick={() => handleCardClick(item.title)}>
+                  <div>{item.title.toUpperCase()}</div>
                 </TriangleCard>
                 <DescriptionContainer>{item.description}</DescriptionContainer>
-                <Button onClick={() => handleCardClick(item.serviceName)}>
-  BOOK NOW
-</Button>
-
+                <Button onClick={() => handleCardClick(item.title)}>
+                  BOOK NOW
+                </Button>
               </div>
             ))}
           </Slide>

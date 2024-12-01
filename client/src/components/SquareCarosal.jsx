@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import vastuServices from "../components/vastuArray"; // Ensure this is populated
+import axios from "axios"; // Import axios for API calls
 
-// Styled components
+// Styled components for the square card
 const Square = styled.div`
   width: 18rem;
   height: 18rem;
@@ -25,6 +25,7 @@ const Square = styled.div`
   }
 `;
 
+// Styled button for 'BOOK NOW'
 const Button = styled.button`
   padding: 1rem 2rem;
   background-color: #6a0dad;
@@ -43,6 +44,7 @@ const Button = styled.button`
   }
 `;
 
+// Styled component for the description
 const DescriptionContainer = styled.div`
   margin-top: 1.5rem;
   text-align: center;
@@ -71,27 +73,53 @@ const Slide = styled.div`
 
 const SquareCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state for API
   const navigate = useNavigate();
   const groupSize = 3;
+
+  // Fetch services from the API
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/cart/getService")
+      .then((response) => {
+        // Filter services with IDs between 15 and 19
+        const filteredServices = response.data.filter(
+          (service) => service.id >= 15 && service.id <= 19
+        );
+        setServices(filteredServices); // Store filtered services in state
+        setLoading(false); // Set loading to false once the data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+        setLoading(false); // Set loading to false if there's an error
+      });
+  }, []);
+
+  // Group services into chunks of 'groupSize'
+  const groupedServices = [];
+  for (let i = 0; i < services.length; i += groupSize) {
+    groupedServices.push(services.slice(i, i + groupSize));
+  }
+
+  // Function to handle card click and navigate to the service details page
+  const handleCardClick = (serviceName) => {
+    navigate(`/product/${serviceName}`);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex + 1 >= Math.ceil(vastuServices.length / groupSize) ? 0 : prevIndex + 1
+        prevIndex + 1 >= Math.ceil(services.length / groupSize) ? 0 : prevIndex + 1
       );
-    }, 5000); 
+    }, 5000); // Slide every 5 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [services]);
 
-  const groupedServices = [];
-  for (let i = 0; i < vastuServices.length; i += groupSize) {
-    groupedServices.push(vastuServices.slice(i, i + groupSize));
+  if (loading) {
+    return <div>Loading...</div>; // Show loading message until data is fetched
   }
-
-  const handleCardClick = (serviceName) => {
-    navigate(`/service/${serviceName}`);
-  };
 
   return (
     <Wrapper>
@@ -100,12 +128,12 @@ const SquareCarousel = () => {
           <Slide key={groupIndex}>
             {group.map((item, index) => (
               <div key={index} className="flex flex-col items-center cursor-pointer">
-                {/* Safeguard: Check if serviceName exists before using toUpperCase */}
-                <Square onClick={() => handleCardClick(item?.serviceName)}>
-                  {item?.serviceName ? item.serviceName.toUpperCase() : "No Service Name"}
+                {/* Render the square card */}
+                <Square onClick={() => handleCardClick(item?.title)}>
+                  {item?.title ? item.title.toUpperCase() : "No Service Name"}
                 </Square>
                 <DescriptionContainer>{item?.description}</DescriptionContainer>
-                <Button onClick={() => console.log("Book Now Clicked")}>
+                <Button onClick={() => handleCardClick(item?.title)}>
                   BOOK NOW
                 </Button>
               </div>

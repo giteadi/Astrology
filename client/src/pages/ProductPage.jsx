@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../Redux/CartSlice"; // Redux action
+import { addToCart,updateCartItem } from "../Redux/CartSlice"; // Redux action
 import axios from "axios"; // API requests
 import { useNavigate, useParams } from "react-router-dom"; // For navigation
 
-// import centralized array of services
+// Import centralized array of services
 import servicesArray from '../components/astrologyArray'; // Centralized array with all services
 
 // Styled-components for custom styling
@@ -91,16 +91,19 @@ const ProductPage = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:4000/api/payments/order", orderData);
-      if (response.status === 200 && response.data.status === "created") {
-        alert(`Order created successfully! Order ID: ${response.data.id}`);
-        navigate(`/order/${response.data.id}`);
-      } else {
-        alert("Error creating order. Please try again.");
+      const response = await axios.post("http://localhost:4000/api/cart/add", orderData);
+      if (response.status === 200) {
+        dispatch(addToCart(orderData));
+        alert("Item added to the cart successfully!");
       }
     } catch (error) {
-      console.error("Error in order API call:", error);
-      alert("Failed to create order. Please try again.");
+      console.error("Failed to add item to the cart:", error);
+      if (error.response) {
+        console.error("Response Error:", error.response.data);
+        alert(error.response.data.message || "Failed to add item to the cart");
+      } else {
+        alert("Network error, please try again later.");
+      }
     }
   };
 
@@ -109,34 +112,68 @@ const ProductPage = () => {
       navigate("/login");
       return;
     }
-
-    const price = String(item.price);
+  
+    const userId = user.userId;
+    console.log("userId:", userId);
+  
+    if (!userId) {
+      alert("User ID is missing. Please log in first.");
+      return;
+    }
+  
+    console.log("item:", item); // Check the item data
+  
+    // Ensure item_id is present
+    if (!item || !item.item_id) {
+      alert("Item ID is missing. Please check the product data.");
+      return;
+    }
+  
     const cartItem = {
-      user_id: user.userId,
-      item_id: item.id,
-      title: item.serviceName,
-      description: item.description,
-      price: price,
-      quantity: 1,
+      user_id: userId,                  // Correctly map the user_id
+      item_id: item.item_id,            // Use item_id from the product
+      title: item.serviceName,          // Title of the service/product
+      description: item.description,    // Description of the service/product
+      price: item.pricing,              // Price of the service/product
+      quantity: 1                       // Set default quantity to 1
     };
-
+  
+    console.log("cartItem:", cartItem);  // Check if all fields are populated correctly
+  
     try {
       const response = await axios.post("http://localhost:4000/api/cart/add", cartItem);
-      if (response.status === 200) {
-        console.log("Item successfully added to the database!");
-        dispatch(addToCart(cartItem));
+      if (response.status === 201) {
+        console.log("Item successfully added to the cart!");
+        dispatch(addToCart(cartItem)); // Add the item to Redux state
         alert("Item added to the cart successfully!");
       }
     } catch (error) {
       console.error("Failed to add item to the cart:", error);
       if (error.response) {
-        alert(error.response.data.message || "Failed to add item to the cart");
+        alert(error.response.data.error || "Failed to add item to the cart");
       } else {
         alert("Network error, please try again later.");
       }
     }
   };
+  
+  
+// Function to generate random item ID
+function generateRandomItemId() {
+    const randomPart = Math.random().toString(36).substr(2, 9); // generates a random alphanumeric string
+    const timestamp = Date.now(); // timestamp to ensure uniqueness
+    return `${randomPart}-${timestamp}`;  // Combine random part and timestamp
+}
 
+
+// Function to generate random item ID
+function generateRandomItemId() {
+    const randomPart = Math.random().toString(36).substr(2, 9); // generates a random alphanumeric string
+    const timestamp = Date.now(); // timestamp to ensure uniqueness
+    return `${randomPart}-${timestamp}`;  // Combine random part and timestamp
+}
+
+  
   const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -199,12 +236,20 @@ const ProductPage = () => {
         <h2 className="text-2xl font-extrabold text-white mt-8">Frequently Asked Questions</h2>
         <div className="mt-4">
           {[ 
-            { question: "How do I book a consultation?", answer: "You can book through our app or contact us." },
-            { question: "What payment methods are accepted?", answer: "We accept all major credit/debit cards." },
+            { question: "How do I get started?", answer: "Simply click on 'Book Now' to schedule a consultation." },
+            { question: "What should I prepare for the session?", answer: "Have your questions ready and make sure you're in a quiet space." },
+            // Add more FAQ items here...
           ].map((faq, index) => (
-            <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
-              <div className="text-lg font-semibold">{faq.question}</div>
-              <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>{faq.answer}</div>
+            <div key={index}>
+              <div
+                className="faq-item"
+                onClick={() => handleFAQClick(index)}
+              >
+                <h3 className="text-xl font-semibold">{faq.question}</h3>
+              </div>
+              <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
+                <p>{faq.answer}</p>
+              </div>
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios for API requests
 
 // Styled Components for Downward Triangle Carousel
 const DownwardTriangle = styled.div`
@@ -96,17 +97,33 @@ const Slide = styled.div`
 const DownwardCarousel = () => {
   const navigate = useNavigate();
   const groupSize = 3; // Number of items per slide
-
-  const services = [
-    { id: 201, title: "Palmistry", description: "Read your palm lines.", price: 299.99 },
-    { id: 202, title: "Tarot", description: "Guidance through tarot cards.", price: 399.99 },
-    { id: 203, title: "Crystal Healing", description: "Energy through crystals.", price: 499.99 },
-    { id: 204, title: "Astrology", description: "Find your life's path.", price: 199.99 },
-    { id: 205, title: "Numerology", description: "Unlock your future through numbers.", price: 249.99 },
-    { id: 206, title: "Reiki Healing", description: "Heal your body with energy.", price: 349.99 },
-  ];
-
+  const [services, setServices] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true); // Loading state for API
+
+  // Fetch services from the API
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/cart/getService")
+      .then((response) => {
+        // Filter services with IDs between 24 and 27
+        const filteredServices = response.data.filter(
+          (service) => service.id >= 24 && service.id <= 27
+        );
+        setServices(filteredServices); // Store filtered services in state
+        setLoading(false); // Set loading to false once the data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+        setLoading(false); // Set loading to false if there's an error
+      });
+  }, []);
+
+  // Group services into chunks of 'groupSize'
+  const groupedServices = [];
+  for (let i = 0; i < services.length; i += groupSize) {
+    groupedServices.push(services.slice(i, i + groupSize));
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -116,16 +133,15 @@ const DownwardCarousel = () => {
     }, 5000); // 5 seconds for each slide
 
     return () => clearInterval(interval); // Cleanup on component unmount
-  }, []);
-
-  const groupedServices = [];
-  for (let i = 0; i < services.length; i += groupSize) {
-    groupedServices.push(services.slice(i, i + groupSize));
-  }
+  }, [services]);
 
   const handleBookNow = (item) => {
-    navigate(`/product/${item}`);
+    navigate(`/product/${item.id}`);
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading message until data is fetched
+  }
 
   return (
     <Wrapper>
@@ -134,7 +150,7 @@ const DownwardCarousel = () => {
           <Slide key={groupIndex}>
             {group.map((item) => (
               <div key={item.id} className="flex flex-col items-center cursor-pointer">
-                <DownwardTriangle onClick={() => navigate(`/product/${item.serviceName}`)}>
+                <DownwardTriangle onClick={() => navigate(`/product/${item.id}`)}>
                   <div>{item.title.toUpperCase()}</div>
                 </DownwardTriangle>
                 <DescriptionContainer>{item.description}</DescriptionContainer>

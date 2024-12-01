@@ -29,12 +29,24 @@ const cartSlice = createSlice({
           quantity,
         }); // Add new item to the cart
       }
+
+      // Update the total amount after adding an item
+      state.totalAmount = state.cartItems.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
     },
 
     // Remove item from the cart by `cart_item_id`
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
         (item) => item.cart_item_id !== action.payload
+      );
+
+      // Update the total amount after removing an item
+      state.totalAmount = state.cartItems.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
       );
     },
 
@@ -44,9 +56,15 @@ const cartSlice = createSlice({
       const item = state.cartItems.find(
         (item) => item.cart_item_id === cart_item_id
       );
-      if (item) {
+      if (item && quantity > 0) {
         item.quantity = quantity;
       }
+
+      // Update the total amount after quantity update
+      state.totalAmount = state.cartItems.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
     },
 
     // Set the total amount of the cart
