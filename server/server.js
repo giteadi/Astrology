@@ -6,6 +6,7 @@ require("dotenv").config();
 const userRoutes = require("./routes/userRoutes"); 
 const cartRoutes = require("./routes/cartRoutes");
 const paymentRoutes = require("./routes/paymentRoutes"); 
+const faqRoutes = require("./routes/faqRoutes")
 const cloudinaryConnect = require("./config/cloudinary");
 
 const app = express();
@@ -26,7 +27,7 @@ app.use(fileUpload({
 app.use("/api/v1/user", userRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payments", paymentRoutes); // Integrate Razorpay routes
-
+app.use("/api",faqRoutes);
 // Root route
 app.get("/", (req, res) => {
   res.send(`<h1> Say Hello To Astrology..</h1>`);

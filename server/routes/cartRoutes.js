@@ -12,6 +12,7 @@ const {
     deleteService,
     updateService,
     addService,
+    addMultipleService
 } = require('../controllers/cartController');
 
 
@@ -21,6 +22,7 @@ router.get("/getServiceByID/:id", getServiceById);
 router.post("/addService", addService);
 router.delete("/deleteServiceByID/:id", deleteService);
 router.put("/updateServiceByID/:id", updateService);
+router.post("/multipleService",addMultipleService);
 
 // cart items
 router.post('/add', createCartItem);

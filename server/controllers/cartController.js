@@ -172,6 +172,50 @@ const addService = async (req, res) => {
         });
     }
 };
+const addMultipleService = async (req, res) => {
+    try {
+        const services = req.body; // Array of services
+
+        // Validate that the array is not empty
+        if (!Array.isArray(services) || services.length === 0) {
+            return res.status(400).json({ error: "At least one service is required" });
+        }
+
+        // Validate each service object
+        for (const service of services) {
+            const { title, description, price } = service;
+
+            if (!title || !description || price === undefined) {
+                return res.status(400).json({ error: "Title, description, and price are required for each service" });
+            }
+        }
+
+        // Prepare query to insert multiple services
+        const query = "INSERT INTO services (title, description, price) VALUES ?";
+        
+        // Prepare values array for bulk insert
+        const values = services.map(service => [service.title, service.description, service.price]);
+
+        db.query(query, [values], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.status(201).json({
+                message: "Services added successfully",
+                affectedRows: result.affectedRows, // Number of rows inserted
+            });
+        });
+    } catch (error) {
+        console.error("Error adding services:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error adding services",
+            error: error.message,
+        });
+    }
+};
+
 
  // Fetch all services
  const getAllServices = async (req, res) => {
@@ -304,5 +348,6 @@ module.exports = {
     deleteService,
     updateService,
     addService,
+    addMultipleService
     
 };
