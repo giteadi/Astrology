@@ -215,19 +215,53 @@ const ProductPage = () => {
       <FAQsSection>
         <h2 className="text-2xl font-extrabold text-white mt-8">Frequently Asked Questions</h2>
         <div className="mt-4">
-          {[ 
-            { question: "How do I book a consultation?", answer: "You can book a consultation by clicking 'Add to Cart' or 'Buy Now'." },
-            { question: "What does this consultation cover?", answer: "The consultation covers a thorough discussion about your dental health and treatments." },
-            { question: "Can I reschedule my consultation?", answer: "Yes, rescheduling options are available." }
-          ].map((faq, index) => (
-            <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
-              <div className="text-lg font-bold">{faq.question}</div>
-              <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
-                {faq.answer}
-              </div>
-            </div>
-          ))}
-        </div>
+  {[
+    {
+      question: "How do I book a consultation for Astrology?",
+      answer: "You can book an Astrology consultation by clicking 'Add to Cart' or 'Buy Now' on the booking page."
+    },
+    {
+      question: "What does an Astrology consultation cover?",
+      answer: "The Astrology consultation includes an in-depth analysis of your birth chart, predictions, and guidance based on planetary positions."
+    },
+    {
+      question: "Can I reschedule my Astrology consultation?",
+      answer: "Yes, you can reschedule your Astrology consultation. Simply reach out to us via email or call for assistance."
+    },
+    {
+      question: "How do I book a Vastu consultation?",
+      answer: "You can book a Vastu consultation by selecting 'Vastu Consultation' and completing the payment process."
+    },
+    {
+      question: "What is covered in a Vastu consultation?",
+      answer: "A Vastu consultation covers a detailed analysis of your living or workspaces, with suggestions for enhancing energy flow and harmony."
+    },
+    {
+      question: "Can I reschedule my Vastu consultation?",
+      answer: "Yes, rescheduling your Vastu consultation is possible. Please contact us to make changes to your appointment."
+    },
+    {
+      question: "How do I book a Numerology consultation?",
+      answer: "Book your Numerology consultation by choosing 'Numerology Consultation' and completing your order on the website."
+    },
+    {
+      question: "What does a Numerology consultation include?",
+      answer: "A Numerology consultation provides insights based on your birth date and name, offering personalized recommendations for better life outcomes."
+    },
+    {
+      question: "Can I reschedule my Numerology consultation?",
+      answer: "Yes, rescheduling your Numerology consultation is available. You can change the time by contacting us."
+    }
+  ].map((faq, index) => (
+    <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
+      <div className="text-lg font-bold">{faq.question}</div>
+      <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
+        {faq.answer}
+      </div>
+    </div>
+  ))}
+</div>
+
       </FAQsSection>
     </div>
   );
