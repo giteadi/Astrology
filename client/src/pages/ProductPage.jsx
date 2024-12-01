@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart,updateCartItem } from "../Redux/CartSlice"; // Redux action
+import { addToCart, updateCartItem } from "../Redux/CartSlice"; // Redux action
 import axios from "axios"; // API requests
 import { useNavigate, useParams } from "react-router-dom"; // For navigation
-
-// Import centralized array of services
-import servicesArray from '../components/astrologyArray'; // Centralized array with all services
 
 // Styled-components for custom styling
 const FAQsSection = styled.section`
@@ -59,19 +56,34 @@ const CartNotification = styled.div`
 const ProductPage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  console.log("userId" , user)
   const { cartItems } = useSelector((state) => state.cart);
   const navigate = useNavigate();
-  const { serviceName } = useParams();  // The service name passed in the URL
+  const { id } = useParams();  // The id passed in the URL
 
+  const [service, setService] = useState(null);
   const [openFAQ, setOpenFAQ] = useState(null);
 
   const isLoggedIn = user !== null;
 
-  // Dynamically select the correct service from the centralized array based on the 'serviceName' param
-  const service = servicesArray.find(service => service.serviceName.toLowerCase() === serviceName.toLowerCase());
+  // Fetch service data by id
+  useEffect(() => {
+    const fetchServiceById = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/cart/getServiceByID/${id}`);
+        console.log("serviceData", response.data)
+        setService(response.data); // Set the fetched service data
+      } catch (error) {
+        console.error("Failed to fetch service:", error);
+        alert("Failed to fetch service data.");
+      }
+    };
+
+    fetchServiceById();
+  }, [id]);
 
   if (!service) {
-    return <div>Service not found</div>;
+    return <div>Loading...</div>; // Show loading state while fetching service data
   }
 
   const handleFAQClick = (index) => {
@@ -99,7 +111,6 @@ const ProductPage = () => {
     } catch (error) {
       console.error("Failed to add item to the cart:", error);
       if (error.response) {
-        console.error("Response Error:", error.response.data);
         alert(error.response.data.message || "Failed to add item to the cart");
       } else {
         alert("Network error, please try again later.");
@@ -107,44 +118,36 @@ const ProductPage = () => {
     }
   };
 
-  const handleBookNow = async (item) => {
+  const handleBookNow = async (service) => {
     if (!user) {
       navigate("/login");
       return;
     }
   
     const userId = user.userId;
-    console.log("userId:", userId);
-  
     if (!userId) {
       alert("User ID is missing. Please log in first.");
       return;
     }
   
-    console.log("item:", item); // Check the item data
-  
-    // Ensure item_id is present
-    if (!item || !item.item_id) {
+    if (!service.id) {
       alert("Item ID is missing. Please check the product data.");
       return;
     }
   
     const cartItem = {
-      user_id: userId,                  // Correctly map the user_id
-      item_id: item.item_id,            // Use item_id from the product
-      title: item.serviceName,          // Title of the service/product
-      description: item.description,    // Description of the service/product
-      price: item.pricing,              // Price of the service/product
-      quantity: 1                       // Set default quantity to 1
+      user_id: userId,                // User ID from the Redux state
+      item_id: service.id,             // Service ID from the fetched service
+      title: service.title,            // Title from the fetched service
+      description: service.description, // Description from the fetched service
+      price: service.price,            // Price from the fetched service
+      quantity: 1,                     // Default quantity to 1
     };
-  
-    console.log("cartItem:", cartItem);  // Check if all fields are populated correctly
   
     try {
       const response = await axios.post("http://localhost:4000/api/cart/add", cartItem);
       if (response.status === 201) {
-        console.log("Item successfully added to the cart!");
-        dispatch(addToCart(cartItem)); // Add the item to Redux state
+        dispatch(addToCart(cartItem));  // Dispatch to Redux store
         alert("Item added to the cart successfully!");
       }
     } catch (error) {
@@ -157,23 +160,7 @@ const ProductPage = () => {
     }
   };
   
-  
-// Function to generate random item ID
-function generateRandomItemId() {
-    const randomPart = Math.random().toString(36).substr(2, 9); // generates a random alphanumeric string
-    const timestamp = Date.now(); // timestamp to ensure uniqueness
-    return `${randomPart}-${timestamp}`;  // Combine random part and timestamp
-}
 
-
-// Function to generate random item ID
-function generateRandomItemId() {
-    const randomPart = Math.random().toString(36).substr(2, 9); // generates a random alphanumeric string
-    const timestamp = Date.now(); // timestamp to ensure uniqueness
-    return `${randomPart}-${timestamp}`;  // Combine random part and timestamp
-}
-
-  
   const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -209,10 +196,10 @@ function generateRandomItemId() {
         </div>
 
         <div className="flex-1 flex flex-col gap-6">
-          <h1 className="text-4xl font-extrabold">{service.serviceName} Consultation</h1>
+          <h1 className="text-4xl font-extrabold">{service.title}</h1>
           <p className="text-xl text-gray-300">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
-          <p className="text-2xl font-bold text-yellow-400">
-            ₹{service.pricing} <span className="line-through text-gray-500">₹11,599</span>
+          <p className="text-2xl font-bold text-yellow-400 flex gap-5">
+            <span className="">Price</span>₹{service.price} 
           </p>
           <p className="text-lg text-gray-200">{service.description}</p>
           <div className="flex flex-row gap-6">
@@ -236,19 +223,14 @@ function generateRandomItemId() {
         <h2 className="text-2xl font-extrabold text-white mt-8">Frequently Asked Questions</h2>
         <div className="mt-4">
           {[ 
-            { question: "How do I get started?", answer: "Simply click on 'Book Now' to schedule a consultation." },
-            { question: "What should I prepare for the session?", answer: "Have your questions ready and make sure you're in a quiet space." },
-            // Add more FAQ items here...
+            { question: "How do I book a consultation?", answer: "You can book a consultation by clicking 'Add to Cart' or 'Buy Now'." },
+            { question: "What does this consultation cover?", answer: "The consultation covers a thorough discussion about your dental health and treatments." },
+            { question: "Can I reschedule my consultation?", answer: "Yes, rescheduling options are available." }
           ].map((faq, index) => (
-            <div key={index}>
-              <div
-                className="faq-item"
-                onClick={() => handleFAQClick(index)}
-              >
-                <h3 className="text-xl font-semibold">{faq.question}</h3>
-              </div>
+            <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
+              <div className="text-lg font-bold">{faq.question}</div>
               <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
-                <p>{faq.answer}</p>
+                {faq.answer}
               </div>
             </div>
           ))}

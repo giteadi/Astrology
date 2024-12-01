@@ -140,11 +140,11 @@ const TriangularCarousel = () => {
                 key={index}
                 className="flex flex-col items-center cursor-pointer"
               >
-                <TriangleCard onClick={() => handleCardClick(item.title)}>
+                <TriangleCard onClick={() => handleCardClick(item.id)}>
                   <div>{item.title.toUpperCase()}</div>
                 </TriangleCard>
                 <DescriptionContainer>{item.description}</DescriptionContainer>
-                <Button onClick={() => handleCardClick(item.title)}>
+                <Button onClick={() => handleCardClick(item.id)}>
                   BOOK NOW
                 </Button>
               </div>
