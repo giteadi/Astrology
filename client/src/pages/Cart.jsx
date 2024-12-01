@@ -7,42 +7,40 @@ const Cart = () => {
   const { cartItems, totalAmount } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user); // Assuming user is stored in auth slice
+  console.log("user id cart", user);
 
-  // Fetch cart items when the component mounts
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/cart/${user.userId}`);
         const cartData = response.data;
+        console.log("Fetched Cart Data:", cartData);
 
         if (cartData && cartData.length > 0) {
           cartData.forEach((item) => {
-            // Only dispatch if item is not already in cart
-            const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
+            const existingItem = cartItems.find(cartItem => cartItem.cart_item_id === item.cart_item_id); // Use cart_item_id
             if (!existingItem) {
-              dispatch(addToCart(item));  // Add to Redux store
+              dispatch(addToCart(item));
             }
           });
         } else {
-          dispatch(clearCart()); // If no data, clear the cart
+          dispatch(clearCart());
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
       }
     };
 
-    if (user && user.userId) {
+    if (user && user.userId && cartItems.length === 0) { // Only fetch if no items are in the cart
       fetchCartItems();
     }
-  }, [dispatch, user, cartItems]);  // Add cartItems as a dependency to prevent duplicate fetches
+  }, [dispatch, user, cartItems.length]); // Avoid unnecessary re-fetches
 
-  // Function to recalculate the total amount
   const calculateTotal = () => {
     const newTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    dispatch(setTotalAmount(newTotal)); // Update the total amount in Redux store
+    dispatch(setTotalAmount(newTotal));
   };
 
-  // Handle remove item from cart
   const handleRemove = async (cart_item_id) => {
     if (!cart_item_id) {
       console.error("Invalid cart_item_id provided for deletion");
@@ -50,15 +48,10 @@ const Cart = () => {
     }
 
     try {
-      // Make API call to remove item from the cart
       const response = await axios.delete(`http://localhost:4000/api/cart/delete/${cart_item_id}`);
       if (response.status === 200) {
         console.log(`Item with cart_item_id: ${cart_item_id} removed successfully`);
-
-        // Dispatch Redux action to remove item from state
         dispatch(removeFromCart(cart_item_id));
-
-        // Recalculate total after removal
         calculateTotal();
       }
     } catch (error) {
@@ -66,20 +59,16 @@ const Cart = () => {
     }
   };
 
-  // Recalculate the total whenever cartItems change
   useEffect(() => {
     calculateTotal();
   }, [cartItems]);
 
-  // Handle adding an item to the cart from carousel or product page
   const handleAddToCart = (item) => {
-    const existingItem = cartItems.find((cartItem) => cartItem.id === item.id);
+    const existingItem = cartItems.find((cartItem) => cartItem.cart_item_id === item.cart_item_id); // Use cart_item_id
     if (existingItem) {
       console.log("Item is already in the cart.");
-      return;  // Prevent adding again
+      return;
     }
-
-    // Otherwise, add to cart
     dispatch(addToCart(item));
   };
 
@@ -97,7 +86,7 @@ const Cart = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-start">
             {cartItems.map((item) => (
               <div
-                key={item.cart_item_id || item.id}
+                key={item.cart_item_id || item.id} // Use cart_item_id for unique key
                 className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] p-4 rounded-lg mb-4 backdrop-blur-sm flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity duration-500 border border-white"
               >
                 <div className="flex items-center gap-4">

@@ -125,23 +125,15 @@ const ProductPage = () => {
     }
   
     const userId = user.userId;
-    if (!userId) {
-      alert("User ID is missing. Please log in first.");
-      return;
-    }
-  
-    if (!service.id) {
-      alert("Item ID is missing. Please check the product data.");
-      return;
-    }
-  
+    const existingItem = cartItems.find(item => item.item_id === service.id);
+    
     const cartItem = {
-      user_id: userId,                // User ID from the Redux state
-      item_id: service.id,             // Service ID from the fetched service
-      title: service.title,            // Title from the fetched service
-      description: service.description, // Description from the fetched service
-      price: service.price,            // Price from the fetched service
-      quantity: 1,                     // Default quantity to 1
+      user_id: userId,
+      item_id: service.id,
+      title: service.title,
+      description: service.description,
+      price: service.price,
+      quantity: existingItem ? existingItem.quantity + 1 : 1, // Increment quantity if item already exists
     };
   
     try {
@@ -159,6 +151,7 @@ const ProductPage = () => {
       }
     }
   };
+  
   
 
   const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
