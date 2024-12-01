@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import TriangularCarousel from "../components/TriangularCarousal";
 
 // Styled Component for Triangle Card
 const TriangleCard = styled.div`
@@ -48,50 +49,11 @@ const ItemDetails = ({ item, onBuyNow }) => (
 );
 
 const Astrology = () => {
-  // Dummy data array
-  const astrologyItems = [
-    { id: 102, title: "Astrology", description: "Insights into your life's path.", price: 299.99 },
-    { id: 103, title: "Vastu", description: "Celestial alignments insights.", price: 399.99 },
-    { id: 104, title: "Numerology", description: "Guidance through life's challenges.", price: 499.99 },
-  ];
 
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const handleBuyNow = (title) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      navigate(`/product/${title}`);
-      setIsLoading(false);
-    }, 500); // Simulate a loading delay
-  };
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] flex flex-col items-center justify-center text-white">
-      <h1 className="text-4xl font-bold mb-4">Astrology</h1>
-      <p className="text-lg mb-8 text-center max-w-2xl">
-        Discover the ancient science of astrology and how celestial bodies influence human lives.
-      </p>
-      <div className="flex flex-wrap justify-center gap-8">
-        {astrologyItems.map((item, index) => (
-          <div key={item.id} className="flex flex-col items-center gap-4">
-            {/* Triangle Card */}
-            <TriangleCard
-              onClick={() => handleBuyNow(item.title)}
-              aria-label={`Go to ${item.title} details`}
-            >
-              <div>{item.title.toUpperCase()}</div>
-            </TriangleCard>
-            {/* Card Details */}
-            <ItemDetails item={item} onBuyNow={() => handleBuyNow(item.title)} />
-          </div>
-        ))}
-      </div>
-      {isLoading && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
-          <p>Loading...</p>
-        </div>
-      )}
+     <TriangularCarousel/>
     </div>
   );
 };

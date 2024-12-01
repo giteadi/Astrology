@@ -17,6 +17,7 @@ import ProductPage from "./pages/ProductPage";
 import VastuPage from './pages/VastuPage'
 import NumrologyPage from './pages/Numrology-Page';
 import AstroPage2 from './pages/AstroPage'
+import TriangularCarousel from "./components/TriangularCarousal";
 function App() {
   return (
     <div className="font-bold">
@@ -37,6 +38,7 @@ function App() {
         <Route path='/numerologyPage' element={<NumrologyService/>}/>
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path='/astroSingle' element={<AstroPage2/>}/>
+        <Route path="/triangle" element={<TriangularCarousel/>}/>
       </Routes>
       <Footer/>
     </div>
