@@ -5,12 +5,15 @@ import { useSelector } from 'react-redux';
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);  // Local state for cart items
   const [totalAmount, setTotalAmount] = useState(0);
+  const [loading, setLoading] = useState(false);  // Loading state for async operations
   const user = useSelector((state) => state.auth.user); // Assuming user is stored in auth slice
+
   console.log("user id cart", user);
 
   // Fetch cart items from the server when user is logged in
   useEffect(() => {
     const fetchCartItems = async () => {
+      setLoading(true);  // Set loading to true when the fetch starts
       try {
         const response = await axios.get(`http://localhost:4000/api/cart/${user.userId}`);
         const cartData = response.data;
@@ -21,6 +24,8 @@ const Cart = () => {
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
+      } finally {
+        setLoading(false);  // Set loading to false after the fetch operation
       }
     };
 
@@ -32,8 +37,12 @@ const Cart = () => {
   // Calculate total whenever cartItems change
   useEffect(() => {
     const calculateTotal = () => {
-      const newTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      setTotalAmount(newTotal);
+      if (cartItems.length === 0) {
+        setTotalAmount(0);  // Set to 0 if no items
+      } else {
+        const newTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        setTotalAmount(newTotal);
+      }
     };
     calculateTotal();
   }, [cartItems]);  // Recalculate total when cartItems changes
@@ -49,8 +58,10 @@ const Cart = () => {
       const response = await axios.delete(`http://localhost:4000/api/cart/delete/${cart_item_id}`);
       if (response.status === 200) {
         console.log(`Item with cart_item_id: ${cart_item_id} removed successfully`);
-        // Remove the item from the local state (no Redux needed)
-        setCartItems(cartItems.filter(item => item.cart_item_id !== cart_item_id));
+        
+        // After removing, refetch the updated cart data from the server
+        const updatedCart = await axios.get(`http://localhost:4000/api/cart/${user.userId}`);
+        setCartItems(updatedCart.data); // Update local state with fresh data from the server
       }
     } catch (error) {
       console.error("Error removing item from cart:", error);
@@ -78,7 +89,11 @@ const Cart = () => {
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold my-6 text-center text-white opacity-80 transition-opacity duration-500">
           Your Cart
         </h2>
-        {cartItems.length === 0 ? (
+        {loading ? (
+          <div className="text-center text-white text-lg opacity-70 transition-opacity duration-500">
+            Loading...
+          </div>
+        ) : cartItems.length === 0 ? (
           <p className="text-center text-white text-lg opacity-70 transition-opacity duration-500">
             Your cart is empty
           </p>
