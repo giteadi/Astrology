@@ -159,11 +159,11 @@ export default function SearchbarWithOptions() {
   const navigate = useNavigate(); // Initialize useNavigate
 
   const services = [
-    { name: "Astrology", path: "/astrology" },
+    { name: "Astrology", path: "/astroSingle" },
     { name: "Numerology", path: "/numerology" },
     { name: "Vastu", path: "/vastu" },
-    { name: "Astrology Consultation", path: "/astrology/consultation" },
-    { name: "Vastu Tips", path: "/vastu/tips" },
+    { name: "Astrology Consultation", path: "/astroSingle" },
+    { name: "Vastu Tips", path: "/vastu" },
     { name: "Numerology Reports", path: "/numerology/reports" },
   ];
 

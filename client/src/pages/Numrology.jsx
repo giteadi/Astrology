@@ -2,7 +2,7 @@
 import React from "react";
 import SquareCarousel from "../components/SquareCarosal"; // If you want to keep the carousel here
 import styled from "styled-components";
-
+import Numrology from '../components/DownwardTriangle'
 // Create a StyledContainer with the same background as in Home.jsx
 const StyledContainer = styled.div`
   background: linear-gradient(90deg, #1c1c3d, #4b0082); /* Blue background */
@@ -12,16 +12,12 @@ const StyledContainer = styled.div`
   text-align: center;
 `;
 
-const Numerology = () => {
+const NumerologyPage = () => {
   return (
     <StyledContainer>
-      <h1>Numerology</h1>
-      <p>
-        Dive into the ancient science of Numerology and uncover how your name and birth date can unlock the hidden meanings behind your life path, strengths, and challenges.
-      </p>
-      <SquareCarousel /> {/* Optional: Include a carousel if needed */}
+     <Numrology/>
     </StyledContainer>
   );
 };
 
-export default Numerology;
+export default NumerologyPage;
