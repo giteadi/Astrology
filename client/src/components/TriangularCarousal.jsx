@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios
 
+// Styled Component for Triangle Card
 const TriangleCard = styled.div`
   width: 18rem;
   height: 18rem;
@@ -20,7 +21,7 @@ const TriangleCard = styled.div`
   position: relative;
   cursor: pointer;
   transition: transform 0.3s;
-  margin: 3rem; /* Add horizontal margin between cards */
+  margin: 1rem;
 
   &:hover {
     transform: scale(1.05);
@@ -29,6 +30,20 @@ const TriangleCard = styled.div`
   @media (max-width: 768px) {
     width: 14rem;
     height: 14rem;
+  }
+`;
+
+// Description Container
+const DescriptionContainer = styled.div`
+  margin-top: 1.5rem;
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+  font-weight: normal;
+  width: 18rem;
+
+  @media (max-width: 768px) {
+    width: 14rem;
   }
 `;
 
@@ -50,41 +65,20 @@ const Button = styled.button`
   }
 `;
 
-const DescriptionContainer = styled.div`
-  margin-top: 1.5rem;
-  text-align: center;
-  color: white;
-  font-size: 1rem;
-  font-weight: normal;
-  width: 18rem;
-
-  @media (max-width: 768px) {
-    width: 14rem;
-  }
-`;
-
+// Wrapper and Layout for Grouping Cards
 const Wrapper = styled.div`
-  width: 100%;
-  overflow: hidden;
-`;
-
-const SliderContainer = styled.div`
   display: flex;
-  transition: transform 1s ease-in-out;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem; // Space between the cards
+  margin: 2rem;
 `;
 
-const Slide = styled.div`
-  display: flex;
-  justify-content: center; /* Ensure cards are centered */
-  gap: 0; /* Reset gap to avoid double spacing */
-`;
-
-const TriangularCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+// Component for Astrology Page
+const Astrology = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const navigate = useNavigate();
-  const groupSize = 3;
 
   // Fetch data from API
   useEffect(() => {
@@ -104,56 +98,30 @@ const TriangularCarousel = () => {
       });
   }, []);
 
-  // Group the services into chunks of `groupSize`
-  const groupedServices = [];
-  for (let i = 0; i < services.length; i += groupSize) {
-    groupedServices.push(services.slice(i, i + groupSize));
-  }
-
-  const handleCardClick = (serviceName) => {
-    navigate(`/product/${serviceName}`);
+  // Handle Card Click
+  const handleCardClick = (id) => {
+    navigate(`/product/${id}`);
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex + 1 >= Math.ceil(services.length / groupSize) ? 0 : prevIndex + 1
-      );
-    }, 5000); // 5 seconds for each slide
-
-    return () => clearInterval(interval); // Cleanup on component unmount
-  }, [services]);
 
   if (loading) {
     return <div>Loading...</div>; // Show loading message while fetching data
   }
 
   return (
-    <Wrapper>
-      <SliderContainer
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-      >
-        {groupedServices.map((group, groupIndex) => (
-          <Slide key={groupIndex}>
-            {group.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center cursor-pointer"
-              >
-                <TriangleCard onClick={() => handleCardClick(item.id)}>
-                  <div>{item.title.toUpperCase()}</div>
-                </TriangleCard>
-                <DescriptionContainer>{item.description}</DescriptionContainer>
-                <Button onClick={() => handleCardClick(item.id)}>
-                  BOOK NOW
-                </Button>
-              </div>
-            ))}
-          </Slide>
+    <div className="min-h-screen bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] flex items-center justify-center text-white">
+      <Wrapper>
+        {services.map((item, index) => (
+          <div key={index} className="flex flex-col items-center cursor-pointer">
+            <TriangleCard onClick={() => handleCardClick(item.id)}>
+              <div>{item.title.toUpperCase()}</div>
+            </TriangleCard>
+            <DescriptionContainer>{item.description}</DescriptionContainer>
+            <Button onClick={() => handleCardClick(item.id)}>BOOK NOW</Button>
+          </div>
         ))}
-      </SliderContainer>
-    </Wrapper>
+      </Wrapper>
+    </div>
   );
 };
 
-export default TriangularCarousel;
+export default Astrology;
