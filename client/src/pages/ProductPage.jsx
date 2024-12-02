@@ -56,22 +56,31 @@ const CartNotification = styled.div`
 const ProductPage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  console.log("userId" , user)
   const { cartItems } = useSelector((state) => state.cart);
   const navigate = useNavigate();
-  const { id } = useParams();  // The id passed in the URL
+  const { id } = useParams(); // Service ID from the URL
 
   const [service, setService] = useState(null);
   const [openFAQ, setOpenFAQ] = useState(null);
 
-  const isLoggedIn = user !== null;
+  // Load Razorpay script dynamically
+  useEffect(() => {
+    const loadRazorpayScript = () => {
+      if (!document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    };
+    loadRazorpayScript();
+  }, []);
 
-  // Fetch service data by id
+  // Fetch service details by ID
   useEffect(() => {
     const fetchServiceById = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/cart/getServiceByID/${id}`);
-        console.log("serviceData", response.data)
         setService(response.data); // Set the fetched service data
       } catch (error) {
         console.error("Failed to fetch service:", error);
@@ -90,43 +99,70 @@ const ProductPage = () => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
 
+  // Handle Buy Now with Razorpay
   const handleBuyNow = async () => {
-    if (!isLoggedIn) {
+    if (!user) {
       navigate("/login");
       return;
     }
 
     const orderData = {
-      amount: service.price * 100,
+      amount: service.price * 100, // Convert to paise
       currency: "INR",
       receipt: `receipt#${Math.floor(Math.random() * 1000)}`,
     };
 
     try {
-      const response = await axios.post("http://localhost:4000/api/cart/add", orderData);
-      if (response.status === 200) {
-        dispatch(addToCart(orderData));
-        alert("Item added to the cart successfully!");
-      }
+      const response = await axios.post("http://localhost:4000/api/payments/order", orderData);
+
+      const { id: orderId, amount, currency } = response.data;
+
+      const options = {
+        key: "rzp_test_VIZvc7et81JkFL", // Replace with your Razorpay Key ID
+        amount,
+        currency,
+        name: "Astrology Services",
+        description: service.title,
+        order_id: orderId,
+        handler: async (paymentResponse) => {
+          try {
+            const validationResponse = await axios.post(
+              "http://localhost:4000/api/payments/order/validate",
+              paymentResponse
+            );
+            if (validationResponse.status === 200) {
+              alert("Payment Successful");
+              navigate("/confirmation", { state: { orderId, service } });
+            }
+          } catch (validationError) {
+            console.error("Payment validation failed:", validationError.response?.data);
+            alert("Payment validation failed. Please contact support.");
+          }
+        },
+        prefill: {
+          email: user.email, // Prefill with logged-in user email
+        },
+        theme: { color: "#3399cc" },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
     } catch (error) {
-      console.error("Failed to add item to the cart:", error);
-      if (error.response) {
-        alert(error.response.data.message || "Failed to add item to the cart");
-      } else {
-        alert("Network error, please try again later.");
-      }
+      console.error("Error during payment:", error.response?.data || error.message);
+      alert("Something went wrong. Please try again.");
     }
   };
 
+  // Handle Book Now - Add to Cart
   const handleBookNow = async (service) => {
     if (!user) {
       navigate("/login");
       return;
     }
-  
+
     const userId = user.userId;
-    const existingItem = cartItems.find(item => item.item_id === service.id);
-    
+    const existingItem = cartItems.find((item) => item.item_id === service.id);
+
     const cartItem = {
       user_id: userId,
       item_id: service.id,
@@ -135,11 +171,11 @@ const ProductPage = () => {
       price: service.price,
       quantity: existingItem ? existingItem.quantity + 1 : 1, // Increment quantity if item already exists
     };
-  
+
     try {
       const response = await axios.post("http://localhost:4000/api/cart/add", cartItem);
       if (response.status === 201) {
-        dispatch(addToCart(cartItem));  // Dispatch to Redux store
+        dispatch(addToCart(cartItem)); // Dispatch to Redux store
         alert("Item added to the cart successfully!");
       }
     } catch (error) {
@@ -151,11 +187,8 @@ const ProductPage = () => {
       }
     }
   };
-  
-  
 
   const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
   return (
     <div className="min-h-screen bg-gradient-to-t from-purple-800 to-indigo-900 text-white p-8">
       <div className="flex justify-end items-center mb-8">
