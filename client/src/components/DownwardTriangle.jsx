@@ -153,7 +153,7 @@ const DownwardCarousel = () => {
                 <DownwardTriangle onClick={() => navigate(`/product/${item.id}`)}>
                   <div>{item.title.toUpperCase()}</div>
                 </DownwardTriangle>
-                <DescriptionContainer>{item.description}</DescriptionContainer>
+                <DescriptionContainer className="line-clamp-2">{item.description}</DescriptionContainer>
                 <Button onClick={(e) => {
                   e.stopPropagation(); // Prevent navigation when clicking on the button
                   handleBookNow(item);

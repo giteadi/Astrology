@@ -143,7 +143,7 @@ const TriangularCarousel = () => {
                 <TriangleCard onClick={() => handleCardClick(item.id)}>
                   <div>{item.title.toUpperCase()}</div>
                 </TriangleCard>
-                <DescriptionContainer>{item.description}</DescriptionContainer>
+                <DescriptionContainer className='line-clamp-2'>{item.description}</DescriptionContainer>
                 <Button onClick={() => handleCardClick(item.id)}>
                   BOOK NOW
                 </Button>

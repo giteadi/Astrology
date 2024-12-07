@@ -125,7 +125,7 @@ const SquareCarousel = () => {
                 <Square onClick={() => handleCardClick(item?.id)}>
                   {item?.title ? item.title.toUpperCase() : "No Service Name"}
                 </Square>
-                <DescriptionContainer>{item?.description}</DescriptionContainer>
+                <DescriptionContainer className="line-clamp-2">{item?.description}</DescriptionContainer>
                 <Button onClick={() => handleCardClick(item?.id)}>
                   BOOK NOW
                 </Button>
