@@ -138,38 +138,35 @@ const GlassyNav = styled.div`
 
 
 const NavItem = styled(Link)`
-  margin: 0 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  color: white;
-  position: relative;
+  &&& {
+    position: relative;
+    margin: 0 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
 
-  &:hover {
-    color: rgba(255, 255, 255, 1);
-  }
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
 
-  @media (max-width: 400px) {
-    margin: 0;
-    font-size: 0.9rem;
-  }
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -3px; /* Gap between text and underline */
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background-color: white;
+      transition: width 0.3s ease;
+    }
 
-  /* Underline effect */
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0%;
-    height: 2px;
-    background-color: white;
-    transition: width 0.3s ease;
-  }
-
-  &:hover::after {
-    width: 100%;
+    &:hover::after {
+      width: 100%;
+    }
   }
 `;
+
 export default function SearchbarWithOptions() {
   const [query, setQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
