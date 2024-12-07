@@ -107,10 +107,10 @@ const SuggestionItem = styled(Link)`
 const GlassyNav = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around; /* Evenly space the items */
-  gap: 1rem; /* Optional: Set a gap between items, adjust as needed */
-  width: 100%; /* Ensure full width on larger screens */
-  max-width: 1200px; /* Optional: Set a max-width to prevent stretching */
+  justify-content: space-around; /* Ensures even spacing around links */
+  
+  width: 100%;
+  max-width: 1200px;
   height: 4rem;
   border-radius: 1.1rem;
   backdrop-filter: blur(10px);
@@ -121,38 +121,55 @@ const GlassyNav = styled.div`
   padding: 0 2rem;
   font-size: 1.1rem;
   color: white;
-  overflow: hidden; /* Prevents overflow */
-  flex-wrap: wrap; /* Allow items to wrap if needed */
-  
-  @media (max-width: 400px) {
-    font-size: 1rem;
+  overflow: hidden;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  white-space: nowrap; /* Prevents items from breaking into multiple lines */
+
+  @media (max-width: 768px) {
     padding: 0 1rem;
-    justify-content: space-between;
-    gap: 0.5rem;
-    flex-wrap: wrap; /* Allows wrapping of items on small screens */
+    font-size: 1rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.9rem;
+    padding: 0;
   }
 `;
 
 
-
-
 const NavItem = styled(Link)`
-  margin: 0 1.5rem;
+  margin: 0 1rem;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
   color: white;
+  position: relative;
 
   &:hover {
     color: rgba(255, 255, 255, 1);
   }
 
   @media (max-width: 400px) {
-    margin: 0; /* Remove extra margin for small screens */
-    font-size: 0.9rem; /* Reduce font size */
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  /* Underline effect */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: white;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 `;
-
 export default function SearchbarWithOptions() {
   const [query, setQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -203,6 +220,7 @@ export default function SearchbarWithOptions() {
 
   return (
     <SearchWrapper>
+      {/* Search Bar */}
       <SearchInputWrapper>
         <SearchInput
           type="text"
@@ -231,9 +249,9 @@ export default function SearchbarWithOptions() {
         </SuggestionsWrapper>
       )}
 
-      {/* Glassy Navbar for Astrology, Numerology, and Vastu */}
+      {/* Glassy Navbar */}
       <GlassyNav>
-      <NavItem to="/astroSingle">Astrology</NavItem>
+        <NavItem to="/astroSingle">Astrology</NavItem>
         <span>|</span>
         <NavItem to="/vastu">Vastu</NavItem>
         <span>|</span>
