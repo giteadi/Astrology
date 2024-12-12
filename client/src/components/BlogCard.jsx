@@ -1,7 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
+// Keyframes for the bubble animation inside the button
+const bubble = keyframes`
+  0% {
+    transform: translateY(100%) scale(1); /* Start from the bottom */
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-40px) scale(1.2); /* Move upwards */
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-80px) scale(0.8); /* End near the top */
+    opacity: 0;
+  }
+`;
+
+// Styled Blog Card Wrapper
 const BlogCardWrapper = styled.div`
   background: rgba(255, 255, 255, 0.1); /* Transparent background */
   border-radius: 10px;
@@ -18,6 +35,7 @@ const BlogCardWrapper = styled.div`
   }
 `;
 
+// Styled Image
 const BlogImage = styled.div`
   width: 100%;
   height: 200px;
@@ -31,11 +49,13 @@ const BlogImage = styled.div`
   }
 `;
 
+// Styled Content
 const BlogContent = styled.div`
   padding: 1.5rem;
   color: white;
 `;
 
+// Styled Blog Title
 const BlogTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: bold;
@@ -44,15 +64,32 @@ const BlogTitle = styled.h3`
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Slight text shadow */
 `;
 
+// Styled Blog Excerpt
 const BlogExcerpt = styled.p`
   font-size: 1rem;
   color: #cccccc;
   margin-bottom: 1.5rem;
 `;
 
+// Styled Bubble element with random position and animation
+const Bubble = styled.div`
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: ${bubble} 5s ease-in-out infinite;
+  width: ${(props) => `${props.size}px`}; /* Use passed size */
+  height: ${(props) => `${props.size}px`}; /* Use passed size */
+  left: ${(props) => `${props.left}%`};
+  bottom: ${(props) => `${props.bottom}%`};
+  animation-delay: ${(props) => `${props.delay}s`};
+`;
+
+// Styled Read More Button with Bubble Effect
 const ReadMoreButton = styled(Link)`
+  position: relative;
   padding: 0.8rem 1.5rem;
-  background: linear-gradient(90deg, #6a0dad, #4b0082); /* Gradient button */
+  background: linear-gradient(90deg, #1e3a8a, #3b82f6); /* Navy blue gradient */
   color: white;
   border-radius: 30px;
   font-weight: 600;
@@ -60,19 +97,52 @@ const ReadMoreButton = styled(Link)`
   text-decoration: none;
   display: inline-block;
   transition: background 0.3s ease;
+  overflow: hidden; /* Ensures bubbles stay inside the button */
 
   &:hover {
-    background: linear-gradient(90deg, #4b0082, #6a0dad); /* Reverse gradient on hover */
+    background: linear-gradient(90deg, #3b82f6, #1e3a8a); /* Reverse gradient on hover */
+  }
+
+  /* Bubble animation inside the button */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 15px;
+    height: 15px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: ${bubble} 1.5s ease-out infinite;
   }
 `;
 
+// Generate random values for the bubbles inside the button
+const generateRandomBubbles = (count = 6) => {
+  return Array.from({ length: count }).map(() => ({
+    size: Math.random() * 15 + 5, // Random size
+    left: Math.random() * 100, // Random left position
+    bottom: Math.random() * 100, // Random bottom position
+    delay: Math.random() * 2, // Random animation delay
+  }));
+};
+
 const BlogCard = ({ blog }) => {
+  const randomBubbles = generateRandomBubbles();
+
   return (
     <BlogCardWrapper>
       <BlogImage imageUrl={blog.imageUrl} />
       <BlogContent>
         <BlogTitle>{blog.title}</BlogTitle>
         <BlogExcerpt>{blog.excerpt}</BlogExcerpt>
+
+        {/* Render random bubbles around the button */}
+        {randomBubbles.map((bubbleProps, index) => (
+          <Bubble key={index} {...bubbleProps} />
+        ))}
+
         <ReadMoreButton to={`/blog/${blog.id}`}>Read More</ReadMoreButton>
       </BlogContent>
     </BlogCardWrapper>
