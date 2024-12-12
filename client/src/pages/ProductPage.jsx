@@ -70,18 +70,23 @@ const ProductPage = () => {
         const script = document.createElement("script");
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.async = true;
+        script.onload = () => console.log("Razorpay script loaded");
+        script.onerror = () => console.error("Failed to load Razorpay script");
         document.body.appendChild(script);
       }
     };
     loadRazorpayScript();
   }, []);
+  
 
   // Fetch service details by ID
   useEffect(() => {
     const fetchServiceById = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/cart/getServiceByID/${id}`);
+        console.log("id",id);
         setService(response.data); // Set the fetched service data
+        console.log(response.data)
       } catch (error) {
         console.error("Failed to fetch service:", error);
         alert("Failed to fetch service data.");
@@ -118,7 +123,7 @@ const ProductPage = () => {
       const { id: orderId, amount, currency } = response.data;
 
       const options = {
-        key: "rzp_test_VIZvc7et81JkFL", // Replace with your Razorpay Key ID
+        key: "rzp_test_suGlReUubwbXnb", // Replace with your Razorpay Key ID
         amount,
         currency,
         name: "Astrology Services",
@@ -132,7 +137,7 @@ const ProductPage = () => {
             );
             if (validationResponse.status === 200) {
               alert("Payment Successful");
-              navigate("/confirmation", { state: { orderId, service } });
+
             }
           } catch (validationError) {
             console.error("Payment validation failed:", validationError.response?.data);
