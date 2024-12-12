@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios for API requests
+import ButtonComponent from "../pages/ButtonComponent";
 
 // Styled Components for Downward Triangle Carousel
 const DownwardTriangle = styled.div`
@@ -154,12 +155,9 @@ const DownwardCarousel = () => {
                   <div>{item.title.toUpperCase()}</div>
                 </DownwardTriangle>
                 <DescriptionContainer className="line-clamp-2">{item.description}</DescriptionContainer>
-                <Button onClick={(e) => {
-                  e.stopPropagation(); // Prevent navigation when clicking on the button
-                  handleBookNow(item);
-                }}>
-                  BOOK NOW
-                </Button>
+                <ButtonComponent itemId={item.id}>
+                BOOK NOW
+              </ButtonComponent>
               </div>
             ))}
           </Slide>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ButtonComponent from "../pages/ButtonComponent";
 
 // Styled components for the square card
 const Square = styled.div`
@@ -126,9 +127,9 @@ const SquareCarousel = () => {
                   {item?.title ? item.title.toUpperCase() : "No Service Name"}
                 </Square>
                 <DescriptionContainer className="line-clamp-2">{item?.description}</DescriptionContainer>
-                <Button onClick={() => handleCardClick(item?.id)}>
-                  BOOK NOW
-                </Button>
+                <ButtonComponent itemId={item.id}>
+                BOOK NOW
+              </ButtonComponent>
               </div>
             ))}
           </Slide>
