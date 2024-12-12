@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios
+import ButtonComponent from "../pages/ButtonComponent";
 
 const TriangleCard = styled.div`
   width: 18rem;
@@ -32,23 +33,23 @@ const TriangleCard = styled.div`
   }
 `;
 
-const Button = styled.button`
-  padding: 1rem 2rem;
-  background-color: #6a0dad;
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 9999px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 20px;
-  transition: background-color 0.3s, transform 0.3s;
+// const Button = styled.button`
+//   padding: 1rem 2rem;
+//   background-color: #6a0dad;
+//   color: white;
+//   font-weight: 600;
+//   border: none;
+//   border-radius: 9999px;
+//   cursor: pointer;
+//   font-size: 1rem;
+//   margin-top: 20px;
+//   transition: background-color 0.3s, transform 0.3s;
 
-  &:hover {
-    background-color: #5a0071;
-    transform: scale(1.1);
-  }
-`;
+//   &:hover {
+//     background-color: #5a0071;
+//     transform: scale(1.1);
+//   }
+// `;
 
 const DescriptionContainer = styled.div`
   margin-top: 1.5rem;
@@ -130,29 +131,32 @@ const TriangularCarousel = () => {
 
   return (
     <Wrapper>
-      <SliderContainer
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-      >
-        {groupedServices.map((group, groupIndex) => (
-          <Slide key={groupIndex}>
-            {group.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center cursor-pointer"
-              >
-                <TriangleCard onClick={() => handleCardClick(item.id)}>
-                  <div>{item.title.toUpperCase()}</div>
-                </TriangleCard>
-                <DescriptionContainer className='line-clamp-2'>{item.description}</DescriptionContainer>
-                <Button onClick={() => handleCardClick(item.id)}>
-                  BOOK NOW
-                </Button>
-              </div>
-            ))}
-          </Slide>
-        ))}
-      </SliderContainer>
-    </Wrapper>
+    <SliderContainer
+      style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+    >
+      {groupedServices.map((group, groupIndex) => (
+        <Slide key={groupIndex}>
+          {group.map((item, index) => (
+            <div
+              key={item.id} // Use a more unique key if possible
+              className="flex flex-col items-center cursor-pointer"
+            >
+              <TriangleCard onClick={() => handleCardClick(item.id)}>
+                <div>{item.title.toUpperCase()}</div>
+              </TriangleCard>
+              <DescriptionContainer className="line-clamp-2">
+                {item.description}
+              </DescriptionContainer>
+              <ButtonComponent itemId={item.id}>
+                BOOK NOW
+              </ButtonComponent>
+            </div>
+          ))}
+        </Slide>
+      ))}
+    </SliderContainer>
+  </Wrapper>
+  
   );
 };
 
