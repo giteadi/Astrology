@@ -17,8 +17,7 @@ const bubble = keyframes`
     opacity: 0;
   }
 `;
-
-// Styled Button Component with deep blue gradient background
+// Styled Button Component with navy blue gradient background
 const Button = styled.a`
   position: relative;
   display: flex;
@@ -26,7 +25,7 @@ const Button = styled.a`
   align-items: center;
   gap: 10px;
   padding: 16px 32px;
-  background: linear-gradient(45deg, #003366, #004b8d, #0066cc); /* Deep blue gradient */
+  background: linear-gradient(45deg, #001f3d, #003366, #004b8d); /* Navy blue gradient */
   color: white;
   font-weight: bold;
   border-radius: 12px;
@@ -40,6 +39,7 @@ const Button = styled.a`
     color: #00b0ff; /* Change text color on hover */
   }
 `;
+
 
 // Styled bubble element with random position and animation
 const Bubble = styled.div`
