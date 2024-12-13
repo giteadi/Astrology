@@ -1,33 +1,23 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
+import styled from "styled-components";
 import TriangularCarousel from "../components/TriangularCarousal";
 import SquareCarousel from "../components/SquareCarosal";
-import styled from "styled-components";
-import Searchbar from "../components/Searchbar";
-import StyledDownwardTriangle from "../components/DownwardTriangle"; // Correct import
-import AboutUs from "./AboutUs";
-import TestimonialsSection from "../components/Testimonials";
-import FAQ from "../components/FAQ";
-import BlogList from "../components/BlogList";
-import DownwardCarousel from "../components/DownwardTriangle";
 import GlassyNav from "../components/GlassyNav";
 import Nav from "../components/Nav";
+import DownwardCarousel from '../components/DownwardTriangle'
 
 // HomeContainer with galaxy-inspired gradient background
 const HomeContainer = styled.div`
-  background: linear-gradient(
-    to bottom,
-    #12002f,
-    #29004e,
-    #3e32c6
-  ); /* Darker top gradient transitioning to galaxy gradient */
+  background: linear-gradient(to bottom, #12002f, #29004e, #3e32c6);
   min-height: 100vh;
   padding: 2rem;
   color: white;
   text-align: center;
-  overflow: hidden; /* Prevent overflow due to animations */
+  position: relative; /* Make it the container for absolute positioning of stars */
+  overflow: hidden; /* Prevent scrolling from showing stars out of bounds */
 
-  /* Add animated stars */
+  /* Create animated stars */
   &::before {
     content: "";
     position: absolute;
@@ -35,26 +25,67 @@ const HomeContainer = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: url("/path/to/stars.png") repeat; /* Replace with your starry texture */
-    opacity: 0.1;
-    animation: twinkle 20s infinite alternate;
-    z-index: 0;
+    background: transparent;
+    z-index: -1; /* Ensure stars are behind the content */
+    pointer-events: none;
   }
 
+  /* Create 100 stars */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Create multiple animated stars */
+  .star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: white;
+    animation: twinkle 3s infinite alternate;
+  }
+
+  /* Randomize positions and opacity of stars */
   @keyframes twinkle {
     0% {
-      opacity: 0.1;
-    }
-    50% {
       opacity: 0.2;
     }
+    50% {
+      opacity: 1;
+    }
     100% {
-      opacity: 0.1;
+      opacity: 0.2;
     }
   }
+
+  /* Generate random stars */
+  .star:nth-child(1) {
+    top: 20%; left: 15%; animation-duration: 4s;
+  }
+  .star:nth-child(2) {
+    top: 40%; left: 30%; animation-duration: 5s;
+  }
+  .star:nth-child(3) {
+    top: 60%; left: 45%; animation-duration: 6s;
+  }
+  .star:nth-child(4) {
+    top: 70%; left: 60%; animation-duration: 7s;
+  }
+  .star:nth-child(5) {
+    top: 30%; left: 80%; animation-duration: 8s;
+  }
+
+  /* Add more stars if needed */
 `;
 
-// Styled Title with glowing gradient text
 const Title = styled.h2`
   margin: 2rem 0;
   background: linear-gradient(180deg, #ffffff, #6a0dad);
@@ -88,7 +119,6 @@ const Title = styled.h2`
   }
 `;
 
-// StarContainer with pulse animations
 const StarContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -129,7 +159,6 @@ const StarContainer = styled.div`
   }
 `;
 
-// CarouselWrapper to add a glassmorphism effect
 const CarouselWrapper = styled.div`
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
@@ -143,12 +172,10 @@ const CarouselWrapper = styled.div`
   width: 90%;
   max-width: 1200px;
 
-  /* Flex alignment for horizontal centering */
   display: flex;
   justify-content: center;
   align-items: center;
 
-  /* Ensure proper responsiveness */
   @media (max-width: 768px) {
     padding: 1rem;
     width: 100%;
@@ -159,76 +186,54 @@ const CarouselWrapper = styled.div`
     width: 100%;
   }
 `;
-const DownwardCarouselWrapper = styled.div`
-  display: flex;
-  flex-direction: row; /* Ensure horizontal alignment */
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-
-  @media (max-width: 768px) {
-    flex-direction: column; /* Switch to vertical for smaller screens */
-    align-items: center;
-  }
-`;
 
 export default function Home() {
   return (
+    <div>
+      <Nav />
+      <HomeContainer>
+        {/* Generate 50 Stars */}
+        {[...Array(500)].map((_, index) => (
+          <div key={index} className="star" style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${Math.random() * 2 + 3}s`, // Random durations
+            animationDelay: `${Math.random() * 2}s` // Random delays
+          }} />
+        ))}
 
+        {/* Section Title */}
+        <Title>
+          <span className="blinking-icon">✨</span> What We Offer
+        </Title>
 
-      <div>
-        <Nav/>
-          <HomeContainer>
-      
-      {/* <GlassyNav/> */}
-      {/* Section Title */}
-      <Title>
-        <span className="blinking-icon">✨</span> What We Offer
-      </Title>
+        {/* Animated Star Icons */}
+        <StarContainer>
+          <FaStar className="star star-big" />
+          <FaStar className="star star-medium" />
+          <FaStar className="star star-small" />
+        </StarContainer>
 
-      {/* Animated Star Icons */}
-      <StarContainer>
-        <FaStar className="star star-big" />
-        <FaStar className="star star-medium" />
-        <FaStar className="star star-small" />
-      </StarContainer>
+        {/* Triangular Carousel with Glassmorphism Wrapper */}
+        <Title>Astrology</Title>
+        <CarouselWrapper>
+          <TriangularCarousel />
+        </CarouselWrapper>
 
-      {/* Triangular Carousel with Glassmorphism Wrapper */}
-      <Title>Astrology</Title>
-      <CarouselWrapper>
-        <TriangularCarousel />
-      </CarouselWrapper>
+        {/* Section Title */}
+        <Title>Vastu</Title>
 
-      {/* Section Title */}
-      <Title>Vastu</Title>
+        {/* Square Carousel with Glassmorphism Wrapper */}
+        <CarouselWrapper>
+          <SquareCarousel />
+        </CarouselWrapper>
 
-      {/* Square Carousel with Glassmorphism Wrapper */}
-      <CarouselWrapper>
-        <SquareCarousel />
-      </CarouselWrapper>
-
-      {/* Downward Triangle Section with Glassmorphism */}
-      <Title>
-      Numerology
-      </Title>
-      <CarouselWrapper>
-        <DownwardCarousel />
-      </CarouselWrapper>
-
-      {/* About Us Section */}
-      <AboutUs />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
-
-      {/* FAQ Section */}
-      <FAQ />
-
-      {/* Blog List Section */}
-      <BlogList />
-    </HomeContainer>
-      </div>
-    
-    
+        {/* Downward Triangle Section with Glassmorphism */}
+        <Title>Numerology</Title>
+        <CarouselWrapper>
+          <DownwardCarousel />
+        </CarouselWrapper>
+      </HomeContainer>
+    </div>
   );
 }
