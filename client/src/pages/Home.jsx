@@ -6,7 +6,9 @@ import SquareCarousel from "../components/SquareCarosal";
 import GlassyNav from "../components/GlassyNav";
 import Nav from "../components/Nav";
 import DownwardCarousel from '../components/DownwardTriangle'
-
+import About from './AboutUs'
+import Testimonials from '../components/Testimonials'
+import Blogs from '../components/BlogList'
 // HomeContainer with galaxy-inspired gradient background
 const HomeContainer = styled.div`
   background: linear-gradient(to bottom, #12002f, #29004e, #3e32c6);
@@ -233,6 +235,9 @@ export default function Home() {
         <CarouselWrapper>
           <DownwardCarousel />
         </CarouselWrapper>
+        <About/>
+        <Blogs/>
+        <Testimonials/>
       </HomeContainer>
     </div>
   );
