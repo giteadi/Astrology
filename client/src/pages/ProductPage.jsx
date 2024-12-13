@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, updateCartItem } from "../Redux/CartSlice"; // Redux action
 import axios from "axios"; // API requests
@@ -39,6 +39,34 @@ const FAQsSection = styled.section`
     transform: translateY(0);
   }
 `;
+const bubble = keyframes`
+  0% {
+    transform: translateY(100%) scale(1); /* Start from the bottom */
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-40px) scale(1.2); /* Move upwards */
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-80px) scale(0.8); /* End near the top */
+    opacity: 0;
+  }
+`;
+const Bubble = styled.div`
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: ${bubble} 5s ease-in-out infinite;
+  width: ${(props) => `${props.size}px`};
+  height: ${(props) => `${props.size}px`};
+  left: ${(props) => `${props.left}%`};
+  bottom: ${(props) => `${props.bottom}%`};
+  animation-delay: ${(props) => `${props.delay}s`};
+  z-index: 0; /* Ensure bubbles are behind the button text */
+`;
+
 
 const CartNotification = styled.div`
   position: absolute;
@@ -52,6 +80,41 @@ const CartNotification = styled.div`
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 `;
+const Button = styled.a`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background-color: ${(props) => props.color || '#004b8d'}; /* Default is blue */
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    background-color: ${(props) => props.hoverColor || '#003366'}; /* Default is darker blue */
+  }
+`;
+
+const ButtonText = styled.p`
+  font-size: 16px;
+  color: white; /* Default text color */
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #00b0ff; /* Hover text color */
+  }
+`;
+const ButtonWrapper = styled.div`
+  position: relative;
+  overflow: hidden; /* Restrict overflow of bubbles */
+  display: inline-block; /* Ensure it wraps the button */
+`;
 
 const ProductPage = () => {
   const dispatch = useDispatch();
@@ -63,6 +126,14 @@ const ProductPage = () => {
   const [service, setService] = useState(null);
   const [openFAQ, setOpenFAQ] = useState(null);
 
+  const randomBubbles = Array.from({ length: 5 }, () => ({
+    size: Math.random() * 8 + 10, // Random size between 10px and 18px
+    left: Math.random() * 100, // Random position between 0% and 100%
+    bottom: Math.random() * 20 + 5, // Random vertical start position (avoids all at 0%)
+    delay: Math.random() * 3, // Random delay for animation
+  }));
+  
+  
   // Load Razorpay script dynamically
   useEffect(() => {
     const loadRazorpayScript = () => {
@@ -77,14 +148,14 @@ const ProductPage = () => {
     };
     loadRazorpayScript();
   }, []);
-  
+
 
   // Fetch service details by ID
   useEffect(() => {
     const fetchServiceById = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/cart/getServiceByID/${id}`);
-        console.log("id",id);
+        console.log("id", id);
         setService(response.data); // Set the fetched service data
         console.log(response.data)
       } catch (error) {
@@ -110,20 +181,20 @@ const ProductPage = () => {
       navigate("/login");
       return;
     }
-
+  
     const orderData = {
       amount: service.price * 100, // Convert to paise
       currency: "INR",
       receipt: `receipt#${Math.floor(Math.random() * 1000)}`,
     };
-
+  
     try {
       const response = await axios.post("http://localhost:4000/api/payments/order", orderData);
-
+      // Proceed with Razorpay integration if successful
       const { id: orderId, amount, currency } = response.data;
-
+  
       const options = {
-        key: "rzp_test_suGlReUubwbXnb", // Replace with your Razorpay Key ID
+        key: "rzp_test_suGlReUubwbXnb",
         amount,
         currency,
         name: "Astrology Services",
@@ -137,7 +208,6 @@ const ProductPage = () => {
             );
             if (validationResponse.status === 200) {
               alert("Payment Successful");
-
             }
           } catch (validationError) {
             console.error("Payment validation failed:", validationError.response?.data);
@@ -145,11 +215,11 @@ const ProductPage = () => {
           }
         },
         prefill: {
-          email: user.email, // Prefill with logged-in user email
+          email: user.email,
         },
         theme: { color: "#3399cc" },
       };
-
+  
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {
@@ -157,6 +227,7 @@ const ProductPage = () => {
       alert("Something went wrong. Please try again.");
     }
   };
+  
 
   // Handle Book Now - Add to Cart
   const handleBookNow = async (service) => {
@@ -230,22 +301,33 @@ const ProductPage = () => {
           <h1 className="text-4xl font-extrabold">{service.title}</h1>
           <p className="text-xl text-gray-300">Certified by Professionals • 4.9/5 ⭐ (120 reviews)</p>
           <p className="text-2xl font-bold text-yellow-400 flex gap-5">
-            <span className="">Price</span>₹{service.price} 
+            <span className="">Price</span>₹{service.price}
           </p>
           <p className="text-lg text-gray-200">{service.description}</p>
           <div className="flex flex-row gap-6">
-            <button
-              className="bg-gradient-to-r from-blue-700 to-blue-800 hover:bg-opacity-80 py-3 px-8 rounded-lg text-white shadow-lg transition duration-300"
-              onClick={handleBuyNow}
-            >
-              Buy Now
-            </button>
-            <button
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:bg-opacity-80 py-3 px-8 rounded-lg text-white shadow-lg transition duration-300"
-              onClick={() => handleBookNow(service)}
-            >
-              Add to Cart
-            </button>
+            <ButtonWrapper>
+                <Button rel="noopener" onClick={handleBuyNow}>
+        {randomBubbles.map((bubbleProps, index) => (
+          <Bubble key={index} {...bubbleProps} />
+        ))}
+        <ButtonText>Buy Now</ButtonText>
+      </Button>
+            </ButtonWrapper>
+            <ButtonWrapper>
+  <Button
+    rel="noopener"
+    onClick={() => handleBookNow(service)}
+    color="#16a34a" /* green-600 */
+    hoverColor="#15803d" /* green-700 */
+  >
+    {randomBubbles.map((bubbleProps, index) => (
+      <Bubble key={index} {...bubbleProps} />
+    ))}
+    <ButtonText>Add to Cart</ButtonText>
+  </Button>
+</ButtonWrapper>
+
+
           </div>
         </div>
       </div>
@@ -253,52 +335,52 @@ const ProductPage = () => {
       <FAQsSection>
         <h2 className="text-2xl font-extrabold text-white mt-8">Frequently Asked Questions</h2>
         <div className="mt-4">
-  {[
-    {
-      question: "How do I book a consultation for Astrology?",
-      answer: "You can book an Astrology consultation by clicking 'Add to Cart' or 'Buy Now' on the booking page."
-    },
-    {
-      question: "What does an Astrology consultation cover?",
-      answer: "The Astrology consultation includes an in-depth analysis of your birth chart, predictions, and guidance based on planetary positions."
-    },
-    {
-      question: "Can I reschedule my Astrology consultation?",
-      answer: "Yes, you can reschedule your Astrology consultation. Simply reach out to us via email or call for assistance."
-    },
-    {
-      question: "How do I book a Vastu consultation?",
-      answer: "You can book a Vastu consultation by selecting 'Vastu Consultation' and completing the payment process."
-    },
-    {
-      question: "What is covered in a Vastu consultation?",
-      answer: "A Vastu consultation covers a detailed analysis of your living or workspaces, with suggestions for enhancing energy flow and harmony."
-    },
-    {
-      question: "Can I reschedule my Vastu consultation?",
-      answer: "Yes, rescheduling your Vastu consultation is possible. Please contact us to make changes to your appointment."
-    },
-    {
-      question: "How do I book a Numerology consultation?",
-      answer: "Book your Numerology consultation by choosing 'Numerology Consultation' and completing your order on the website."
-    },
-    {
-      question: "What does a Numerology consultation include?",
-      answer: "A Numerology consultation provides insights based on your birth date and name, offering personalized recommendations for better life outcomes."
-    },
-    {
-      question: "Can I reschedule my Numerology consultation?",
-      answer: "Yes, rescheduling your Numerology consultation is available. You can change the time by contacting us."
-    }
-  ].map((faq, index) => (
-    <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
-      <div className="text-lg font-bold">{faq.question}</div>
-      <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
-        {faq.answer}
-      </div>
-    </div>
-  ))}
-</div>
+          {[
+            {
+              question: "How do I book a consultation for Astrology?",
+              answer: "You can book an Astrology consultation by clicking 'Add to Cart' or 'Buy Now' on the booking page."
+            },
+            {
+              question: "What does an Astrology consultation cover?",
+              answer: "The Astrology consultation includes an in-depth analysis of your birth chart, predictions, and guidance based on planetary positions."
+            },
+            {
+              question: "Can I reschedule my Astrology consultation?",
+              answer: "Yes, you can reschedule your Astrology consultation. Simply reach out to us via email or call for assistance."
+            },
+            {
+              question: "How do I book a Vastu consultation?",
+              answer: "You can book a Vastu consultation by selecting 'Vastu Consultation' and completing the payment process."
+            },
+            {
+              question: "What is covered in a Vastu consultation?",
+              answer: "A Vastu consultation covers a detailed analysis of your living or workspaces, with suggestions for enhancing energy flow and harmony."
+            },
+            {
+              question: "Can I reschedule my Vastu consultation?",
+              answer: "Yes, rescheduling your Vastu consultation is possible. Please contact us to make changes to your appointment."
+            },
+            {
+              question: "How do I book a Numerology consultation?",
+              answer: "Book your Numerology consultation by choosing 'Numerology Consultation' and completing your order on the website."
+            },
+            {
+              question: "What does a Numerology consultation include?",
+              answer: "A Numerology consultation provides insights based on your birth date and name, offering personalized recommendations for better life outcomes."
+            },
+            {
+              question: "Can I reschedule my Numerology consultation?",
+              answer: "Yes, rescheduling your Numerology consultation is available. You can change the time by contacting us."
+            }
+          ].map((faq, index) => (
+            <div key={index} className="faq-item" onClick={() => handleFAQClick(index)}>
+              <div className="text-lg font-bold">{faq.question}</div>
+              <div className={`faq-answer ${openFAQ === index ? "show-answer" : ""}`}>
+                {faq.answer}
+              </div>
+            </div>
+          ))}
+        </div>
 
       </FAQsSection>
     </div>
