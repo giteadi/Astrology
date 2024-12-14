@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// Container with background gradient and stars
+// Container with background gradient and animated stars
 const Container = styled.div`
   padding: 2rem;
   background: radial-gradient(circle, #3a0078, #1e003e 80%);
@@ -24,13 +24,36 @@ const Container = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('/path/to/stars.png') repeat; /* Add a starry background */
-    opacity: 0.1;
+    background: transparent;
     z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Generate animated stars */
+  .star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: white;
+    animation: twinkle 3s infinite alternate;
+    z-index: 0;
+  }
+
+  /* Randomize positions and opacity of stars */
+  @keyframes twinkle {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
   }
 `;
 
-// Square card styling
 const Square = styled.div`
   width: 100%;
   max-width: 250px;  // Add max width to prevent the cards from stretching too wide
@@ -53,7 +76,6 @@ const Square = styled.div`
   }
 `;
 
-// Button styling
 const Button = styled.button`
   padding: 1rem 2rem;
   background-color: #6a0dad;
@@ -72,7 +94,6 @@ const Button = styled.button`
   }
 `;
 
-// Description container styling
 const DescriptionContainer = styled.div`
   margin-top: 1.5rem;
   text-align: center;
@@ -82,7 +103,6 @@ const DescriptionContainer = styled.div`
   width: 100%;
 `;
 
-// Main wrapper for the grid
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -92,6 +112,7 @@ const Wrapper = styled.div`
   padding: 2rem 0;
 `;
 
+// Main Component
 const VastuPage = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -121,8 +142,29 @@ const VastuPage = () => {
     return <div>Loading...</div>;
   }
 
+  // Generate random stars
+  const generateStars = () => {
+    const stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push(
+        <div
+          key={i}
+          className="star"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${Math.random() * 2 + 3}s`, // Random durations for twinkle
+            animationDelay: `${Math.random() * 2}s`, // Random delays for twinkle
+          }}
+        ></div>
+      );
+    }
+    return stars;
+  };
+
   return (
     <Container>
+      {generateStars()}
       <Wrapper>
         {services.map((item) => (
           <div key={item.id} className="flex flex-col items-center cursor-pointer">
