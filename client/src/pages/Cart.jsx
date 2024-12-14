@@ -1,6 +1,81 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+
+const CartContainer = styled.div`
+  background: linear-gradient(to bottom, #12002f, #29004e, #3e32c6);
+  min-height: 100vh;
+  padding: 2rem;
+  color: white;
+  text-align: center;
+  position: relative; /* Make it the container for absolute positioning of stars */
+  overflow: hidden; /* Prevent scrolling from showing stars out of bounds */
+
+  /* Create animated stars */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: -1; /* Ensure stars are behind the content */
+    pointer-events: none;
+    animation: stars 30s linear infinite; /* Animation for background stars */
+  }
+
+  /* Keyframe animation for the starry sky */
+  @keyframes stars {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+
+  /* Create multiple animated stars */
+  .star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: white;
+    animation: twinkle 3s infinite alternate;
+  }
+
+  /* Randomize positions and opacity of stars */
+  @keyframes twinkle {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+
+  /* Generate random stars using nth-child */
+  .star:nth-child(1) {
+    top: 20%; left: 15%; animation-duration: 4s;
+  }
+  .star:nth-child(2) {
+    top: 40%; left: 30%; animation-duration: 5s;
+  }
+  .star:nth-child(3) {
+    top: 60%; left: 45%; animation-duration: 6s;
+  }
+  .star:nth-child(4) {
+    top: 70%; left: 60%; animation-duration: 7s;
+  }
+  .star:nth-child(5) {
+    top: 30%; left: 80%; animation-duration: 8s;
+  }
+`;
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);  // Local state for cart items
@@ -84,7 +159,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-[#1c1c3d] to-[#4b0082] min-h-screen p-8 text-white">
+    <CartContainer>
       <div className="max-w-6xl mx-auto bg-opacity-10 bg-white p-6 rounded-xl shadow-lg backdrop-blur-lg focus-ring-white border border-white">
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold my-6 text-center text-white opacity-80 transition-opacity duration-500">
           Your Cart
@@ -143,7 +218,21 @@ const Cart = () => {
           </button>
         </div>
       </div>
-    </div>
+
+      {/* Generate stars dynamically */}
+      {[...Array(500)].map((_, index) => (
+        <div
+          key={index}
+          className="star"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${Math.random() * 2 + 3}s`, // Random durations
+            animationDelay: `${Math.random() * 2}s` // Random delays
+          }}
+        />
+      ))}
+    </CartContainer>
   );
 };
 
