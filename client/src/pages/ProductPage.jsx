@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, updateCartItem } from "../Redux/CartSlice"; // Redux action
 import axios from "axios"; // API requests
 import { useNavigate, useParams } from "react-router-dom"; // For navigation
-
+import { createOrder, checkOrderStatus } from '../components/api';
 // Styled-components for custom styling
 const FAQsSection = styled.section`
   margin-top: 4rem;
@@ -182,51 +182,39 @@ const ProductPage = () => {
       return;
     }
   
-    const orderData = {
-      amount: service.price * 100, // Convert to paise
-      currency: "INR",
-      receipt: `receipt#${Math.floor(Math.random() * 1000)}`,
+    // Generate order details dynamically
+    const generateRandomOrderId = () => "ORD" + Math.floor(100000 + Math.random() * 900000);
+    const generateRandomRemarks = () => {
+      const randomTexts = ["Payment123", "OrderProcessed", "RemarkHidden"];
+      return randomTexts[Math.floor(Math.random() * randomTexts.length)];
+    };
+  
+    const orderDetails = {
+      customerMobile: user.phone || "1234567890", // Replace with actual user mobile
+      userToken: "fa156e4ff3276ae0ef4326cad74c1fa0", // Hardcoded user token
+      amount: (service.price).toString(), // Convert price to paise
+      orderId: generateRandomOrderId(),
+      redirectUrl: "http://localhost:5173/", // Hardcoded redirect URL
+      remark1: generateRandomRemarks(),
+      remark2: generateRandomRemarks(),
     };
   
     try {
-      const response = await axios.post("http://localhost:4000/api/payments/order", orderData);
-      // Proceed with Razorpay integration if successful
-      const { id: orderId, amount, currency } = response.data;
+      // Create Pay0 order and get the payment URL
+      const paymentUrl = await createOrder(orderDetails);
   
-      const options = {
-        key: "rzp_test_suGlReUubwbXnb",
-        amount,
-        currency,
-        name: "Astrology Services",
-        description: service.title,
-        order_id: orderId,
-        handler: async (paymentResponse) => {
-          try {
-            const validationResponse = await axios.post(
-              "http://localhost:4000/api/payments/order/validate",
-              paymentResponse
-            );
-            if (validationResponse.status === 200) {
-              alert("Payment Successful");
-            }
-          } catch (validationError) {
-            console.error("Payment validation failed:", validationError.response?.data);
-            alert("Payment validation failed. Please contact support.");
-          }
-        },
-        prefill: {
-          email: user.email,
-        },
-        theme: { color: "#3399cc" },
-      };
-  
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      if (paymentUrl) {
+        console.log("Redirecting to payment URL:", paymentUrl);
+        window.location.href = paymentUrl; // Redirect to the Pay0 payment page
+      } else {
+        throw new Error("Payment URL not received.");
+      }
     } catch (error) {
-      console.error("Error during payment:", error.response?.data || error.message);
-      alert("Something went wrong. Please try again.");
+      console.error("Error during payment:", error.message);
+      alert("Something went wrong while creating the Pay0 order. Please try again.");
     }
   };
+  
   
 
   // Handle Book Now - Add to Cart
