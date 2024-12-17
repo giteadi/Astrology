@@ -192,9 +192,9 @@ const ProductPage = () => {
     const orderDetails = {
       customerMobile: user.phone || "1234567890", // Replace with actual user mobile
       userToken: "fa156e4ff3276ae0ef4326cad74c1fa0", // Hardcoded user token
-      amount: (service.price).toString(), // Convert price to paise
+      amount: service.price, 
       orderId: generateRandomOrderId(),
-      redirectUrl: "http://localhost:5173/", // Hardcoded redirect URL
+      redirectUrl: "http://localhost:3000", // Hardcoded redirect URL
       remark1: generateRandomRemarks(),
       remark2: generateRandomRemarks(),
     };
