@@ -20,11 +20,12 @@ import AstroPage2 from './pages/AstroPage'
 import TriangularCarousel from "./components/TriangularCarousal";
 import ButtonComponent from "./pages/ButtonComponent";
 import PhonePeApi from "./components/PhonePe";
+import PayINComponent from "./components/PayInApi";
 function App() {
   return (
     <div className="font-bold">
       <Routes>
-      <Route path="/bb" element={<PhonePeApi/>}/>
+      <Route path="/bb" element={<PayINComponent/>}/>
         <Route path="/" element={<Home/>}/>
         <Route path="/astrology-page/:id" element={<AstrologyPage/>}/>
         <Route path='/vastu' element={<Vastu/>}/>
